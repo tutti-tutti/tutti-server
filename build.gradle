@@ -1,0 +1,69 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'io.spring.javaformat'
+}
+
+apply from: 'lint.gradle'
+
+group = "${projectGroup}"
+version = "${applicationVersion}"
+sourceCompatibility = project.javaVersion
+
+jar.enabled = false
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.h2database:h2'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task copySecretYML(type: Copy) {
+    description = "Copy application-*.yml from secret"
+    from './secret'
+    into 'src/main/resources/'
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
