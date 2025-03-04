@@ -3,10 +3,7 @@ package com.tutti.server.core.payment.domain;
 
 import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Table(name = "payment")
 public class Payment extends BaseEntity {
