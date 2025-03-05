@@ -13,10 +13,9 @@ import java.time.LocalDateTime;
 @Table(name = "payment_history")
 public class PaymentHistory {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long paymentHistoryId;
+    private Long Id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id", nullable = false)
