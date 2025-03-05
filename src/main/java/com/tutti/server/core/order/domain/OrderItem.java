@@ -1,7 +1,6 @@
-package com.tutti.server.core.cart.domain;
+package com.tutti.server.core.order.domain;
 
 import com.tutti.server.core.support.entity.BaseEntity;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -12,33 +11,29 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
-@Table(name = "cart_items")
+@Getter
+@Table(name = "order_items")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CartItem extends BaseEntity {
+public class OrderItem extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id", nullable = false)
-    private Cart cart;
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
-    // ProductDisplay 엔티티 생기면 추가할게요
-//    @OneToOne(fetch = FetchType.LAZY)
+    // ProductDisplay 엔티티 생기면 바꿀게요
+//    @ManyToOne
 //    @JoinColumn(name = "product_display_id", nullable = false)
 //    private ProductDisplay productDisplay;
 
-    @Column(columnDefinition = "integer default 1")
     private int quantity;
 
     private int price;
 
-    private boolean soldOut;
-
     @Builder
-    public CartItem(Cart cart, int quantity, int price, boolean soldOut) {
-        this.cart = cart;
+    public OrderItem(Order order, int quantity, int price) {
+        this.order = order;
         this.quantity = quantity;
         this.price = price;
-        this.soldOut = soldOut;
     }
 }
