@@ -6,10 +6,9 @@ import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

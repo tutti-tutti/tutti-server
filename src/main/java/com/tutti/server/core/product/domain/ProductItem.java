@@ -7,7 +7,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.hibernate.annotations.Comment;
 
 @Entity
-@Table(name = "product_item")
+@Table(name = "product_items")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
