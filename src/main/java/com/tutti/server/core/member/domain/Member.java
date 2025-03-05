@@ -13,7 +13,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false, length = 50, unique = true)
     private String email; //필수
 
-    @Column(length = 255, unique = true)
+    @Column(unique = true)
     private String socialId; // 소셜 로그인 ID (Google, Naver의 고유 ID)
 
     @Enumerated(EnumType.STRING)
@@ -21,7 +21,7 @@ public class Member extends BaseEntity {
     private SocialProvider socialProvider;
 
     //당장은 사용하지 않으나 자동 로그인 지원할 시 있어야 하는 엔티티
-    @Column(length = 255)
+    @Column
     private String socialAccessToken;
 
     @Column(length = 50)
@@ -38,7 +38,7 @@ public class Member extends BaseEntity {
     private String phone;
 
     @Column
-    private Integer age; // 만 나이
+    private Integer age; // 만 나이, null 값을 허용하므로
 
     @Column
     private LocalDate birthDate;
@@ -54,10 +54,10 @@ public class Member extends BaseEntity {
     private MemberStatus memberStatus;
 
     @Column(nullable = false)
-    private boolean isEmailVerified = false;
+    private boolean isEmailVerified;
 
     @Column(nullable = false)
-    private boolean isAdult = false;
+    private boolean isAdult;
 
     @Builder
     public Member(String email, String password, String socialId, SocialProvider socialProvider) {
