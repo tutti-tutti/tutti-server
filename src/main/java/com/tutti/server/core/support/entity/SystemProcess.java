@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "system_process")
+@Table(name = "system_processes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SystemProcess extends BaseEntity {
 
