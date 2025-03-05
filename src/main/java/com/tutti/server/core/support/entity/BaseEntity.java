@@ -17,7 +17,7 @@ public class BaseEntity {
     @Id
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(name = "delete_status", nullable = false)
     private boolean deleteStatus;
