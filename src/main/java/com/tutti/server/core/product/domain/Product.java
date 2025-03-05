@@ -37,7 +37,7 @@ public class Product extends BaseEntity {
     private String titleUrl;
 
     @Column(name = "product_code")
-    private Integer productCode;
+    private String productCode;
 
     @Column(name = "detail_url", nullable = false, length = 2083)
     private String detailUrl;
