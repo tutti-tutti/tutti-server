@@ -8,15 +8,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "faq")
+@Table(name = "faqs")
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Faq extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,25 +28,59 @@ public class Faq extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String answer;
 
-    //이 엔티티는 관리자만 수정할 수 있으므로 필요가 없다 판단. 이 컬럼을 삭제하였습니다.
-//    @Column(nullable = false)
-//    private Integer authorId;
-
     @Column(nullable = false)
     private Boolean isView;
 
-    // 래퍼 사용 : NPE 방지
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
     private Long viewCnt = 0L;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
     private Long positive = 0L;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
     private Long negative = 0L;
 
     @Column
     private LocalDateTime deletedAt;
 
-    //To-Do: DTO 작성시 Builder 작성 예정입니다.
+    @Builder
+    public Faq(FaqCategory faqCategory, String question, String answer, Boolean isView) {
+        this.faqCategory = faqCategory;
+        this.question = question;
+        this.answer = answer;
+        this.isView = isView;
+    }
+
+    // FAQ 수정 메서드 (null 값 무시)
+    public void updateFaq(String question, String answer, Boolean isView) {
+        if (question != null) {
+            this.question = question;
+        }
+        if (answer != null) {
+            this.answer = answer;
+        }
+        if (isView != null) {
+            this.isView = isView;
+        }
+    }
+
+    // 조회수 증가
+    public void incrementViewCount() {
+        this.viewCnt++;
+    }
+
+    // 긍정 평가 증가
+    public void incrementPositive() {
+        this.positive++;
+    }
+
+    // 부정 평가 증가
+    public void incrementNegative() {
+        this.negative++;
+    }
+
+    // 삭제
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }
