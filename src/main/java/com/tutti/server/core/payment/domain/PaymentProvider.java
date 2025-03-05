@@ -1,6 +1,7 @@
 package com.tutti.server.core.payment.domain;
 
 public enum PaymentProvider {
+
     KB_KOOKMIN_BANK,
     SHINHAN_BANK,
     WOORI_BANK,
@@ -10,5 +11,4 @@ public enum PaymentProvider {
     KAKAO_PAY,
     TOSS_PAY,
     NAVER_PAY;
-
 }

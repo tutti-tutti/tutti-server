@@ -37,12 +37,11 @@ public class Payment extends BaseEntity {
 //    @JoinColumn(name = "member_id", nullable = false)
 //    private Member member; // 회원 id
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "order_id", nullable = false)
-//    private Order order; // 주문 id
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order; // 주문 id
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paymentMethod_id", nullable = false)
     private PaymentMethod paymentMethod; // 결제 수단 id
-
 }
