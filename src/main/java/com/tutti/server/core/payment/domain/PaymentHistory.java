@@ -38,7 +38,7 @@ public class PaymentHistory {
     @Column(nullable = false)
     private PaymentStatus afterStatus; //결제 대기 중 -> 결제 완료
 
-    private Boolean latestStatus;
+    private boolean latestStatus;
 
     @Column(nullable = false)
     private LocalDateTime statusUpdatedAt; // 결제 상태 변경 일시
