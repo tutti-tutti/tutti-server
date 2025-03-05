@@ -1,14 +1,23 @@
 package com.tutti.server.core.payment.domain;
 
 import com.tutti.server.core.support.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "payment_methods")
 public class PaymentMethod extends BaseEntity {
 
     //TODO: 머지했을 떄 충돌 여부 확인
@@ -16,20 +25,16 @@ public class PaymentMethod extends BaseEntity {
 //    @JoinColumn(name = "payment_id", nullable = false)
 //    private Member member;
 
-    @Column(nullable = false, length = 100)
-    private String methodType;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PaymentMethodType methodType; // 카드, 계좌이체, 카카오페이 등
 
     @Column(nullable = false)
-    private String provider;
+    private String provider; // KB 국민은행, 우리은행, 카카오페이
 
     @Column(nullable = false)
-    private Boolean isDefault;
+    private Boolean isDefault; //기본 결제 수단 여부
 
-    //TODO: enum으로 교체하기
-//    @Column(nullable = false, length = 50)
-//    private String status;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id", nullable = false)
-    private Payment payment;
+    @Column(nullable = false)
+    private PaymentMethodStatus status; // ACTIVE, EXPIRED, DISABLED
 }
