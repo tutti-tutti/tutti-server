@@ -15,18 +15,19 @@ public class PaymentHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id", nullable = false)
     private Payment payment; // 결제 id
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
     private PaymentStatus paymentStatus; //결제 대기 중 -> 결제 완료
 
+    @Column(name = "latest_status")
     private boolean latestStatus;
 
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime statusUpdatedAt; // 결제 상태 변경 일시
 }
