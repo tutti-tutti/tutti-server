@@ -52,16 +52,18 @@ public class Faq extends BaseEntity {
     }
 
     // FAQ 수정 메서드 (null 값 무시)
-    public void updateFaq(String question, String answer, Boolean isView) {
+    public void updateFaq(String question, String answer) {
         if (question != null) {
             this.question = question;
         }
         if (answer != null) {
             this.answer = answer;
         }
-        if (isView != null) {
-            this.isView = isView;
-        }
+    }
+
+    // Faq 보여줄지 여부
+    public Boolean isViewUpdate(Boolean isView) {
+        return this.isView == isView;
     }
 
     // 조회수 증가
@@ -80,7 +82,7 @@ public class Faq extends BaseEntity {
     }
 
     // 삭제
-    public void delete() {
+    public void deleteTimeRecode() {
         this.deletedAt = LocalDateTime.now();
     }
 }
