@@ -27,7 +27,7 @@ public class OrderHistory {
     @Id
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
@@ -53,7 +53,7 @@ public class OrderHistory {
     private LocalDateTime createdAt;
 
     @Builder
-    public OrderHistory(long id, Order order, OrderStatus orderStatus, CreatedByType createdByType,
+    public OrderHistory(Long id, Order order, OrderStatus orderStatus, CreatedByType createdByType,
             String cancelReason, boolean latestVersion) {
         this.id = id;
         this.order = order;
