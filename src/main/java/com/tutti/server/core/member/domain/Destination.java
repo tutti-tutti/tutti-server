@@ -52,4 +52,3 @@ public class Destination extends BaseEntity {
         this.isDefault = true;
     }
 }
-

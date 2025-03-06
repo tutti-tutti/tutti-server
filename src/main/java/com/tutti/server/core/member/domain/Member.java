@@ -96,4 +96,5 @@ public class Member extends BaseEntity {
     public void verifyEmail() {
         this.isEmailVerified = true;
     }
+
 }

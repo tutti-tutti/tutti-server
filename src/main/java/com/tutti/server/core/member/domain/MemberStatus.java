@@ -6,4 +6,5 @@ public enum MemberStatus {
     DORMANT,    // 휴면 회원
     WITHDRAWN,  // 탈퇴 회원
     BANNED      // 정지 회원
+
 }
