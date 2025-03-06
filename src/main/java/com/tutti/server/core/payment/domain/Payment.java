@@ -1,6 +1,7 @@
 package com.tutti.server.core.payment.domain;
 
 
+import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,8 +36,6 @@ public class Payment extends BaseEntity {
     @Column(nullable = false)
     private PaymentStatus paymentStatus;
 
-    private int discountAmount;
-
     @Column(nullable = false)
     private int paidAmount;
 
@@ -56,4 +55,5 @@ public class Payment extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paymentMethod_id", nullable = false)
     private PaymentMethod paymentMethod; // 결제 수단 id
+
 }
