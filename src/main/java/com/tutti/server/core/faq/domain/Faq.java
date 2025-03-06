@@ -95,5 +95,4 @@ public class Faq extends BaseEntity {
     public boolean isSameViewStatus(Boolean isView) {
         return Boolean.TRUE.equals(this.isView) == Boolean.TRUE.equals(isView);
     }
-    
 }
