@@ -38,7 +38,7 @@ public class Member extends BaseEntity {
     private String phone;
 
     @Column
-    private Integer age; // 만 나이, null 값을 허용하므로
+    private int age; //int는 not null
 
     @Column
     private LocalDate birthDate;

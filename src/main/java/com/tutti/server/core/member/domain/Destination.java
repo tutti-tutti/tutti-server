@@ -17,7 +17,7 @@ public class Destination extends BaseEntity {
     @Column(length = 50)
     private String destinationName; // 배송지 이름 (ex. 집, 회사)
 
-    @Column(length =50)
+    @Column(length = 50)
     private String recipientName; //수령인 이름
 
     @Column
@@ -27,16 +27,17 @@ public class Destination extends BaseEntity {
     private String addressDetail;
 
     @Column
-    private Integer zipCode;
+    private String zipCode;
 
-    @Column(length=50)
+    @Column(length = 50)
     private String phoneNumber;
 
     @Column(nullable = false)
     private boolean isDefault;
 
     @Builder
-    public Destination(Member member, String destinationName, String recipientName, String address, String addressDetail, Integer zipCode, String phoneNumber, boolean isDefault) {
+    public Destination(Member member, String destinationName, String recipientName, String address,
+            String addressDetail, String zipCode, String phoneNumber, boolean isDefault) {
         this.member = member;
         this.destinationName = destinationName;
         this.recipientName = recipientName;
@@ -46,7 +47,9 @@ public class Destination extends BaseEntity {
         this.phoneNumber = phoneNumber;
         this.isDefault = false;
     }
+
     public void setDefault() {
         this.isDefault = true;
     }
 }
+
