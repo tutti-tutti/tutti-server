@@ -13,4 +13,5 @@ public record ExampleSearchResponse(List<SimpleExample> examples) {
             .map(SimpleExample::from)
             .collect(collectingAndThen(toList(), ExampleSearchResponse::new));
     }
+
 }
