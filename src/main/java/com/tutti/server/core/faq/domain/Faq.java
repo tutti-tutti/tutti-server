@@ -32,13 +32,13 @@ public class Faq extends BaseEntity {
     private boolean isView;
 
     @Column(nullable = false)
-    private Long viewCnt = 0L;
+    private long viewCnt = 0L;
 
     @Column(nullable = false)
-    private Long positive = 0L;
+    private long positive = 0L;
 
     @Column(nullable = false)
-    private Long negative = 0L;
+    private long negative = 0L;
 
     @Column
     private LocalDateTime deletedAt;
