@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,7 +20,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Getter
-@Table(name = "order_history")
+@Table(name = "order_histories")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderHistory {
 
@@ -28,7 +29,7 @@ public class OrderHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
@@ -52,7 +53,7 @@ public class OrderHistory {
     private LocalDateTime createdAt;
 
     @Builder
-    public OrderHistory(long id, Order order, OrderStatus orderStatus, CreatedByType createdByType,
+    public OrderHistory(Long id, Order order, OrderStatus orderStatus, CreatedByType createdByType,
             String cancelReason, boolean latestVersion) {
         this.id = id;
         this.order = order;
