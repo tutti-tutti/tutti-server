@@ -13,7 +13,6 @@ import lombok.*;
 @Table(name = "payment_methods")
 public class PaymentMethod extends BaseEntity {
 
-    //TODO: 머지했을 떄 충돌 여부 확인
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
