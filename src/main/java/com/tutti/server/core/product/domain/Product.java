@@ -24,9 +24,12 @@ public class Product extends BaseEntity {
   @Comment("botId")
   private String botId;
 
-  @Column(name = "store_id", nullable = false)
-  @Comment("storeId FK")
-  private Long storeId;
+  // 전체 merge 후 uncomment
+//  @Column(name = "store_id", nullable = false)
+//  @ManyToOne
+//  @JoinColumn(name = "store_id", nullable = false)
+//  @Comment("storeId")
+//  private Store storeId;
 
   @Column(name = "name", nullable = false)
   @Comment("productName")
@@ -54,12 +57,11 @@ public class Product extends BaseEntity {
   @Column(name = "like_count", nullable = false)
   private int likeCount;
 
-  // 상품명만 필수로 설정하는 빌더
+  // 필수로 설정하는 빌더
   @Builder
-  public Product(String botId, Long storeId, String name, String titleUrl, String detailUrl,
+  public Product(String botId, String name, String titleUrl, String detailUrl,
       String categoryId, boolean onSales) {
     this.botId = botId;
-    this.storeId = storeId;
     this.name = name;
     this.titleUrl = titleUrl;
     this.detailUrl = detailUrl;
