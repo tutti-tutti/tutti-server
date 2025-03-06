@@ -1,4 +1,5 @@
 package com.tutti.server.core.member.domain;
+
 import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -96,5 +97,4 @@ public class Member extends BaseEntity {
     public void verifyEmail() {
         this.isEmailVerified = true;
     }
-
 }
