@@ -29,41 +29,46 @@ public class Faq extends BaseEntity {
     private String answer;
 
     @Column(nullable = false)
-    private Boolean isView;
+    private boolean isView;
 
-    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
+    @Column(nullable = false)
     private Long viewCnt = 0L;
 
-    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
+    @Column(nullable = false)
     private Long positive = 0L;
 
-    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
+    @Column(nullable = false)
     private Long negative = 0L;
 
     @Column
     private LocalDateTime deletedAt;
 
     @Builder
-    public Faq(FaqCategory faqCategory, String question, String answer, Boolean isView) {
+    public Faq(FaqCategory faqCategory, String question, String answer, boolean isView) {
         this.faqCategory = faqCategory;
         this.question = question;
         this.answer = answer;
         this.isView = isView;
     }
 
-    // FAQ 수정 메서드 (null 값 무시)
-    public void updateFaq(String question, String answer) {
+    // FAQ 수정 메서드
+    public void updateFaq(String question, String answer, Boolean isView) {
         if (question != null) {
             this.question = question;
         }
         if (answer != null) {
             this.answer = answer;
         }
+        if (isView != null) {
+            this.isView = isView;
+        }
     }
 
-    // Faq 보여줄지 여부
-    public Boolean isViewUpdate(Boolean isView) {
-        return this.isView == isView;
+    // FAQ 카테고리 변경
+    public void updateCategory(FaqCategory faqCategory) {
+        if (faqCategory != null) {
+            this.faqCategory = faqCategory;
+        }
     }
 
     // 조회수 증가
@@ -81,8 +86,14 @@ public class Faq extends BaseEntity {
         this.negative++;
     }
 
-    // 삭제
-    public void deleteTimeRecode() {
+    // 삭제 처리
+    public void markAsDeleted() {
         this.deletedAt = LocalDateTime.now();
     }
+
+    // 현재 공개 여부 확인
+    public boolean isSameViewStatus(Boolean isView) {
+        return Boolean.TRUE.equals(this.isView) == Boolean.TRUE.equals(isView);
+    }
+    
 }

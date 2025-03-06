@@ -21,4 +21,5 @@ public class FaqCategory extends BaseEntity {
 
     @Column(length = 100)
     private String description;
+
 }
