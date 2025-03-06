@@ -64,7 +64,7 @@ public class Refund extends BaseEntity {
 
     public void completeRefund() { // TODO: 임시
         if (this.refundStatus == RefundStatus.COMPLETED) {
-            throw new IllegalStateException("이미 환불이 이미 완료되었습니다.");
+            throw new IllegalStateException("이미 환불이 완료되었습니다.");
         }
         this.refundStatus = RefundStatus.COMPLETED;
         this.refundCompletedAt = LocalDateTime.now();
