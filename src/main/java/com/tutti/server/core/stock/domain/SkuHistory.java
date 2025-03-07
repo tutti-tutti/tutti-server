@@ -27,7 +27,7 @@ public class SkuHistory {
   private Long skuHistoryId;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "type", nullable = false)
+  @Column(name = "skuHistoryType", nullable = false)
   private SkuHistoryType skuHistoryType;
 
   @Column(name = "quantity", nullable = false)
