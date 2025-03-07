@@ -18,16 +18,14 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Review extends BaseEntity {
 
-    // 조회 성능 최적화: FK 대신 ID만 저장
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "order_item_id", nullable = false)
-//    private OrderItem orderItem;
+    @Column(name = "order_item_id", nullable = false)
+    private Long orderItemId;
 
     @Column(nullable = false)
     private Integer rating;
@@ -36,7 +34,7 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    // 개별 이미지 URL 저장 (최대 4개 지원)
+    // 최대 4개의 리뷰 이미지를 저장할 수 있도록 설정
     @Column(name = "review_image_url1", length = 255)
     private String reviewImageUrl1;
 
@@ -51,6 +49,26 @@ public class Review extends BaseEntity {
 
     @Column(name = "like_count", nullable = false)
     private Long likeCount = 0L;
+
+    /**
+     * 리뷰 생성 메서드 (사진 개수가 0~4개일 수 있음)
+     */
+    public static Review createReview(Long productId, Long memberId, Long orderItemId,
+        Integer rating, String content, String[] reviewImages) {
+        return Review.builder()
+            .productId(productId)
+            .memberId(memberId)
+            .orderItemId(orderItemId)
+            .rating(rating)
+            .content(content)
+            // 배열 길이를 체크하여 필요한 만큼만 저장
+            .reviewImageUrl1(reviewImages.length > 0 ? reviewImages[0] : null)
+            .reviewImageUrl2(reviewImages.length > 1 ? reviewImages[1] : null)
+            .reviewImageUrl3(reviewImages.length > 2 ? reviewImages[2] : null)
+            .reviewImageUrl4(reviewImages.length > 3 ? reviewImages[3] : null)
+            .likeCount(0L)
+            .build();
+    }
 
     public void updateReviewImage1(String reviewImageUrl1) {
         this.reviewImageUrl1 = reviewImageUrl1;
@@ -71,5 +89,4 @@ public class Review extends BaseEntity {
     public void increaseLike() {
         this.likeCount += 1;
     }
-
 }
