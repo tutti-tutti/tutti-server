@@ -48,7 +48,7 @@ public class Review extends BaseEntity {
     private String reviewImageUrl4;
 
     @Column(name = "like_count", nullable = false)
-    private Long likeCount = 0L;
+    private long likeCount = 0L;
 
     /**
      * 리뷰 생성 메서드 (사진 개수가 0~4개일 수 있음)
