@@ -2,6 +2,8 @@ package com.tutti.server.core.stock.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,8 +26,9 @@ public class SkuHistory {
   @Column(name = "sku_history_id")
   private Long skuHistoryId;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "type", nullable = false)
-  private Byte type;
+  private SkuHistoryType type;
 
   @Column(name = "quantity", nullable = false)
   private int quantity;

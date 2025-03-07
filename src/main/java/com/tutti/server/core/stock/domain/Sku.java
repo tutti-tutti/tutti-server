@@ -23,6 +23,9 @@ public class Sku {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "sku_id", nullable = false)
+  private Long skuId;
+
+  @Column(name = "skuCode", nullable = false)
   private String skuCode;
 
   @Column(name = "stock", nullable = false)
@@ -37,4 +40,8 @@ public class Sku {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "product_item_id", nullable = false)
   private ProductItem productItem;
+
+  private String generateSkuCode(String category, int sequence) {
+    return category.toUpperCase() + "-" + String.format("%03d", sequence);
+  }
 }
