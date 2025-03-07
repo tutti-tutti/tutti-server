@@ -2,7 +2,7 @@ package com.tutti.server.core.refund.domain;
 
 public enum RefundStatus {
 
-    REQUESTED,    // 환불 요청
-    PROCESSING,   // 환불 처리중
-    COMPLETED;    // 환불 완료
+    REFUND_REQUESTED,    // 환불 요청
+    REFUND_PROCESSING,   // 환불 처리중
+    REFUND_COMPLETED;    // 환불 완료
 }
