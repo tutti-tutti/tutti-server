@@ -1,0 +1,11 @@
+package com.tutti.server.core.cart.infrastructure;
+
+import com.tutti.server.core.cart.domain.CartItem;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CartItemRepository extends JpaRepository<CartItem, Long> {
+
+    Optional<CartItem> findByMemberIdAndProductItemIdAndDeleteStatusFalse(Long memberId,
+            Long productItemId);
+}
