@@ -37,10 +37,8 @@ public class Refund extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PaymentMethodType refundMethod; // 환불수단
 
-    @Column
-    private int refundFee; // 환불배송
+    private int returnFee; // 환불배송
 
-    @Column
     private LocalDateTime refundCompletedAt; // 환불완료일시
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -53,20 +51,20 @@ public class Refund extends BaseEntity {
 
     @Builder
     public Refund(int amount, RefundStatus refundStatus, PaymentMethodType refundMethod,
-            int refundFee, Payment payment, Member member) {
+            int returnFee, Payment payment, Member member) {
         this.amount = amount;
         this.refundStatus = refundStatus;
         this.refundMethod = refundMethod;
-        this.refundFee = refundFee;
+        this.returnFee = returnFee;
         this.payment = payment;
         this.member = member;
     }
 
-    public void completeRefund() { // TODO: 임시
-        if (this.refundStatus == RefundStatus.COMPLETED) {
+    public void completeRefund() {
+        if (this.refundStatus == RefundStatus.REFUND_COMPLETED) {
             throw new IllegalStateException("이미 환불이 완료되었습니다.");
         }
-        this.refundStatus = RefundStatus.COMPLETED;
+        this.refundStatus = RefundStatus.REFUND_COMPLETED;
         this.refundCompletedAt = LocalDateTime.now();
     }
 }
