@@ -29,7 +29,7 @@ public class SearchFrequency {
   private String query;
 
   @Column(nullable = false)
-  private Long frequency;
+  private Long frequency = 0L;
 
   @Builder
   public SearchFrequency(String query, Long frequency) {
