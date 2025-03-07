@@ -28,10 +28,10 @@ public class Faq extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String answer;
 
-    @Column(nullable = false)
+    @Column(name = "is_view", nullable = false)
     private boolean isView;
 
-    @Column(nullable = false)
+    @Column(name = "view_cnt", nullable = false)
     private long viewCnt = 0L;
 
     @Column(nullable = false)
@@ -40,7 +40,7 @@ public class Faq extends BaseEntity {
     @Column(nullable = false)
     private long negative = 0L;
 
-    @Column
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     @Builder
