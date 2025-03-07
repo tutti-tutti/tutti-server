@@ -33,10 +33,9 @@ public class WithdrawalHistory {
     @Builder
     public WithdrawalHistory(Member member, String reason, String gender, int age, LocalDateTime withdrawalAt) {
         this.member = member;
-        this.memberId = member.getId(); // member의 PK 값을 가져와서 PK+FK 설정
         this.reason = reason;
         this.gender = gender;
         this.age = age;
-        this.withdrawalAt = withdrawalAt;
+        this.withdrawalAt = (withdrawalAt != null) ? withdrawalAt : LocalDateTime.now();
     }
 }
