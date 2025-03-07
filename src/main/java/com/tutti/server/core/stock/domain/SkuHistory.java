@@ -37,6 +37,6 @@ public class SkuHistory {
   private LocalDateTime createdAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "sku_code", nullable = false)
+  @JoinColumn(name = "sku_id", nullable = false)
   private Sku sku;
 }
