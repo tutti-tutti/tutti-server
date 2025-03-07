@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FaqCategory extends BaseEntity {
 
-    @Column(nullable = false, length = 30)
+    @Column(name = "main_category", nullable = false, length = 30)
     private String mainCategory;
 
-    @Column(length = 30)
+    @Column(name = "sub_category", length = 30)
     private String subCategory;
 
     @Column(length = 100)
