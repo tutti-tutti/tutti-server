@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name ="member_agreement_mappings",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"member_id", "type"}))
+        uniqueConstraints = @UniqueConstraint(columnNames = {"member_id", "terms_conditions_id"}))
 public class MemberAgreementMapping extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -16,11 +16,11 @@ public class MemberAgreementMapping extends BaseEntity {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type", nullable = false)
+    @JoinColumn(name = "terms_conditions_id", nullable = false)
     private TermsConditions termsConditions;
 
     @Column(nullable = false)
-    private boolean isApproved =false;
+    private boolean isApproved;
 
     @Builder
     public MemberAgreementMapping(Member member, TermsConditions termsConditions, boolean isApproved) {
@@ -30,11 +30,11 @@ public class MemberAgreementMapping extends BaseEntity {
     }
 
     // :white_check_mark: 동의 상태 변경 메서드
-    public void approve() {
+    public void agree() {
         this.isApproved = true;
     }
 
-    public void disapprove() {
+    public void disagree() {
         this.isApproved = false;
     }
 }
