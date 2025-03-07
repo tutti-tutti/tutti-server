@@ -18,14 +18,14 @@ public class VerificationCode extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String email; // 이메일
 
-    @Column(length = 6)
+    @Column(nullable = false, length = 6)
     private String verificationCode; // 인증번호 (6자리)
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime expiresAt; // 만료 시간
 
     @Column(nullable = false)
-    private boolean isVerified = false; // 인증 여부 (기본값 false)
+    private boolean isVerified; // 인증 여부
 
     @Builder
     public VerificationCode(String email, String verificationCode, LocalDateTime expiresAt) {
@@ -42,6 +42,6 @@ public class VerificationCode extends BaseEntity {
 
     // 인증번호 만료 여부 체크
     public boolean isExpired() {
-        return expiresAt != null && LocalDateTime.now().isAfter(expiresAt);
+        return expiresAt == null || LocalDateTime.now().isAfter(expiresAt);
     }
 }
