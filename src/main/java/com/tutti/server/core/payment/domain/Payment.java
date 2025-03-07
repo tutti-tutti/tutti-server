@@ -4,13 +4,20 @@ package com.tutti.server.core.payment.domain;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.support.entity.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,7 +28,7 @@ public class Payment extends BaseEntity {
     @Column(name = "order_name", nullable = false)
     private String orderName;
 
-    @Column(name = "amount", nullable = false)
+    @Column(nullable = false)
     private int amount;
 
     @Enumerated(EnumType.STRING)
@@ -51,8 +58,8 @@ public class Payment extends BaseEntity {
 
     @Builder
     public Payment(String orderName, int amount, PaymentStatus paymentStatus,
-                   int paidAmount, String tossPaymentKey, Member member,
-                   Order order, PaymentMethod paymentMethod) {
+            int paidAmount, String tossPaymentKey, Member member,
+            Order order, PaymentMethod paymentMethod) {
         this.orderName = orderName;
         this.amount = amount;
         this.paymentStatus = paymentStatus;
@@ -62,7 +69,7 @@ public class Payment extends BaseEntity {
         this.order = order;
         this.paymentMethod = paymentMethod;
     }
-    
+
     public void completePayment() {
         if (this.paymentStatus == PaymentStatus.COMPLETED) {
             throw new IllegalStateException("이미 결제가 완료된 주문입니다.");
