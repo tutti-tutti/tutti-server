@@ -1,10 +1,14 @@
 package com.tutti.server.core.payment.domain;
 
+import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,10 +24,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "payment_methods")
 public class PaymentMethod extends BaseEntity {
 
-    //TODO: 머지했을 떄 충돌 여부 확인
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "payment_id", nullable = false)
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -38,5 +41,5 @@ public class PaymentMethod extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private PaymentMethodStatus status; // ACTIVE, EXPIRED, DISABLED
+    private PaymentMethodStatus paymentMethodStatus; // ACTIVE, EXPIRED, DISABLED
 }
