@@ -27,16 +27,24 @@ public class ViewedProduct extends BaseEntity {
     public ViewedProduct(Member member, Product product, LocalDateTime viewedAt) {
         this.member = member;
         this.product = product;
-        this.viewedAt = viewedAt;
+        this.viewedAt = (viewedAt != null) ? viewedAt : LocalDateTime.now();
     }
 
-    //상품 조회 기록 삭제
+    // 조회 시간 NULL 값 방지
+    @PrePersist
+    public void prePersist() {
+        if (this.viewedAt == null) {
+            this.viewedAt = LocalDateTime.now();
+        }
+    }
+
+    // 조회 시간 업데이트
+    public void updateViewedAt(LocalDateTime newViewedAt) {
+        this.viewedAt = (newViewedAt != null) ? newViewedAt : LocalDateTime.now();
+    }
+
+    // 상품 조회 기록 삭제
     public void markAsDeleted() {
         super.delete(); // BaseEntity의 deleteStatus를 true로 변경
-    }
-
-    //조회 기록 업데이트
-    public void updateViewedAt(LocalDateTime newViewedAt) {
-        this.viewedAt = newViewedAt;
     }
 }
