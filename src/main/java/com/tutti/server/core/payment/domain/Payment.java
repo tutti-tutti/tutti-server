@@ -71,10 +71,10 @@ public class Payment extends BaseEntity {
     }
 
     public void completePayment() {
-        if (this.paymentStatus == PaymentStatus.COMPLETED) {
+        if (this.paymentStatus == PaymentStatus.PAYMENT_COMPLETED) {
             throw new IllegalStateException("이미 결제가 완료된 주문입니다.");
         }
-        this.paymentStatus = PaymentStatus.COMPLETED;
+        this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;
         this.completedAt = LocalDateTime.now();
     }
 }
