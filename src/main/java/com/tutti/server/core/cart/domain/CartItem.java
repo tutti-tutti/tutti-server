@@ -1,11 +1,14 @@
 package com.tutti.server.core.cart.domain;
 
+import com.tutti.server.core.member.domain.Member;
+import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,13 +22,12 @@ import lombok.NoArgsConstructor;
 public class CartItem extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id", nullable = false)
-    private Cart cart;
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
-    // ProductDisplay 엔티티 생기면 추가할게요
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "product_display_id", nullable = false)
-//    private ProductDisplay productDisplay;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_item_id", nullable = false)
+    private ProductItem productItem;
 
     @Column(columnDefinition = "integer default 1")
     private int quantity;
@@ -35,8 +37,10 @@ public class CartItem extends BaseEntity {
     private boolean soldOut;
 
     @Builder
-    public CartItem(Cart cart, int quantity, int price, boolean soldOut) {
-        this.cart = cart;
+    public CartItem(Member member, ProductItem productItem, int quantity, int price,
+            boolean soldOut) {
+        this.member = member;
+        this.productItem = productItem;
         this.quantity = quantity;
         this.price = price;
         this.soldOut = soldOut;
