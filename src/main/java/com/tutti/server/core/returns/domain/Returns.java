@@ -37,15 +37,15 @@ public class Returns extends BaseEntity {
     @JoinColumn(name = "carrier_id", nullable = false)
     private Carrier carrier; // 택배사 엔티티 참조
 
-    @Column(name = "quantity", nullable = false)
+    @Column(nullable = false)
     private int quantity; // 반품 수량
 
-    @Column(name = "reason")
+    @Column
     private String reason; // 반품 사유
 
     @Column(name = "status", length = 50, nullable = false)
     @Enumerated(EnumType.STRING)
-    private ReturnStatus status; // 반품 처리 상태
+    private ReturnStatus returnStatus; // 반품 처리 상태
 
     @Column(name = "expected_return_date")
     private LocalDate expectedReturnDate; // 회수 예정일
@@ -55,14 +55,14 @@ public class Returns extends BaseEntity {
 
     @Builder
     public Returns(Refund refund, Order order, Carrier carrier, int quantity, String reason,
-            ReturnStatus status,
+            ReturnStatus returnStatus,
             LocalDate expectedReturnDate, LocalDateTime completedAt) {
         this.refund = refund;
         this.order = order;
         this.carrier = carrier;
         this.quantity = quantity;
         this.reason = reason;
-        this.status = status;
+        this.returnStatus = returnStatus;
         this.expectedReturnDate = expectedReturnDate;
         this.completedAt = completedAt;
     }
