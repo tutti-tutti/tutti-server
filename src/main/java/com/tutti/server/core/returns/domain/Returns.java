@@ -4,13 +4,20 @@ import com.tutti.server.core.delivery.domain.Carrier;
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.refund.domain.Refund;
 import com.tutti.server.core.support.entity.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -33,7 +40,7 @@ public class Returns extends BaseEntity {
     @Column(name = "quantity", nullable = false)
     private int quantity; // 반품 수량
 
-    @Column(name = "reason", length = 255)
+    @Column(name = "reason")
     private String reason; // 반품 사유
 
     @Column(name = "status", length = 50, nullable = false)
@@ -41,14 +48,15 @@ public class Returns extends BaseEntity {
     private ReturnStatus status; // 반품 처리 상태
 
     @Column(name = "expected_return_date")
-    private LocalDateTime expectedReturnDate; // 회수 예정일
+    private LocalDate expectedReturnDate; // 회수 예정일
 
     @Column(name = "completed_at")
     private LocalDateTime completedAt; // 반품 완료 일시
 
     @Builder
-    public Returns(Refund refund, Order order, Carrier carrier, int quantity, String reason, ReturnStatus status,
-                   LocalDateTime expectedReturnDate, LocalDateTime completedAt) {
+    public Returns(Refund refund, Order order, Carrier carrier, int quantity, String reason,
+            ReturnStatus status,
+            LocalDate expectedReturnDate, LocalDateTime completedAt) {
         this.refund = refund;
         this.order = order;
         this.carrier = carrier;
