@@ -28,7 +28,7 @@ public class PaymentMethod extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column(name = "method_Type", nullable = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentMethodType methodType; // 카드, 계좌이체, 카카오페이 등
 

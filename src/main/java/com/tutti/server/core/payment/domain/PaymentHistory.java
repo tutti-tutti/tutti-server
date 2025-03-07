@@ -35,7 +35,7 @@ public class PaymentHistory {
     private Payment payment; // 결제 id
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     private PaymentStatus paymentStatus; //결제 대기 중 -> 결제 완료
 
     private boolean latestStatus;
