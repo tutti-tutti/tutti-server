@@ -5,13 +5,20 @@ import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.domain.PaymentMethodType;
 import com.tutti.server.core.support.entity.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -22,18 +29,16 @@ public class Refund extends BaseEntity {
     @Column(nullable = false)
     private int amount;
 
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private RefundStatus refundStatus;
 
-    @Column(name = "method", nullable = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentMethodType refundMethod; // 환불수단
 
-    @Column(name = "fee")
     private int returnFee; // 환불배송
 
-    @Column(name = "completed_at")
     private LocalDateTime refundCompletedAt; // 환불완료일시
 
     @OneToOne(fetch = FetchType.LAZY)
