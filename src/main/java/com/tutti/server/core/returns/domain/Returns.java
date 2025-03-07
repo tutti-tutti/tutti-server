@@ -40,17 +40,14 @@ public class Returns extends BaseEntity {
     @Column(nullable = false)
     private int quantity; // 반품 수량
 
-    @Column
     private String reason; // 반품 사유
 
-    @Column(name = "status", length = 50, nullable = false)
+    @Column(length = 50, nullable = false)
     @Enumerated(EnumType.STRING)
     private ReturnStatus returnStatus; // 반품 처리 상태
 
-    @Column(name = "expected_return_date")
     private LocalDate expectedReturnDate; // 회수 예정일
 
-    @Column(name = "completed_at")
     private LocalDateTime completedAt; // 반품 완료 일시
 
     @Builder
