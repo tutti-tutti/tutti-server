@@ -91,7 +91,7 @@ public class Faq extends BaseEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
-    // 현재 공개 여부 확인
+    // 현재 공개 여부 확인.
     public boolean isSameViewStatus(Boolean isView) {
         return Boolean.TRUE.equals(this.isView) == Boolean.TRUE.equals(isView);
     }

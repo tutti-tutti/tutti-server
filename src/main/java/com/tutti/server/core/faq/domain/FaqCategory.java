@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FaqCategory extends BaseEntity {
 
+    //카테고리
     @Column(name = "main_category", nullable = false, length = 30)
     private String mainCategory;
 
