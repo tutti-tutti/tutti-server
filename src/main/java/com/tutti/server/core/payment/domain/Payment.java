@@ -25,23 +25,22 @@ import lombok.NoArgsConstructor;
 @Table(name = "payments")
 public class Payment extends BaseEntity {
 
-    @Column(name = "order_name", nullable = false)
+    @Column(nullable = false)
     private String orderName;
 
     @Column(nullable = false)
     private int amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     private PaymentStatus paymentStatus;
 
-    @Column(name = "paid_amount", nullable = false)
+    @Column(nullable = false)
     private int paidAmount;
 
-    @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
-    @Column(name = "toss_payment_key", nullable = false)
+    @Column(nullable = false)
     private String tossPaymentKey; // tossPaymentsKey
 
     @ManyToOne(fetch = FetchType.LAZY)

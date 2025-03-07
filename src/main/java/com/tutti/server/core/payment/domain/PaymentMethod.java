@@ -36,10 +36,10 @@ public class PaymentMethod extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PaymentProvider provider; // KB 국민은행, 우리은행, 카카오페이
 
-    @Column(name = "is_default", nullable = false)
+    @Column(nullable = false)
     private boolean isDefault; //기본 결제 수단 여부
 
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentMethodStatus paymentMethodStatus; // ACTIVE, EXPIRED, DISABLED
 }
