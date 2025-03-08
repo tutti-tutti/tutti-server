@@ -20,18 +20,26 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void createCartItem(CartItemRequest request) {
-        var member = memberRepository.findById(request.memberId())
+    // 기존 장바구니 상품이 있는지 확인하고, 없으면 새로 생성하는 메서드
+    public void addCartItem(Long memberId, CartItemRequest request) {
+        cartItemRepository.findByMemberIdAndProductItemIdAndDeleteStatusFalse(memberId,
+                        request.productItemId())
+                // 이미 장바구니에 해당 상품이 있다면 삭제(soft delete)
+                .ifPresent(BaseEntity::delete);
+        // 장바구니에 상품을 새로 생성하여 저장
+        createCartItem(memberId, request);
+    }
+
+    @Override
+    @Transactional
+    // 장바구니 상품을 엔티티로 저장하는 메서드
+    public void createCartItem(Long memberId, CartItemRequest request) {
+        var member = memberRepository.findById(memberId)
                 .orElseThrow(RuntimeException::new);
         var productItem = productItemRepository.findById(request.productItemId())
                 .orElseThrow(RuntimeException::new);
 
-        cartItemRepository.findByMemberIdAndProductItemIdAndDeleteStatusFalse(request.memberId(),
-                        request.productItemId())
-                // 이미 장바구니에 해당 상품이 있다면 엔티티 교체
-                .ifPresentOrElse(BaseEntity::delete,
-                        // 장바구니에 상품이 없으면 새로 생성하여 저장
-                        () -> cartItemRepository.save(request.toEntity(member, productItem))
-                );
+        // 장바구니 상품 엔티티를 만들 때, 수량도 받아야 하기 때문에 파라미터로 request 가 필요하다
+        cartItemRepository.save(request.toEntity(member, productItem));
     }
 }

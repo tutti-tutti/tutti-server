@@ -10,17 +10,11 @@ import lombok.Builder;
 @Builder
 public record CartItemRequest(
 
-        Long memberId,
-
         @NotNull(message = "필수 옵션을 선택해주세요.")
         Long productItemId,
 
         @Min(value = 1, message = "수량은 1 이상이어야 합니다.")
-        int quantity,
-
-        int price,
-
-        boolean soldOut
+        int quantity
 
 ) {
 
@@ -28,9 +22,11 @@ public record CartItemRequest(
         return CartItem.builder()
                 .member(member)
                 .productItem(productItem)
+                .productName(productItem.getProduct().getName())
+                .productImgUrl(productItem.getProduct().getTitleUrl())
                 .quantity(quantity)
-                .price(price)
-                .soldOut(soldOut)
+                .price(productItem.getSellingPrice())
+//                .soldOut(productItem.getSoldOut())
                 .build();
     }
 }
