@@ -8,5 +8,5 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public interface CartApiSpec {
 
     @Operation(summary = "장바구니 상품 추가")
-    void addCartItem(Long memberId, CartItemRequest request);
+    public void addCartItem(Long memberId, CartItemRequest request);
 }
