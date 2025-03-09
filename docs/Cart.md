@@ -2,8 +2,8 @@
 
 1. (READ) 사용자는 장바구니에 담긴 모든 상품을 한 눈에 확인할 수 있다.
     -[ ] 사용자가 장바구니 조회 api를 요청하면 delete_status=false 인 상품만 반환한다.
-    -[ ] request: member의 인증 정보(회원일 경우)~~/session_id(비회원일 경우)~~
-    -[ ] response: cart_item_id(상품명, 옵션), 가격, 수량, 품절여부
+    -[X] request: member의 인증 정보(회원일 경우)~~/session_id(비회원일 경우)~~
+    -[ ] response: cart_item_id, 상품명, 옵션, 가격, 수량, 품절여부
 2. (CREATE) 사용자는 상품을 장바구니에 추가할 수 있다.
     -[ ] 사용자가 장바구니 추가 api를 클릭하면 장바구니 리스트에 판매상품이 추가되어야 한다.
     -[X] request: member의 인증 정보(회원일 경우)~~/session_id(비회원일 경우)~~, product_item_id(상품명, 옵션, 가격, 품절여부),
