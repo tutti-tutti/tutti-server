@@ -5,6 +5,7 @@ import com.tutti.server.core.cart.payload.request.CartItemRequest;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.support.entity.BaseEntity;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +36,9 @@ public class CartServiceImpl implements CartService {
     // 장바구니 상품을 엔티티로 저장하는 메서드
     public void createCartItem(Long memberId, CartItemRequest request) {
         var member = memberRepository.findById(memberId)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(EntityNotFoundException::new);
         var productItem = productItemRepository.findById(request.productItemId())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(EntityNotFoundException::new);
 
         // 장바구니 상품 엔티티를 만들 때, 수량도 받아야 하기 때문에 파라미터로 request 가 필요하다
         cartItemRepository.save(request.toEntity(member, productItem));
