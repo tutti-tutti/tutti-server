@@ -24,7 +24,7 @@ public class Member extends BaseEntity {
     @Column
     private String socialAccessToken;
 
-    @Column(length = 50)
+    @Column
     private String password;
 
     @Column(nullable = false, length = 30)
