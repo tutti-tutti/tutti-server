@@ -9,8 +9,10 @@ import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Transactional
@@ -53,5 +55,15 @@ public class CartServiceImpl implements CartService {
 
         // 장바구니 상품 엔티티를 만들 때, 수량도 받아야 하기 때문에 파라미터로 request 가 필요하다
         cartItemRepository.save(request.toEntity(member, productItem));
+    }
+
+    @Override
+    @Transactional
+    public void removeCartItem(Long cartItemId, Long memberId) {
+        cartItemRepository.findByIdAndMemberIdAndDeleteStatusFalse(cartItemId, memberId)
+                .ifPresentOrElse(BaseEntity::delete,
+                        () -> {
+                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "권한이 없습니다.");
+                        });
     }
 }

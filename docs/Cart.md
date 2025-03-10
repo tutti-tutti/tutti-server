@@ -13,10 +13,11 @@
     -[X] 사용자가 동일 상품을 추가할 경우, "장바구니에 동일한 상품이 있습니다. 장바구니에 추가하시겠습니까?" 메세지를 리턴하고 동의한다면 old_product 가
      new_product 로 교체된다.(PUT)
 3. (DELETE) 사용자는 상품을 장바구니에 제거할 수 있다.
-    -[ ] 회원이 장바구니 상품의 삭제(버튼)을 클릭하면, 단일 CartItem을 삭제한다.
-    -[ ] request: member의 인증 정보(-> 목록 조회 때문에), cartItemId
-    -[ ] 해당 상품의 delete_status=true로 update 한다.
-    -[ ] response: 없다.
+    -[ ] 회원이 장바구니 상품의 삭제(버튼) api를 요청하면, delete_status=false인 단일 CartItem을 delete_status=true로 업데이트
+     한다.
+    -[X] request: member의 인증 정보(-> 목록 조회 때문에), cartItemId
+    -[X] 해당 상품의 delete_status=true로 update 한다.
+    -[X] response: 없다.
     -[ ] delete_status=true 인 CartItem의 장기간 보관 여부에 대해 고민해볼 것
 4. (UPDATE) 사용자는 각 상품의 구매 수량을 자유롭게 수정할 수 있다. ---> API가 필요없을지도?
     -[ ] 회원이 장바구니에 담긴 상품의 수량을 수정하고 변경(버튼)를 클릭하면 수량이 변경되도록 한다.
