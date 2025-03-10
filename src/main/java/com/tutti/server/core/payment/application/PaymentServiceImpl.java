@@ -9,10 +9,9 @@ import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.payment.payload.PaymentRequest;
 import com.tutti.server.core.payment.payload.PaymentResponse;
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +33,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         // 기존 결제 여부 확인하는
         Optional<Payment> existingPayment = paymentRepository.findByOrder(order);
-        if (existingPayment.isPresent() && existingPayment.get().getPaymentStatus() == PaymentStatus.PAYMENT_COMPLETED) {
+        if (existingPayment.isPresent()
+                && existingPayment.get().getPaymentStatus() == PaymentStatus.PAYMENT_COMPLETED) {
             throw new IllegalStateException("이미 결제가 완료된 주문입니다.");
         }
 
@@ -53,6 +53,11 @@ public class PaymentServiceImpl implements PaymentService {
 
         Payment savedPayment = paymentRepository.save(payment);
 
-        return new PaymentResponse(savedPayment.getId(), savedPayment.getPaymentStatus());
+        return new PaymentResponse(savedPayment.getId(),
+                savedPayment.getPaymentStatus(),
+                savedPayment.getOrderName(),
+                savedPayment.getAmount(),
+                savedPayment.getOrder().getId(),
+                savedPayment.getCreatedAt());
     }
 }

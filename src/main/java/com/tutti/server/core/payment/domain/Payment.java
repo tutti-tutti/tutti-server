@@ -4,13 +4,20 @@ package com.tutti.server.core.payment.domain;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.support.entity.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -42,13 +49,13 @@ public class Payment extends BaseEntity {
     private Order order; // 주문 id
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_method_id", nullable = false)
+    @JoinColumn(name = "payment_method_id") // 결제 요청이 왔을 때는 몰라도 됨.
     private PaymentMethod paymentMethod; // 결제 수단 id
 
     @Builder
     public Payment(String orderName, int amount, PaymentStatus paymentStatus,
-                   String tossPaymentKey, Member member,
-                   Order order, PaymentMethod paymentMethod) {
+            String tossPaymentKey, Member member,
+            Order order, PaymentMethod paymentMethod) {
         this.orderName = orderName;
         this.amount = amount;
         this.paymentStatus = paymentStatus;
@@ -58,7 +65,7 @@ public class Payment extends BaseEntity {
         this.paymentMethod = paymentMethod;
     }
 
-    
+
     // 결제 승인 후 PaymentKey 저장하는 방식으로 변경.
     public void completePayment(String tossPaymentKey) {
         if (this.paymentStatus == PaymentStatus.PAYMENT_COMPLETED) {
