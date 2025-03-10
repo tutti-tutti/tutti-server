@@ -23,7 +23,7 @@ public record CartItemRequest(
         return CartItem.builder()
                 .member(member)
                 .productItem(productItem)
-                .option(productItem.getOptions())
+                .productItemOption(productItem.getOptions())
                 .productName(productItem.getProduct().getName())
                 .productImgUrl(productItem.getProduct().getTitleUrl())
                 .quantity(quantity)

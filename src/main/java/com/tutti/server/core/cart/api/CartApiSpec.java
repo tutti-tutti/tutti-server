@@ -14,4 +14,7 @@ public interface CartApiSpec {
 
     @Operation(summary = "장바구니 상품 추가")
     public void addCartItem(Long memberId, CartItemRequest request);
+
+    @Operation(summary = "장바구니 상품 삭제")
+    public void removeCartItem(Long memberId, Long cartItemId);
 }

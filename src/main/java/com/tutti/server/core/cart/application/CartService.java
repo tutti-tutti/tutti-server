@@ -11,4 +11,6 @@ public interface CartService {
     public void addCartItem(Long memberId, CartItemRequest request);
 
     public void createCartItem(Long memberId, CartItemRequest request);
+
+    public void removeCartItem(Long cartItemId, Long memberId);
 }

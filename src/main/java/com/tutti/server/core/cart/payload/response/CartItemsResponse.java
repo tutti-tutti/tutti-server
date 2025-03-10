@@ -19,7 +19,7 @@ public record CartItemsResponse(
         // 이 빌더는 CartItemsResponse 의 빌더
         return CartItemsResponse.builder()
                 .cartItemId(cartItem.getId())
-                .option(cartItem.getOption())
+                .option(cartItem.getProductItemOption())
                 .productItemName(cartItem.getProductName())
                 .productImgUrl(cartItem.getProductImgUrl())
                 .quantity(cartItem.getQuantity())

@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +23,7 @@ public class CartApi implements CartApiSpec {
 
     @Override
     @GetMapping
-    public List<CartItemsResponse> getCartItems(Long memberId) {
+    public List<CartItemsResponse> getCartItems(@RequestBody Long memberId) {
         return cartService.getCartItems(memberId);
     }
 
@@ -31,5 +33,10 @@ public class CartApi implements CartApiSpec {
         cartService.addCartItem(memberId, request);
     }
 
-
+    @Override
+    @PatchMapping("/{cartItemId}")
+    public void removeCartItem(@RequestBody Long memberId,
+            @PathVariable("cartItemId") Long cartItemId) {
+        cartService.removeCartItem(memberId, cartItemId);
+    }
 }
