@@ -4,20 +4,13 @@ package com.tutti.server.core.payment.domain;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.support.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -35,12 +28,9 @@ public class Payment extends BaseEntity {
     @Column(nullable = false)
     private PaymentStatus paymentStatus;
 
-    @Column(nullable = false)
-    private int paidAmount;
-
     private LocalDateTime completedAt;
 
-    @Column(nullable = false)
+    @Column
     private String tossPaymentKey; // tossPaymentsKey
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -57,23 +47,25 @@ public class Payment extends BaseEntity {
 
     @Builder
     public Payment(String orderName, int amount, PaymentStatus paymentStatus,
-            int paidAmount, String tossPaymentKey, Member member,
-            Order order, PaymentMethod paymentMethod) {
+                   String tossPaymentKey, Member member,
+                   Order order, PaymentMethod paymentMethod) {
         this.orderName = orderName;
         this.amount = amount;
         this.paymentStatus = paymentStatus;
-        this.paidAmount = paidAmount;
         this.tossPaymentKey = tossPaymentKey;
         this.member = member;
         this.order = order;
         this.paymentMethod = paymentMethod;
     }
 
-    public void completePayment() {
+    
+    // 결제 승인 후 PaymentKey 저장하는 방식으로 변경.
+    public void completePayment(String tossPaymentKey) {
         if (this.paymentStatus == PaymentStatus.PAYMENT_COMPLETED) {
             throw new IllegalStateException("이미 결제가 완료된 주문입니다.");
         }
         this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;
+        this.tossPaymentKey = tossPaymentKey;
         this.completedAt = LocalDateTime.now();
     }
 }
