@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CartService {
 
-    List<CartItemsResponse> getCartItems(Long memberId);
+    public List<CartItemsResponse> getCartItems(Long memberId);
 
     public void addCartItem(Long memberId, CartItemRequest request);
 
