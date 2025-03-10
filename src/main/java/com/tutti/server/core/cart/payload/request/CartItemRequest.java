@@ -19,9 +19,11 @@ public record CartItemRequest(
 ) {
 
     public CartItem toEntity(Member member, ProductItem productItem) {
+        // 이 빌더는 CartItem 의 빌더
         return CartItem.builder()
                 .member(member)
                 .productItem(productItem)
+                .option(productItem.getOptions())
                 .productName(productItem.getProduct().getName())
                 .productImgUrl(productItem.getProduct().getTitleUrl())
                 .quantity(quantity)

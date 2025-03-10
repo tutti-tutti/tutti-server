@@ -7,6 +7,7 @@ import lombok.Builder;
 public record CartItemsResponse(
 
         Long cartItemId,
+        String option,
         String productItemName,
         String productImgUrl,
         int quantity,
@@ -15,8 +16,10 @@ public record CartItemsResponse(
 ) {
 
     public static CartItemsResponse fromEntity(CartItem cartItem) {
+        // 이 빌더는 CartItemsResponse 의 빌더
         return CartItemsResponse.builder()
                 .cartItemId(cartItem.getId())
+                .option(cartItem.getOption())
                 .productItemName(cartItem.getProductName())
                 .productImgUrl(cartItem.getProductImgUrl())
                 .quantity(cartItem.getQuantity())
