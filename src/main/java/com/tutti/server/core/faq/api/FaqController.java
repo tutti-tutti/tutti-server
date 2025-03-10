@@ -21,6 +21,7 @@ public class FaqController {
     @Operation(summary = "FAQ 카테고리 목록 조회", description = "FAQ에서 사용되는 카테고리 목록을 반환합니다.")
     @GetMapping("/categories")
     public ResponseEntity<List<String>> getCategories() {
-        return ResponseEntity.ok(faqService.getCategories());
+        return ResponseEntity.ok(
+            faqService.getCategories());// faqService.getCategories() -> faqCategoryRepository.findDistinctMainCategories()
     }
 }
