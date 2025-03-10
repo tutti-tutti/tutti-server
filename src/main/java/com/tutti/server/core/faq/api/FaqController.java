@@ -3,6 +3,7 @@ package com.tutti.server.core.faq.api;
 import com.tutti.server.core.faq.application.FaqService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,7 @@ public class FaqController {
 
     @Operation(summary = "FAQ 카테고리 목록 조회", description = "FAQ에서 사용되는 카테고리 목록을 반환합니다.")
     @GetMapping("/categories")
-    public ResponseEntity<Object> getCategories() {
+    public ResponseEntity<List<String>> getCategories() {
         return ResponseEntity.ok(faqService.getCategories());
     }
 }

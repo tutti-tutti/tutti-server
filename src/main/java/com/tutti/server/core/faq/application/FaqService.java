@@ -2,13 +2,11 @@ package com.tutti.server.core.faq.application;
 
 import com.tutti.server.core.faq.infrastructure.FaqCategoryRepository;
 import java.util.List;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Builder
 @RequiredArgsConstructor
 public class FaqService {
 
