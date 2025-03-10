@@ -29,6 +29,7 @@ public class CartItem extends BaseEntity {
     @JoinColumn(name = "product_item_id", nullable = false)
     private ProductItem productItem;
 
+    private String option;
     private String productName;
     private String productImgUrl;
 
@@ -39,10 +40,11 @@ public class CartItem extends BaseEntity {
     private boolean soldOut;
 
     @Builder
-    public CartItem(Member member, ProductItem productItem, String productName,
+    public CartItem(Member member, ProductItem productItem, String option, String productName,
             String productImgUrl, int quantity, int price, boolean soldOut) {
         this.member = member;
         this.productItem = productItem;
+        this.option = option;
         this.productName = productName;
         this.productImgUrl = productImgUrl;
         this.quantity = quantity;

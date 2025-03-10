@@ -2,10 +2,12 @@ package com.tutti.server.core.cart.application;
 
 import com.tutti.server.core.cart.infrastructure.CartItemRepository;
 import com.tutti.server.core.cart.payload.request.CartItemRequest;
+import com.tutti.server.core.cart.payload.response.CartItemsResponse;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,15 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepository cartItemRepository;
     private final MemberRepository memberRepository;
     private final ProductItemRepository productItemRepository;
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CartItemsResponse> getCartItems(Long memberId) {
+        return cartItemRepository.findAllByMemberIdAndDeleteStatusFalse(memberId)
+                .stream()
+                .map(CartItemsResponse::fromEntity)
+                .toList();
+    }
 
     @Override
     @Transactional
