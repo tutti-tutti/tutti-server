@@ -33,9 +33,19 @@ public class MemberService {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
         }
 
-        // 4. 비밀번호 해싱 후 저장
+        // 4. 이메일 인증 여부 확인
+        var verificationCode = verificationCodeRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("이메일 인증을 완료해야 회원가입이 가능합니다."));
+
+        if (!verificationCode.isVerified()) {
+            throw new IllegalArgumentException("이메일 인증을 완료해야 회원가입이 가능합니다.");
+        }
+
+        // 5. 비밀번호 해싱 후 저장
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         Member member = Member.createEmailMember(request.getEmail(), encodedPassword);
+
+        member.verifyEmail();
         memberRepository.save(member);
     }
 }

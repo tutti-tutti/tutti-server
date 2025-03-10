@@ -28,10 +28,6 @@ public class AuthService {
             throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
         }
 
-        if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
-
         // 3. 계정 상태 확인
         if (member.getMemberStatus() == MemberStatus.WITHDRAWN) {
             throw new IllegalArgumentException("탈퇴한 계정입니다.");

@@ -1,6 +1,8 @@
 package com.tutti.server.core.member.service;
 
+import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.domain.VerificationCode;
+import com.tutti.server.core.member.repository.MemberRepository;
 import com.tutti.server.core.member.repository.VerificationCodeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import java.util.Random;
 public class EmailVerificationService {
     private final VerificationCodeRepository verificationCodeRepository;
     private final JavaMailSender mailSender;
+    private final MemberRepository memberRepository;
 
     private String generateVerificationCode() {
         return String.valueOf(100000 + new Random().nextInt(900000));
@@ -45,10 +48,19 @@ public class EmailVerificationService {
 
         if (verificationCode.isExpired() || !verificationCode.getVerificationCode().equals(code)) {
             throw new IllegalArgumentException("인증 코드가 올바르지 않거나 만료되었습니다.");
+
+
         }
 
         verificationCode.verify();
         verificationCodeRepository.save(verificationCode);
+
+        //문제 상황 -> 현재 member 테이블에 정보 없음
+//        Member member = memberRepository.findByEmail(email)
+////                .orElseThrow(() -> new IllegalArgumentException("해당 이메일의 사용자가 존재하지 않습니다."));
+////
+////        member.verifyEmail();
+////        memberRepository.save(member);
         return true;
     }
 }
