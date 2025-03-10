@@ -47,5 +47,6 @@ public class MemberService {
 
         member.verifyEmail();
         memberRepository.save(member);
+        //추후 role 추가 예정 -> 고도화
     }
 }

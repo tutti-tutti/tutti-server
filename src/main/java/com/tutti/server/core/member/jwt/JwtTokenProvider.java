@@ -1,4 +1,4 @@
-package com.tutti.server.core.member.security;
+package com.tutti.server.core.member.jwt;
 
 
 import io.jsonwebtoken.*;

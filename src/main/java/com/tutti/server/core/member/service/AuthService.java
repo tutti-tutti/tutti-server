@@ -4,7 +4,7 @@ import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.domain.MemberStatus;
 import com.tutti.server.core.member.dto.LoginRequest;
 import com.tutti.server.core.member.repository.MemberRepository;
-import com.tutti.server.core.member.security.JwtTokenProvider;
+import com.tutti.server.core.member.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

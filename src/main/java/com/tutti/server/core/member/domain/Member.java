@@ -77,6 +77,18 @@ public class Member extends BaseEntity {
         return "user" + System.currentTimeMillis(); // 예외 처리
     }
 
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
+//
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
+//
+//    public void setMemberStatus(MemberStatus memberStatus) {
+//        this.memberStatus = memberStatus;
+//    }
+
     public static Member createEmailMember(String email, String password) {
         return Member.builder()
                 .email(email)
@@ -96,5 +108,7 @@ public class Member extends BaseEntity {
     public void verifyEmail() {
         this.isEmailVerified = true;
     }
+
+
 
 }
