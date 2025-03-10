@@ -88,6 +88,7 @@ public class Faq extends BaseEntity {
 
     // 삭제 처리
     public void markAsDeleted() {
+        super.delete();
         this.deletedAt = LocalDateTime.now();
     }
 

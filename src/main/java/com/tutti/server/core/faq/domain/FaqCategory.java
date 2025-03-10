@@ -5,15 +5,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "faq_categories")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class FaqCategory extends BaseEntity {
 
-    //카테고리
     @Column(name = "main_category", nullable = false, length = 30)
     private String mainCategory;
 
@@ -22,4 +23,9 @@ public class FaqCategory extends BaseEntity {
 
     @Column(length = 100)
     private String description;
+
+    public void FaqCategoryResponse(FaqCategory category) {
+        this.mainCategory = category.getMainCategory();
+        this.subCategory = category.getSubCategory();
+    }
 }
