@@ -7,9 +7,9 @@
 **Controller**: `FaqController`  
 **Endpoint**: `GET /api/faqs/categories`
 
-- [ ] 사용자가 FAQ에서 사용 가능한 카테고리 목록을 조회할 수 있다.
-- [ ] **Request**: 없음
-- [ ] **Response**: 등록된 모든 카테고리 목록을 반환한다.
+- [X]  사용자가 FAQ에서 사용 가능한 카테고리 목록을 조회할 수 있다.
+- [X] **Request**: 없음
+- [X] **Response**: 등록된 모든 카테고리 목록을 반환한다.
 
 ---
 
