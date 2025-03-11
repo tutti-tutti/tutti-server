@@ -36,13 +36,18 @@ public class ProductItem extends BaseEntity {
   @Comment("색상=Red, 사이즈=S")
   private String options;
 
+  // 품절 여부 column 추가
+  @Column(name = "is_soldout")
+  private boolean isSoldOut;
+
   // 필수 필드만 포함한 빌더 패턴
   @Builder
-  public ProductItem(Product product, Integer originalPrice, Integer sellingPrice, String options) {
+  public ProductItem(Product product, Integer originalPrice, Integer sellingPrice, String options,
+      boolean isSoldOut) {
     this.product = product;
     this.originalPrice = originalPrice;
     this.sellingPrice = sellingPrice;
     this.options = options;
-
+    this.isSoldOut = isSoldOut;
   }
 }
