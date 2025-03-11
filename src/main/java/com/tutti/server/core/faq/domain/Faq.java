@@ -88,11 +88,20 @@ public class Faq extends BaseEntity {
 
     // 삭제 처리
     public void markAsDeleted() {
+        super.delete();
         this.deletedAt = LocalDateTime.now();
     }
 
     // 현재 공개 여부 확인.
     public boolean isSameViewStatus(Boolean isView) {
         return Boolean.TRUE.equals(this.isView) == Boolean.TRUE.equals(isView);
+    }
+
+    public String getCategoryName() {
+        if (faqCategory == null) {
+            return "카테고리 없음";
+        }
+        return faqCategory.getMainCategory() + (faqCategory.getSubCategory() != null ? " > "
+            + faqCategory.getSubCategory() : "");
     }
 }

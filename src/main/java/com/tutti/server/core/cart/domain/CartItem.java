@@ -29,20 +29,30 @@ public class CartItem extends BaseEntity {
     @JoinColumn(name = "product_item_id", nullable = false)
     private ProductItem productItem;
 
+    private String productItemOption;
+    private String productName;
+    private String productImgUrl;
+
     @Column(columnDefinition = "integer default 1")
     private int quantity;
 
     private int price;
-
     private boolean soldOut;
 
     @Builder
-    public CartItem(Member member, ProductItem productItem, int quantity, int price,
-            boolean soldOut) {
+    public CartItem(Member member, ProductItem productItem, String productItemOption, String productName,
+            String productImgUrl, int quantity, int price, boolean soldOut) {
         this.member = member;
         this.productItem = productItem;
+        this.productItemOption = productItemOption;
+        this.productName = productName;
+        this.productImgUrl = productImgUrl;
         this.quantity = quantity;
         this.price = price;
         this.soldOut = soldOut;
+    }
+
+    public void changeQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
