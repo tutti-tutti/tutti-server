@@ -1,19 +1,22 @@
-package com.tutti.server.core.member.controller;
+package com.tutti.server.core.member.api;
 
-import com.tutti.server.core.member.dto.SignupRequest;
-import com.tutti.server.core.member.service.MemberService;
+import com.tutti.server.core.member.application.MemberService;
+import com.tutti.server.core.member.payload.SignupRequest;
+import jakarta.validation.Valid;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
-import java.util.Collections;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/members")
 @RequiredArgsConstructor
-public class MemberController {
+public class MemberApi {
+
     private final MemberService memberService;
 
     // 회원가입 API

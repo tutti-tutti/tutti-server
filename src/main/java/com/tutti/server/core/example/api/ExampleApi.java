@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/examples")
 public class ExampleApi implements ExampleApiSpec {
 
-    @GetMapping
-    public void get() {
+        @GetMapping
+        public void get() {
 
     }
 

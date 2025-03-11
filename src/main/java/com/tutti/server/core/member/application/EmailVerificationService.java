@@ -1,21 +1,21 @@
-package com.tutti.server.core.member.service;
+package com.tutti.server.core.member.application;
 
-import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.domain.VerificationCode;
-import com.tutti.server.core.member.repository.MemberRepository;
-import com.tutti.server.core.member.repository.VerificationCodeRepository;
+import com.tutti.server.core.member.infrastructure.MemberRepository;
+import com.tutti.server.core.member.infrastructure.VerificationCodeRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.Random;
 @Transactional
 @Service
 @RequiredArgsConstructor
 public class EmailVerificationService {
+
     private final VerificationCodeRepository verificationCodeRepository;
     private final JavaMailSender mailSender;
     private final MemberRepository memberRepository;
@@ -28,7 +28,8 @@ public class EmailVerificationService {
         verificationCodeRepository.deleteByEmail(email); // 기존 인증번호 삭제 후 새로 발송
 
         String verificationCode = generateVerificationCode();
-        VerificationCode newCode = new VerificationCode(email, verificationCode, LocalDateTime.now().plusMinutes(10));
+        VerificationCode newCode = new VerificationCode(email, verificationCode,
+                LocalDateTime.now().plusMinutes(10));
         verificationCodeRepository.save(newCode);
 
         sendEmail(email, verificationCode);

@@ -1,26 +1,26 @@
-package com.tutti.server.core.member.service;
+package com.tutti.server.core.member.application;
 
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.domain.MemberStatus;
-import com.tutti.server.core.member.dto.LoginRequest;
-import com.tutti.server.core.member.repository.MemberRepository;
+import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.member.jwt.JwtTokenProvider;
+import com.tutti.server.core.member.payload.LoginRequest;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
     public Map<String, String> login(LoginRequest request) {
         // 1. 이메일 존재 여부 확인
-        Member member = memberRepository.findByEmail(request.getEmail())
+        Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("이메일이 존재하지 않습니다."));
 
         // 2. 이메일 인증 여부 확인
@@ -37,7 +37,7 @@ public class AuthService {
         }
 
         // 4. 비밀번호 검증
-        if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+        if (!passwordEncoder.matches(request.password(), member.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 

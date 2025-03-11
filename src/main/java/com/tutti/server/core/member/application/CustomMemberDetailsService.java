@@ -1,11 +1,10 @@
-package com.tutti.server.core.member.service;
+package com.tutti.server.core.member.application;
 
-import com.tutti.server.core.member.domain.Member;
-import com.tutti.server.core.member.repository.MemberRepository;
+import com.tutti.server.core.member.infrastructure.MemberRepository;
+import com.tutti.server.core.member.payload.CustomMemberDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import com.tutti.server.core.member.dto.CustomMemberDetails;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,7 +1,5 @@
 package com.tutti.server.core.member.jwt;
 
-import com.tutti.server.core.member.domain.Member;
-import com.tutti.server.core.member.dto.CustomMemberDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +20,8 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
         // ✅ 요청에서 Authorization 헤더 가져오기
         String authorization = request.getHeader("Authorization");
 

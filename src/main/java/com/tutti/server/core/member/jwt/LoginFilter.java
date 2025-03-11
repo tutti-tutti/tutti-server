@@ -1,8 +1,8 @@
 package com.tutti.server.core.member.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tutti.server.core.member.dto.CustomMemberDetails;
-import com.tutti.server.core.member.dto.LoginRequest;
+import com.tutti.server.core.member.payload.CustomMemberDetails;
+import com.tutti.server.core.member.payload.LoginRequest;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,13 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Map;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private final ObjectMapper objectMapper= new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final JWTUtil jwtUtil;
 
     public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
@@ -32,14 +30,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request,
+            HttpServletResponse response) throws AuthenticationException {
         try {
             // JSON 요청을 LoginRequest로 변환
             LoginRequest loginRequest = objectMapper.readValue(request.getInputStream(),
                     LoginRequest.class);
 
-            String username = loginRequest.getEmail();  // JSON에서 email 가져오기
-            String password = loginRequest.getPassword();
+            String username = loginRequest.email();  // JSON에서 email 가져오기
+            String password = loginRequest.password();
 
 //            System.out.println("로그인 시도: email = " + username);
 
@@ -65,7 +64,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨)
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException{
+    protected void successfulAuthentication(HttpServletRequest request,
+            HttpServletResponse response, FilterChain chain, Authentication authentication)
+            throws IOException {
         // ✅ CustomMemberDetails로 캐스팅 (Member 기반 인증)
         CustomMemberDetails customMemberDetails = (CustomMemberDetails) authentication.getPrincipal();
 
@@ -98,7 +99,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     //로그인 실패시 실행하는 메소드
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+            HttpServletResponse response, AuthenticationException failed) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
