@@ -1,4 +1,4 @@
-package com.tutti.server.global.exception;
+package com.tutti.server.core.common.exception;
 
 public record ErrorResponse(String errorCode, int status, String message) {
 

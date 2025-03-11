@@ -1,4 +1,4 @@
-package com.tutti.server.global.exception;
+package com.tutti.server.core.common.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
