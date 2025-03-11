@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -24,10 +25,12 @@ public interface FaqRepository extends JpaRepository<Faq, Long> {
     Page<Faq> findByDeleteStatusFalseAndIsViewTrue(Pageable pageable);
 
     // 인기 FAQ 조회 (삭제되지 않고, isView = true인 데이터만, 조회수 기준 정렬)
-    @Query("SELECT f FROM Faq f WHERE f.deleteStatus = false AND f.isView = true ORDER BY f.viewCnt DESC")
+    @Query("SELECT f FROM Faq f WHERE f.deletedAt IS NULL AND f.isView = true ORDER BY f.viewCnt DESC")
+    @EntityGraph(attributePaths = {"faqCategory"})
     List<Faq> findTopFaqs(Pageable pageable);
 
     // 특정 ID의 단일 FAQ 조회 (삭제되지 않고, isView = true인 데이터만)
     @Query("SELECT f FROM Faq f WHERE f.id = :faqId AND f.deleteStatus = false AND f.isView = true")
     Optional<Faq> findByIdAndDeleteStatusFalseAndIsViewTrue(Long faqId);
+
 }
