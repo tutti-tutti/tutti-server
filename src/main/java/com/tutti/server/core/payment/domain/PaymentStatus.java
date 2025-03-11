@@ -6,5 +6,13 @@ public enum PaymentStatus {
     PAYMENT_APPROVED,       // 결제 승인 (PG사에서 결제 완료 응답)
     PAYMENT_FAILED,         // 결제 실패 (PG사 결제 실패 응답)
     PAYMENT_CANCELED,       // 결제 취소 (PG사에서 취소 완료 응답)
-    PAYMENT_COMPLETED       // 결제 완료 (PG사에서 결제 완료 응답)
+    PAYMENT_COMPLETED;       // 결제 완료 (PG사에서 결제 완료 응답)
+
+    public static PaymentStatus fromString(String value) {
+        try {
+            return PaymentStatus.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("유효하지 않은 결제 상태: " + value);
+        }
+    }
 }
