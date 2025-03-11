@@ -16,5 +16,4 @@ public interface FaqCategoryRepository extends JpaRepository<FaqCategory, Long> 
 
     @Query("SELECT new com.tutti.server.core.faq.payload.response.FaqCategoryResponse(f.id, f.mainCategory, f.subCategory, f.description) FROM FaqCategory f")
     List<FaqCategoryResponse> findAllCategoriesAsDto();
-
 }

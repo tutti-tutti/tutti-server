@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public record FaqCategoryResponse(
     @Schema(description = "FAQ 카테고리 ID", example = "1")
-    long id,
+    Long id,
 
     @Schema(description = "메인 카테고리", example = "배송 관련")
     String mainCategory,

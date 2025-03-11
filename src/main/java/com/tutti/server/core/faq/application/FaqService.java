@@ -4,19 +4,14 @@ import com.tutti.server.core.faq.infrastructure.FaqCategoryRepository;
 import com.tutti.server.core.faq.infrastructure.FaqRepository;
 import com.tutti.server.core.faq.payload.response.FaqResponse;
 import java.util.List;
-import java.util.stream.Collectors;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
-@Builder
 @RequiredArgsConstructor
-
 public class FaqService {
 
     private final FaqCategoryRepository faqCategoryRepository;
@@ -31,14 +26,14 @@ public class FaqService {
     }
 
     /**
-     * FAQ 조회수 상위 10개 (삭제되지 않고 isView가 true인 데이터만)
+     * FAQ 조회수 상위 N개 (삭제되지 않고 isView가 true인 데이터만)
      */
+    @Transactional(readOnly = true)
     public List<FaqResponse> getTopFaqs(int limit) {
         Pageable pageable = PageRequest.of(0, limit);
         return faqRepository.findTopFaqs(pageable)
             .stream()
             .map(FaqResponse::fromEntity)
-            .collect(Collectors.toList());
+            .toList(); // Java 16부터 사용 가능
     }
-
 }
