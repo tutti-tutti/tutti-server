@@ -8,6 +8,9 @@ import com.tutti.server.core.payment.domain.PaymentStatus;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.payment.payload.PaymentRequest;
 import com.tutti.server.core.payment.payload.PaymentResponse;
+import com.tutti.server.global.exception.OrderNotFoundException;
+import com.tutti.server.global.exception.PaymentAlreadyCompletedException;
+import com.tutti.server.global.exception.PaymentAmountMismatch;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +27,9 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentResponse requestPayment(PaymentRequest request) {
 
-        // 주문 정보 확인
+        // 주문 정보 확인(이미 있으면 예외처리)
         Order order = orderRepository.findById(request.orderId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 주문을 찾을 수 없습니다"));
+                .orElseThrow(OrderNotFoundException::new);
 
         // 주문한 회원 가지고 오기
         Member member = order.getMember();
@@ -35,12 +38,12 @@ public class PaymentServiceImpl implements PaymentService {
         Optional<Payment> existingPayment = paymentRepository.findByOrder(order);
         if (existingPayment.isPresent()
                 && existingPayment.get().getPaymentStatus() == PaymentStatus.PAYMENT_COMPLETED) {
-            throw new IllegalStateException("이미 결제가 완료된 주문입니다.");
+            throw new PaymentAlreadyCompletedException();
         }
 
         // 주문 금액과 결제 요청 금액이 동일한지
         if (order.getTotalAmount() != request.amount()) {
-            throw new IllegalArgumentException("주문 금액과 결제 금액이 일치하지 않습니다.");
+            throw new PaymentAmountMismatch();
         }
 
         Payment payment = Payment.builder()
