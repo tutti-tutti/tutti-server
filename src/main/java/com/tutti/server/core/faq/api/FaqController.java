@@ -1,6 +1,7 @@
 package com.tutti.server.core.faq.api;
 
 import com.tutti.server.core.faq.application.FaqService;
+import com.tutti.server.core.faq.payload.response.FaqResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -23,5 +24,11 @@ public class FaqController {
     public ResponseEntity<List<String>> getCategories() {
         return ResponseEntity.ok(
             faqService.getCategories());// faqService.getCategories() -> faqCategoryRepository.findDistinctMainCategories()
+    }
+
+    @Operation(summary = "FAQ 인기 질문 목록 조회", description = "조회수가 가장 높은 상위 10개의 FAQ를 반환합니다.")
+    @GetMapping("/top")
+    public ResponseEntity<List<FaqResponse>> getTopFaqs() {
+        return ResponseEntity.ok(faqService.getTopFaqs(10)); // 상위 10개 FAQ 반환
     }
 }

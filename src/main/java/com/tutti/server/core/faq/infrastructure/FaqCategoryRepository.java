@@ -14,7 +14,6 @@ public interface FaqCategoryRepository extends JpaRepository<FaqCategory, Long> 
     @Query("SELECT DISTINCT f.mainCategory FROM FaqCategory f")
     List<String> findDistinctMainCategories();
 
-    // FaqCategoryResponse DTO로 조회
-    @Query("SELECT new com.tutti.server.core.faq.payload.response.FaqCategoryResponse(f.id, f.mainCategory, f.subCategory) FROM FaqCategory f")
+    @Query("SELECT new com.tutti.server.core.faq.payload.response.FaqCategoryResponse(f.id, f.mainCategory, f.subCategory, f.description) FROM FaqCategory f")
     List<FaqCategoryResponse> findAllCategoriesAsDto();
 }

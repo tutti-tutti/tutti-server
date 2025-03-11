@@ -96,4 +96,12 @@ public class Faq extends BaseEntity {
     public boolean isSameViewStatus(Boolean isView) {
         return Boolean.TRUE.equals(this.isView) == Boolean.TRUE.equals(isView);
     }
+
+    public String getCategoryName() {
+        if (faqCategory == null) {
+            return "카테고리 없음";
+        }
+        return faqCategory.getMainCategory() + (faqCategory.getSubCategory() != null ? " > "
+            + faqCategory.getSubCategory() : "");
+    }
 }
