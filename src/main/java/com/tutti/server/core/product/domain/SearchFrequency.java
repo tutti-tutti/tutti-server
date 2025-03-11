@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,16 +23,17 @@ public class SearchFrequency {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @NotNull
   @Column(name = "search_frequency_id")
   private Long id;
 
-  @Column(nullable = false)
+  @Column(name = "query")
   private String query;
 
-  @Column(nullable = false)
-  private Long frequency = 0L;
+  @Column(name = "frequency")
+  private Long frequency;
 
-  @Builder
+  @Builder(toBuilder = true)
   public SearchFrequency(String query, Long frequency) {
     this.query = query;
     this.frequency = frequency;

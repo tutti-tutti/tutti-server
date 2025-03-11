@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class ProductCategory {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @NotNull
   @Column(name = "category_id")
   private Long id;
 
