@@ -61,7 +61,6 @@ public class Review extends BaseEntity {
             .orderItemId(orderItemId)
             .rating(rating)
             .content(content)
-            // 배열 길이를 체크하여 필요한 만큼만 저장
             .reviewImageUrl1(reviewImages.length > 0 ? reviewImages[0] : null)
             .reviewImageUrl2(reviewImages.length > 1 ? reviewImages[1] : null)
             .reviewImageUrl3(reviewImages.length > 2 ? reviewImages[2] : null)
