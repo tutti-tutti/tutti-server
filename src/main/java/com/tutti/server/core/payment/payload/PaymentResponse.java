@@ -1,18 +1,26 @@
 package com.tutti.server.core.payment.payload;
 
+import com.tutti.server.core.member.domain.Member;
+import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.domain.PaymentStatus;
 import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
-public record PaymentResponse(Long paymentId,
-                              PaymentStatus paymentStatus,
-                              String orderName,
-                              int amount,
-                              Long orderId,
-                              LocalDateTime createdAt) {
-    
+public record PaymentResponse(
+        Long paymentId,
+
+        PaymentStatus paymentStatus,
+
+        String orderName,
+
+        int amount,
+
+        Long orderId,
+
+        LocalDateTime createdAt) {
+
     public static PaymentResponse fromEntity(Payment payment) {
         return PaymentResponse.builder()
                 .paymentId(payment.getId())
@@ -21,6 +29,19 @@ public record PaymentResponse(Long paymentId,
                 .amount(payment.getAmount())
                 .orderId(payment.getOrder().getId())
                 .createdAt(payment.getCreatedAt())
+                .build();
+    }
+
+    // 요청이 들어왔을때 첫 결제가 생성됨.
+    public static Payment createPayment(Order order, Member member, int amount, String orderName) {
+        return Payment.builder()
+                .orderName(orderName)
+                .amount(amount)
+                .paymentStatus(PaymentStatus.PAYMENT_REQUESTED)
+                .tossPaymentKey(null)
+                .member(member)
+                .order(order)
+                .paymentMethod(null)
                 .build();
     }
 
