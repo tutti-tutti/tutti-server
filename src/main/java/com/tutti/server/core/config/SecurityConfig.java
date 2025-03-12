@@ -1,9 +1,13 @@
 package com.tutti.server.core.config;
 
-import com.tutti.server.core.member.jwt.JWTFilter;
-import com.tutti.server.core.member.jwt.JWTUtil;
+//import com.tutti.server.core.member.jwt.JWTFilter;
+//import com.tutti.server.core.member.jwt.JWTUtil;
+//import com.tutti.server.core.member.jwt.LoginFilter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,12 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    private final JWTUtil jwtUtil;
-
-    public SecurityConfig(JWTUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -51,5 +49,24 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+//    //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
+//    private final AuthenticationConfiguration authenticationConfiguration;
+//    private final JWTUtil jwtUtil;
+//
+//    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration,
+//            JWTUtil jwtUtil) {
+//
+//        this.authenticationConfiguration = authenticationConfiguration;
+//        this.jwtUtil = jwtUtil;
+//    }
+
+    //AuthenticationManager Bean 등록
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+            throws Exception {
+
+        return configuration.getAuthenticationManager();
     }
 }

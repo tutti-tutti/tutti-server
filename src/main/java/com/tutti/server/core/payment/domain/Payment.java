@@ -67,4 +67,17 @@ public class Payment extends BaseEntity {
         this.tossPaymentKey = tossPaymentKey;
         this.completedAt = LocalDateTime.now();
     }
+
+    // 요청이 들어왔을때 첫 결제가 생성됨.
+    public static Payment createPayment(Order order, Member member, int amount, String orderName) {
+        return Payment.builder()
+                .orderName(orderName)
+                .amount(amount)
+                .paymentStatus(PaymentStatus.PAYMENT_REQUESTED)
+                .tossPaymentKey(null)
+                .member(member)
+                .order(order)
+                .paymentMethod(null)
+                .build();
+    }
 }
