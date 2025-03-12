@@ -26,7 +26,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("api/v1/members/email/verify",
                                 "api/v1/members/email/confirm",
-                                "api/v1/members/signup/email", "/members/login/email")
+                                "api/v1/members/signup/email", "/members/login/email",
+                                "api/v1/payments/request")
                         .permitAll() // ✅ 인증 없이 접근 가능하도록 설정
                         .anyRequest().authenticated() // 나머지는 인증 필요
                 )

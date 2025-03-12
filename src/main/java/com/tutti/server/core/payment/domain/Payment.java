@@ -65,7 +65,6 @@ public class Payment extends BaseEntity {
         this.paymentMethod = paymentMethod;
     }
 
-
     // 결제 승인 후 PaymentKey 저장하는 방식으로 변경.
     public void completePayment(String tossPaymentKey) {
         if (this.paymentStatus == PaymentStatus.PAYMENT_COMPLETED) {
@@ -74,5 +73,18 @@ public class Payment extends BaseEntity {
         this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;
         this.tossPaymentKey = tossPaymentKey;
         this.completedAt = LocalDateTime.now();
+    }
+
+    // 요청이 들어왔을때 첫 결제가 생성됨.
+    public static Payment createPayment(Order order, Member member, int amount, String orderName) {
+        return Payment.builder()
+                .orderName(orderName)
+                .amount(amount)
+                .paymentStatus(PaymentStatus.PAYMENT_REQUESTED)
+                .tossPaymentKey(null)
+                .member(member)
+                .order(order)
+                .paymentMethod(null)
+                .build();
     }
 }

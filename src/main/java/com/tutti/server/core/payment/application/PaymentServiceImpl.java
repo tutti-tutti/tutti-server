@@ -12,7 +12,6 @@ import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.payment.payload.PaymentRequest;
 import com.tutti.server.core.payment.payload.PaymentResponse;
 import jakarta.transaction.Transactional;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,32 +34,22 @@ public class PaymentServiceImpl implements PaymentService {
         Member member = order.getMember();
 
         // 기존 결제 여부 확인하는
-        Optional<Payment> existingPayment = paymentRepository.findByOrder(order);
-        if (existingPayment.isPresent()
-                && existingPayment.get().getPaymentStatus() == PaymentStatus.PAYMENT_COMPLETED) {
-            throw new PaymentAlreadyCompletedException();
-        }
+        paymentRepository.findByOrderId(order.getId())
+                .filter(payment -> payment.getPaymentStatus() == PaymentStatus.PAYMENT_COMPLETED)
+                .ifPresent(payment -> {
+                    throw new PaymentAlreadyCompletedException();
+                });
 
         // 주문 금액과 결제 요청 금액이 동일한지
         if (order.getTotalAmount() != request.amount()) {
             throw new PaymentAmountMismatch();
         }
 
-        Payment payment = Payment.builder()
-                .order(order)
-                .member(member)
-                .amount(request.amount())
-                .orderName(request.orderName())
-                .paymentStatus(PaymentStatus.PAYMENT_REQUESTED)
-                .build();
-
+        //Builder를 Entity에서 처리
+        Payment payment = Payment.createPayment(order, member, request.amount(),
+                request.orderName());
         Payment savedPayment = paymentRepository.save(payment);
 
-        return new PaymentResponse(savedPayment.getId(),
-                savedPayment.getPaymentStatus(),
-                savedPayment.getOrderName(),
-                savedPayment.getAmount(),
-                savedPayment.getOrder().getId(),
-                savedPayment.getCreatedAt());
+        return PaymentResponse.fromEntity(savedPayment);
     }
 }

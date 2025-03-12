@@ -1,9 +1,7 @@
 package com.tutti.server.core.common.exception;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-@Getter
 public class CustomException extends RuntimeException {
 
     private final ErrorCode errorCode;
