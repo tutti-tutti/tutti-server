@@ -18,9 +18,9 @@
 **Controller**: `FaqController`  
 **Endpoint**: `GET /api/faqs/top`
 
-- [ ] 사용자는 FAQ 인기 질문 목록을 조회할 수 있다.
-- [ ] 조회수가 가장 높은 상위 10개의 FAQ를 반환한다.
-- [ ] `isView = true`인 데이터만 반환된다.
+- [X] 사용자는 FAQ 인기 질문 목록을 조회할 수 있다.
+- [X] 조회수가 가장 높은 상위 10개의 FAQ를 반환한다.
+- [X] `isView = true`인 데이터만 반환된다.
 
 ---
 
@@ -29,9 +29,9 @@
 **Controller**: `FaqController`  
 **Endpoint**: `GET /api/faqs`
 
-- [ ] 사용자가 FAQ 목록 조회 API를 요청하면 `isView = true`인 FAQ만 반환해야 한다.
-- [ ] `isView = false`인 데이터는 반환되지 않는다.
-- [ ] **Request**:
+- [X] 사용자가 FAQ 목록 조회 API를 요청하면 `isView = true`인 FAQ만 반환해야 한다.
+- [X] `isView = false`인 데이터는 반환되지 않는다.
+- [X] **Request**:
     - 필수 값 없음
     - 선택적으로 `category`, `subcategory`, `query`를 전달하면 해당 조건에 맞는 FAQ만 조회된다.
     - 기본 페이지 번호: `1`, 기본 페이지 크기: `10`
@@ -57,6 +57,7 @@
 - [ ] 사용자가 FAQ를 조회하면 `viewCnt`가 자동으로 증가해야 한다.
 
 ---
+F
 
 ## **6. (READ) 사용자는 특정 키워드를 포함하는 FAQ를 검색할 수 있다.**
 
