@@ -2,6 +2,7 @@ package com.tutti.server.core.faq.api;
 
 import com.tutti.server.core.faq.application.FaqService;
 import com.tutti.server.core.faq.payload.request.FaqDetailRequest;
+import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
 import com.tutti.server.core.faq.payload.response.FaqListResponse;
 import com.tutti.server.core.faq.payload.response.FaqResponse;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * FAQ 관련 API 컨트롤러
+ * FAQ 관련 API 요청을 처리하는 컨트롤러입니다. FAQ 조회, 검색, 카테고리 조회 등의 기능을 제공합니다.
  */
 @Tag(name = "FAQ", description = "FAQ 관련 API")
 @RestController
@@ -33,9 +34,9 @@ public class FaqController {
     private final FaqService faqService;
 
     /**
-     * FAQ 카테고리 목록 조회
+     * FAQ 카테고리 목록을 조회합니다.
      *
-     * @return 중복 제거된 FAQ 메인 카테고리 목록
+     * @return 중복이 제거된 FAQ 카테고리 목록
      */
     @Operation(summary = "FAQ 카테고리 목록 조회", description = "FAQ에서 사용되는 카테고리 목록을 반환합니다.")
     @GetMapping("/categories")
@@ -44,7 +45,7 @@ public class FaqController {
     }
 
     /**
-     * 조회수가 높은 FAQ 목록 조회
+     * 조회수가 높은 상위 10개의 FAQ를 조회합니다.
      *
      * @return 조회수가 높은 상위 10개의 FAQ 목록
      */
@@ -55,19 +56,19 @@ public class FaqController {
     }
 
     /**
-     * FAQ 목록 조회 (검색어 및 카테고리 필터 적용 가능)
+     * 검색어 및 카테고리 필터를 기준으로 FAQ 목록을 조회합니다.
      *
      * @param request 검색 조건을 포함한 요청 객체
      * @return 검색 조건에 맞는 FAQ 목록
      */
     @Operation(summary = "FAQ 목록 조회", description = "카테고리 및 검색어를 기반으로 FAQ 목록을 조회합니다.")
     @GetMapping
-    public ResponseEntity<FaqListResponse> getFaqs(FaqSearchRequest request) {
+    public ResponseEntity<FaqListResponse> getFaqs(FaqListRequest request) {
         return ResponseEntity.ok(faqService.getFaqs(request));
     }
 
     /**
-     * FAQ 단건 조회
+     * 특정 FAQ를 조회합니다.
      *
      * @param request 조회할 FAQ ID를 포함한 요청 객체
      * @return 조회된 FAQ 정보
@@ -82,4 +83,18 @@ public class FaqController {
     public ResponseEntity<FaqResponse> getFaqById(@RequestBody FaqDetailRequest request) {
         return ResponseEntity.ok(faqService.getFaqById(request.faqId()));
     }
+
+    /**
+     * 특정 키워드를 포함하는 FAQ를 검색합니다.
+     *
+     * @param request 검색 조건을 포함한 요청 객체
+     * @return 검색된 FAQ 목록
+     */
+    @Operation(summary = "FAQ 검색", description = "특정 키워드를 포함하는 FAQ를 검색합니다.")
+    @GetMapping("/search")
+    public ResponseEntity<FaqListResponse> searchFaqs(FaqSearchRequest request) {
+        return ResponseEntity.ok(
+            faqService.searchFaqs(request.query(), request.page(), request.size()));
+    }
+
 }
