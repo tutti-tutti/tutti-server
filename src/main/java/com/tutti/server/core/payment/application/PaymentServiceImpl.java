@@ -48,6 +48,13 @@ public class PaymentServiceImpl implements PaymentService {
 
     // 기존 결제 여부 검증 메서드
     private void validateDuplicatePayment(Long orderId) {
+
+        boolean exists = paymentRepository.existsByOrderId(orderId);
+
+        if (exists) {
+            throw new DomainException(ExceptionType.PAYMENT_ALREADY_PROCESSING);
+        }
+
         paymentRepository.findByOrderId(orderId)
                 .filter(payment -> payment.getPaymentStatus() == PaymentStatus.PAYMENT_COMPLETED)
                 .ifPresent(payment -> {
