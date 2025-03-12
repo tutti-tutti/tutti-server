@@ -4,6 +4,8 @@ package com.tutti.server.core.config;
 //import com.tutti.server.core.member.jwt.JWTUtil;
 //import com.tutti.server.core.member.jwt.LoginFilter;
 
+import com.tutti.server.core.member.jwt.JWTFilter;
+import com.tutti.server.core.member.jwt.JWTUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +21,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final JWTUtil jwtUtil;
+
+    public SecurityConfig(JWTUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
