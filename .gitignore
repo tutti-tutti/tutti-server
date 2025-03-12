@@ -15,6 +15,15 @@ build/
 *.iml
 *.ipr
 out/
+# 테스트 코드는 추적
+!**/src/test/
+!**/src/test/**
+
+# 테스트 결과물은 무시
+**/src/test/**/build/
+**/src/test/**/out/
+**/src/test/**/bin/
+
 !**/src/main/**/out/
 !**/src/test/**/out/
 

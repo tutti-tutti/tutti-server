@@ -1,8 +1,17 @@
 package com.tutti.server.core.member.domain;
+
 import com.tutti.server.core.support.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
-import java.time.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -24,10 +33,10 @@ public class Member extends BaseEntity {
     @Column
     private String socialAccessToken;
 
-    @Column(length = 50)
+    @Column
     private String password;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false)
     private String nickname;
 
     //선택 필드
@@ -84,7 +93,8 @@ public class Member extends BaseEntity {
                 .build();
     }
 
-    public static Member createSocialMember(String socialId, SocialProvider socialProvider, String email) {
+    public static Member createSocialMember(String socialId, SocialProvider socialProvider,
+            String email) {
         return Member.builder()
                 .socialId(socialId)
                 .socialProvider(socialProvider)
