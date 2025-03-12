@@ -1,6 +1,8 @@
 package com.tutti.server.core.faq.api;
 
 import com.tutti.server.core.faq.application.FaqService;
+import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
+import com.tutti.server.core.faq.payload.response.FaqListResponse;
 import com.tutti.server.core.faq.payload.response.FaqResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @Tag(name = "FAQ", description = "FAQ 관련 API")
 @RestController
@@ -30,5 +33,11 @@ public class FaqController {
     @GetMapping("/top")
     public ResponseEntity<List<FaqResponse>> getTopFaqs() {
         return ResponseEntity.ok(faqService.getTopFaqs(10)); // 상위 10개 FAQ 반환
+    }
+
+    @Operation(summary = "FAQ 목록 조회", description = "카테고리 및 검색어를 기반으로 FAQ 목록을 조회합니다.")
+    @GetMapping
+    public ResponseEntity<FaqListResponse> getFaqs(FaqSearchRequest request) {
+        return ResponseEntity.ok(faqService.getFaqs(request));
     }
 }
