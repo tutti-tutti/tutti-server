@@ -43,21 +43,19 @@
 **Controller**: `FaqController`  
 **Endpoint**: `GET /api/faqs/{faqId}`
 
-- [ ] 사용자가 FAQ 단건 조회 API를 요청하면 `isView = true`인 FAQ만 반환해야 한다.
-- [ ] `isView = false`인 데이터는 반환되지 않는다.
-- [ ] 사용자가 FAQ를 조회하면 `viewCnt`가 `1` 증가한다.
+- [X] 사용자가 FAQ 단건 조회 API를 요청하면 `isView = true`인 FAQ만 반환해야 한다.
+- [X] `isView = false`인 데이터는 반환되지 않는다.
+- [X] 사용자가 FAQ를 조회하면 `viewCnt`가 `1` 증가한다.
 
 ---
 
 ## **5. (UPDATE) 사용자는 특정 FAQ의 조회수를 증가시킬 수 있다.**
 
-**Controller**: `FaqController`  
-**Endpoint**: `PATCH /api/faqs/{faqId}/view`
+**Controller**: `FaqController`
 
-- [ ] 사용자가 FAQ를 조회하면 `viewCnt`가 자동으로 증가해야 한다.
+- [X] 사용자가 FAQ를 조회하면 `viewCnt`가 자동으로 증가해야 한다.
 
 ---
-F
 
 ## **6. (READ) 사용자는 특정 키워드를 포함하는 FAQ를 검색할 수 있다.**
 
