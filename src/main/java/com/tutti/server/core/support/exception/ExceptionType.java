@@ -15,7 +15,8 @@ public enum ExceptionType {
 
     ORDER_NOT_FOUND(ExceptionCode.P01, "해당 주문을 찾을 수 없습니다."),
     PAYMENT_AMOUNT_MISMATCH(ExceptionCode.P02, "결제 금액과 주문 금액이 일치하지 않습니다."),
-    PAYMENT_ALREADY_COMPLETED(ExceptionCode.P03, "이미 결제가 완료된 주문입니다.");
+    PAYMENT_ALREADY_COMPLETED(ExceptionCode.P03, "이미 결제가 완료된 주문입니다."),
+    PAYMENT_ALREADY_PROCESSING(ExceptionCode.P04, "이미 결제가 진행 중인 주문입니다.");
 
     private final HttpStatus status;
 

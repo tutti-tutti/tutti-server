@@ -1,5 +1,6 @@
 package com.tutti.server.core.payment.application;
 
+
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.payment.domain.Payment;
@@ -24,19 +25,10 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentResponse requestPayment(PaymentRequest request) {
 
-        // 주문 정보 검증
         Order order = validateOrder(request.orderId());
-
-        // 기존 결제 여부 검증
         validateDuplicatePayment(order.getId());
-
-        // 결제 금액 검증
         validatePaymentAmount(order, request.amount());
-
-        // 결제 객체 생성 및 저장
         Payment savedPayment = createAndSavePayment(order, request);
-
-        // 응답 반환
         return PaymentResponse.fromEntity(savedPayment);
     }
 
@@ -48,6 +40,13 @@ public class PaymentServiceImpl implements PaymentService {
 
     // 기존 결제 여부 검증 메서드
     private void validateDuplicatePayment(Long orderId) {
+
+        boolean exists = paymentRepository.existsByOrderId(orderId);
+
+        if (exists) {
+            throw new DomainException(ExceptionType.PAYMENT_ALREADY_PROCESSING);
+        }
+
         paymentRepository.findByOrderId(orderId)
                 .filter(payment -> payment.getPaymentStatus() == PaymentStatus.PAYMENT_COMPLETED)
                 .ifPresent(payment -> {
