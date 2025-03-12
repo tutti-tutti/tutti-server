@@ -22,6 +22,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+<<<<<<< HEAD
             .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (API 요청을 위해 필요)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("api/v1/members/email/verify",
@@ -35,6 +36,21 @@ public class SecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 // Spring Security 6 방식
             )
+=======
+                .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (API 요청을 위해 필요)
+                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("api/v1/members/email/verify",
+//                                "api/v1/members/email/confirm",
+//                                "api/v1/members/signup/email", "/members/login/email")
+                                .requestMatchers("/**") // ✅ 모든 URL 허용
+                                .permitAll() // ✅ 인증 없이 접근 가능하도록 설정
+                                .anyRequest().authenticated() // 나머지는 인증 필요
+                )
+                .sessionManagement(session -> session
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        // Spring Security 6 방식
+                )
+>>>>>>> 624834235756cb4421f9a49cd5edc83b80121e80
 //                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
 //                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),
 //                        jwtUtil), UsernamePasswordAuthenticationFilter.class) // 커스텀 로그인 필터 적용
