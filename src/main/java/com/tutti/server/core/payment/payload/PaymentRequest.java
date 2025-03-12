@@ -1,5 +1,9 @@
 package com.tutti.server.core.payment.payload;
 
+import com.tutti.server.core.member.domain.Member;
+import com.tutti.server.core.order.domain.Order;
+import com.tutti.server.core.payment.domain.Payment;
+import com.tutti.server.core.payment.domain.PaymentStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,5 +18,18 @@ public record PaymentRequest(
 
         @NotBlank(message = "주문명은 필수입니다.")
         String orderName) {
+
+    // 요청이 들어왔을때 첫 결제가 생성됨.
+    public static Payment createPayment(Order order, Member member, int amount, String orderName) {
+        return Payment.builder()
+                .orderName(orderName)
+                .amount(amount)
+                .paymentStatus(PaymentStatus.PAYMENT_REQUESTED)
+                .tossPaymentKey(null)
+                .member(member)
+                .order(order)
+                .paymentMethod(null)
+                .build();
+    }
 
 }

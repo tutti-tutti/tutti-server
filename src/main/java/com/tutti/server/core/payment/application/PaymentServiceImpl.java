@@ -45,7 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         //Builder를 Entity에서 처리
-        Payment payment = PaymentResponse.createPayment(order, member, request.amount(),
+        Payment payment = PaymentRequest.createPayment(order, member, request.amount(),
                 request.orderName());
         Payment savedPayment = paymentRepository.save(payment);
 
