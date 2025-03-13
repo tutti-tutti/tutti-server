@@ -20,7 +20,7 @@ public record PaymentRequest(
         String orderName) {
 
     // 요청이 들어왔을때 첫 결제가 생성됨.
-    public static Payment createPayment(Order order, Member member, int amount, String orderName) {
+    public static Payment toEntity(Order order, Member member, int amount, String orderName) {
         return Payment.builder()
                 .orderName(orderName)
                 .amount(amount)

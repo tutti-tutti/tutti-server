@@ -63,7 +63,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     // 결제 객체 생성 및 저장 메서드
     private Payment createAndSavePayment(Order order, PaymentRequest request) {
-        Payment payment = PaymentRequest.createPayment(order, order.getMember(), request.amount(),
+        Payment payment = PaymentRequest.toEntity(order, order.getMember(), request.amount(),
                 request.orderName());
         return paymentRepository.save(payment);
     }
