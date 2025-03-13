@@ -4,7 +4,8 @@ import com.tutti.server.core.review.application.ReviewService;
 import com.tutti.server.core.review.domain.Review;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/reviews")
+@RequiredArgsConstructor
 public class ReviewController {
 
-    @Autowired
-    private ReviewService reviewService;
+    private final ReviewService reviewService;
 
     // 리뷰 작성 API
     @PostMapping
@@ -29,10 +30,15 @@ public class ReviewController {
 //            return ResponseEntity.status(401).body("로그인 상태여야 리뷰를 작성할 수 있습니다.");
 //        }
 
-        // 리뷰 작성
-        Review review = reviewService.createReview(//userDetails.getUsername()
-            "testUser", reviewCreateRequest);
-
-        return ResponseEntity.ok("리뷰 작성이 완료되었습니다.");
+        try {
+            // 리뷰 작성
+            Review review = reviewService.createReview("testUser", reviewCreateRequest);
+            return ResponseEntity.ok("리뷰 작성이 완료되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("잘못된 요청입니다: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
+        }
     }
 }

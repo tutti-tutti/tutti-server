@@ -3,6 +3,7 @@ package com.tutti.server.core.review.payload.request;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record ReviewCreateRequest(
     @NotNull(message = "상품 평점은 필수입니다.")
@@ -11,6 +12,7 @@ public record ReviewCreateRequest(
     Integer rating,  // 평점 (1~5)
 
     @NotNull(message = "리뷰 내용은 필수입니다.")
+    @Size(max = 500, message = "리뷰 내용은 500자 이내여야 합니다.")  // 길이 제한 500자
     String content,  // 리뷰 내용
 
     @NotNull(message = "주문 아이템 ID는 필수입니다.")

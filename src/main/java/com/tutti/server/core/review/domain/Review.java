@@ -3,7 +3,6 @@ package com.tutti.server.core.review.domain;
 import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,8 +29,7 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private Integer rating;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     private String content;
 
     // 최대 4개의 리뷰 이미지를 저장할 수 있도록 설정
