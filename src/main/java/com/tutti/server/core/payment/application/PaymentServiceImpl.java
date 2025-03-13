@@ -47,7 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         paymentRepository.findByOrderId(orderId)
-                .filter(payment -> payment.getPaymentStatus() == PaymentStatus.PAYMENT_COMPLETED)
+                .filter(payment -> payment.getPaymentStatus() == PaymentStatus.DONE)
                 .ifPresent(payment -> {
                     throw new DomainException(ExceptionType.PAYMENT_ALREADY_COMPLETED);
                 });

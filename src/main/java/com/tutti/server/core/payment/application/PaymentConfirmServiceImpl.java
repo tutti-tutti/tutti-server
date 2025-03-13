@@ -8,6 +8,8 @@ import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,14 +66,18 @@ public class PaymentConfirmServiceImpl implements PaymentConfirmService {
         int amount = (totalAmount != null) ? totalAmount : 0;
 
 //         결제 상태 업데이트
-        payment.updatePayment(
-                request.paymentKey(), // 결제 키 저장
-                PaymentStatus.valueOf(paymentStatusStr), // Enum 변환
-//                paymentMethodType, // 변환된 PaymentMethod 사용
-                LocalDateTime.parse(approvedAtStr), // 승인 시간 저장
-                amount // 변환된 int 값 사용
-        );
+        // approvedAtStr을 OffsetDateTime으로 파싱한 후 LocalDateTime으로 변환
+        OffsetDateTime offsetDateTime = OffsetDateTime.parse(approvedAtStr,
+                DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        LocalDateTime approvedAt = offsetDateTime.toLocalDateTime();
 
+        // 결제 상태 업데이트
+        payment.updatePayment(
+                request.paymentKey(),
+                PaymentStatus.valueOf(paymentStatusStr),
+                approvedAt,
+                amount
+        );
         paymentRepository.save(payment);
 
         return response; // ✅ JSON 응답 그대로 반환

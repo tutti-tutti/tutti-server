@@ -24,7 +24,7 @@ public record PaymentRequest(
         return Payment.builder()
                 .orderName(orderName)
                 .amount(amount)
-                .paymentStatus(PaymentStatus.DONE)
+                .paymentStatus(PaymentStatus.READY)
                 .tossPaymentKey(null)
                 .member(member)
                 .order(order)

@@ -72,7 +72,7 @@ public class Payment extends BaseEntity {
         this.member = member;
         this.order = order;
         this.paymentMethod = paymentMethod;
-        this.tossOrderId = "MC4xNDg5ODAzMzE4MTk2"; // TODO: 하드코딩 해놓음 일단 테스트 용
+        this.tossOrderId = "MC4zMzc3MDU0MjM4NDA5"; // TODO: 하드코딩 해놓음 일단 테스트 용
     }
 
     // 결제 승인 후 PaymentKey 저장하는 방식으로 변경.
