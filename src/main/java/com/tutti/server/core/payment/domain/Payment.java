@@ -52,10 +52,19 @@ public class Payment extends BaseEntity {
     @JoinColumn(name = "payment_method_id") // 결제 요청이 왔을 때는 몰라도 됨.
     private PaymentMethod paymentMethod; // 결제 수단 id
 
+    @Column(nullable = false)
+    private String tossOrderId; // tossPayment에서 6자 이상 64자이하의 orderId가 필요하나 기존 id 를건들지 않고 만드는 쪽으로 생각중.
+
     @Builder
-    public Payment(String orderName, int amount, PaymentStatus paymentStatus,
-            String tossPaymentKey, Member member,
-            Order order, PaymentMethod paymentMethod) {
+    public Payment(String orderName,
+            int amount,
+            PaymentStatus paymentStatus,
+            String tossPaymentKey,
+            Member member,
+            Order order,
+            PaymentMethod paymentMethod,
+            String tossOrderId
+    ) {
         this.orderName = orderName;
         this.amount = amount;
         this.paymentStatus = paymentStatus;
@@ -63,26 +72,31 @@ public class Payment extends BaseEntity {
         this.member = member;
         this.order = order;
         this.paymentMethod = paymentMethod;
+        this.tossOrderId = "MC4xNDg5ODAzMzE4MTk2"; // TODO: 하드코딩 해놓음 일단 테스트 용
     }
 
     // 결제 승인 후 PaymentKey 저장하는 방식으로 변경.
     public void completePayment(String tossPaymentKey) {
-        if (this.paymentStatus == PaymentStatus.PAYMENT_COMPLETED) {
+        if (this.paymentStatus == PaymentStatus.DONE) {
             throw new IllegalStateException("이미 결제가 완료된 주문입니다.");
         }
-        this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;
+        this.paymentStatus = PaymentStatus.DONE;
         this.tossPaymentKey = tossPaymentKey;
         this.completedAt = LocalDateTime.now();
     }
 
     // Toss 결제 승인 후 상태 업데이트
-    public void updatePaymentInfo(String tossPaymentKey, PaymentStatus paymentStatus,
-            PaymentMethod paymentMethod) {
+    public void updatePayment(
+            String tossPaymentKey,
+            PaymentStatus status,
+//            PaymentMethod method, //TODO ERD 고민좀 해봐야할듯.
+            LocalDateTime completedAt,
+            int amount
+    ) {
         this.tossPaymentKey = tossPaymentKey;
-        this.paymentStatus = paymentStatus;
-        this.paymentMethod = paymentMethod;
-        if (paymentStatus == PaymentStatus.PAYMENT_COMPLETED) {
-            this.completedAt = LocalDateTime.now();
-        }
+        this.paymentStatus = status;
+//        this.paymentMethod = method;
+        this.completedAt = completedAt;
+        this.amount = amount;
     }
 }
