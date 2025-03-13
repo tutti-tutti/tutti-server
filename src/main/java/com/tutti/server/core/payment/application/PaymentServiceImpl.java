@@ -34,8 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     // 주문 정보 검증 메서드
     private Order validateOrder(Long orderId) {
-        return orderRepository.findById(orderId)
-                .orElseThrow(() -> new DomainException(ExceptionType.ORDER_NOT_FOUND));
+        return orderRepository.findOne(orderId);
     }
 
     // 기존 결제 여부 검증 메서드
