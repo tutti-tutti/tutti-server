@@ -1,7 +1,5 @@
 package com.tutti.server.core.payment.application;
 
-import com.tutti.server.core.payment.domain.PaymentMethodType;
-import com.tutti.server.core.payment.domain.PaymentStatus;
 import com.tutti.server.core.payment.infrastructure.PaymentMethodRepository;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
@@ -36,18 +34,18 @@ public class PaymentConfirmServiceImpl implements PaymentConfirmService {
                 .body(new ParameterizedTypeReference<>() {
                 });
 
-        // ✅ Map에서 데이터 추출 (캐스팅 필요)
+        // Map에서 데이터 추출 (캐스팅 필요)
         String paymentStatusStr = (String) response.get("status");
         String paymentMethodTypeStr = (String) response.get("method");
 
-        // ✅ 결제 상태 업데이트
-        payment.updatePayment(
-                request.paymentKey(),
-                PaymentStatus.valueOf(paymentStatusStr), // ✅ Enum 변환
-                paymentMethodRepository.findByMethodType(
-                                PaymentMethodType.valueOf(paymentMethodTypeStr))
-                        .orElseThrow(() -> new IllegalStateException("해당 결제 수단이 존재하지 않습니다."))
-        );
+        // 결제 상태 업데이트
+//        payment.updatePayment(
+//                request.paymentKey(),
+//                PaymentStatus.valueOf(paymentStatusStr), // Enum 변환
+//                paymentMethodRepository.findByMethodType(
+//                                PaymentMethodType.valueOf(paymentMethodTypeStr))
+//                        .orElseThrow(() -> new IllegalStateException("해당 결제 수단이 존재하지 않습니다."))
+//        );
 
         return response; // ✅ JSON 응답 그대로 반환
     }

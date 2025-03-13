@@ -6,5 +6,4 @@ import com.tutti.server.core.payment.payload.PaymentResponse;
 public interface PaymentService {
 
     PaymentResponse requestPayment(PaymentRequest request);
-
 }
