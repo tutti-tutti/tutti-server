@@ -1,6 +1,7 @@
 package com.tutti.server.core.payment.application;
 
-import com.tutti.server.core.payment.domain.Payment;
+import com.tutti.server.core.payment.domain.PaymentMethodType;
+import com.tutti.server.core.payment.domain.PaymentStatus;
 import com.tutti.server.core.payment.infrastructure.PaymentMethodRepository;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
@@ -27,34 +28,28 @@ public class PaymentConfirmServiceImpl implements PaymentConfirmService {
     @Transactional
     public Map<String, Object> confirmPayment(PaymentConfirmRequest request) {
 
-        Map<String, Object> requestData = Map.of(
-                "paymentKey", request.paymentKey(),
-                "orderId", request.orderId(),
-                "amount", request.amount()
-        );
-
-        // Toss 결제 승인 API 호출
         Map<String, Object> response = restClient.post()
                 .uri("https://api.tosspayments.com/v1/payments/confirm")
                 .headers(headers -> headers.setBasicAuth(widgetSecretKey, ""))
-                .body(requestData)
+                .body(request)
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
 
-        Payment payment = paymentRepository.findByTossPaymentKey(request.paymentKey())
-                .orElseThrow(() -> new IllegalStateException("해당 결제에 대한 정보가 없습니다."));
+        // ✅ Map에서 데이터 추출 (캐스팅 필요)
+        String paymentStatusStr = (String) response.get("status");
+        String paymentMethodTypeStr = (String) response.get("method");
 
-//        PaymentConfirmResponse paymentResponse = PaymentConfirmResponse.from(response);
+        // ✅ 결제 상태 업데이트
+        payment.updatePayment(
+                request.paymentKey(),
+                PaymentStatus.valueOf(paymentStatusStr), // ✅ Enum 변환
+                paymentMethodRepository.findByMethodType(
+                                PaymentMethodType.valueOf(paymentMethodTypeStr))
+                        .orElseThrow(() -> new IllegalStateException("해당 결제 수단이 존재하지 않습니다."))
+        );
 
-//        payment.updatePaymentInfo(
-//                request.paymentKey(),
-//                paymentResponse.paymentStatus(),
-//                paymentMethodRepository.findByMethodType(paymentResponse.paymentMethodType())
-//                        .orElseThrow(() -> new IllegalStateException("해당 결제 수단이 존재하지 않습니다."))
-//        );
-
-        return response;
+        return response; // ✅ JSON 응답 그대로 반환
     }
 }
 

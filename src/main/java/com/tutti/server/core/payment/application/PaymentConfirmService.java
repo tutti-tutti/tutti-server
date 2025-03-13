@@ -6,5 +6,5 @@ import java.util.Map;
 public interface PaymentConfirmService {
 
     Map<String, Object> confirmPayment(PaymentConfirmRequest request);
-    
+
 }

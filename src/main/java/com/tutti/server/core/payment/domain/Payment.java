@@ -74,4 +74,11 @@ public class Payment extends BaseEntity {
         this.tossPaymentKey = tossPaymentKey;
         this.completedAt = LocalDateTime.now();
     }
+
+    public void updatePayment(String tossPaymentKey, PaymentStatus status,
+            PaymentMethod paymentMethod) {
+        this.tossPaymentKey = tossPaymentKey;
+        this.paymentStatus = status;
+        this.paymentMethod = paymentMethod;
+    }
 }

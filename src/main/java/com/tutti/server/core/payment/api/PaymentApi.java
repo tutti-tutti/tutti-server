@@ -3,10 +3,10 @@ package com.tutti.server.core.payment.api;
 import com.tutti.server.core.payment.application.PaymentConfirmService;
 import com.tutti.server.core.payment.application.PaymentService;
 import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
+import com.tutti.server.core.payment.payload.PaymentConfirmResponse;
 import com.tutti.server.core.payment.payload.PaymentRequest;
 import com.tutti.server.core.payment.payload.PaymentResponse;
 import jakarta.validation.Valid;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +34,10 @@ public class PaymentApi {
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity<Map<String, Object>> confirmPayment(
-            @RequestBody PaymentConfirmRequest request) {
+    public ResponseEntity<PaymentConfirmResponse> confirmPayment(
+            @Valid @RequestBody PaymentConfirmRequest request) {
 
-        Map<String, Object> response = paymentConfirmService.confirmPayment(request);
+        PaymentConfirmResponse response = paymentConfirmService.confirmPayment(request);
         return ResponseEntity.ok(response);
-
-
     }
-
 }
