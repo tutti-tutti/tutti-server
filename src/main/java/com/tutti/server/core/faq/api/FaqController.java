@@ -1,7 +1,6 @@
 package com.tutti.server.core.faq.api;
 
 import com.tutti.server.core.faq.application.FaqService;
-import com.tutti.server.core.faq.payload.request.FaqDetailRequest;
 import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
 import com.tutti.server.core.faq.payload.response.FaqListResponse;
@@ -17,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,19 +70,22 @@ public class FaqController {
     /**
      * 특정 FAQ를 조회합니다.
      *
-     * @param request 조회할 FAQ ID를 포함한 요청 객체
+     * @param faqId 조회할 FAQ ID를 포함한 요청 객체
      * @return 조회된 FAQ 정보
      */
     @Operation(summary = "FAQ 단건 조회", description = "FAQ ID를 기반으로 특정 FAQ 정보를 조회합니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "FAQ 조회 성공", content = @Content(schema = @Schema(implementation = FaqResponse.class))),
         @ApiResponse(responseCode = "400", description = "잘못된 요청 (FAQ ID 없음)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+        @ApiResponse(responseCode = "404", description = "FAQ를 찾을 수 없음", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @PostMapping("/detail")
-    public ResponseEntity<FaqResponse> getFaqById(@RequestBody FaqDetailRequest request) {
-        return ResponseEntity.ok(faqService.getFaqById(request.faqId()));
+    @GetMapping("/{faqId}")
+    public ResponseEntity<FaqResponse> getFaqById(@PathVariable Long faqId) {
+        FaqResponse faqResponse = faqService.getFaqById(faqId);
+        return ResponseEntity.ok(faqResponse);
     }
+
 
     /**
      * 특정 키워드를 포함하는 FAQ를 검색합니다.
@@ -91,10 +94,18 @@ public class FaqController {
      * @return 검색된 FAQ 목록
      */
     @Operation(summary = "FAQ 검색", description = "특정 키워드를 포함하는 FAQ를 검색합니다.")
-    @GetMapping("/search")
-    public ResponseEntity<FaqListResponse> searchFaqs(FaqSearchRequest request) {
-        return ResponseEntity.ok(
-            faqService.searchFaqs(request.query(), request.page(), request.size()));
-    }
+    @PostMapping("/search")
+    public ResponseEntity<FaqListResponse> searchFaqs(@RequestBody FaqSearchRequest request) {
+        // FaqSearchRequest에서 FaqListRequest로 변환
+        FaqListRequest faqListRequest = new FaqListRequest(
+            request.query(),            // 검색어
+            null,                       // 카테고리는 기본값 null로 설정, 필요시 수정
+            null,                       // 서브카테고리도 기본값 null로 설정, 필요시 수정
+            request.page(),             // 페이지 번호
+            request.size()              // 페이지당 데이터 개수
+        );
 
+        // faqService 호출
+        return ResponseEntity.ok(faqService.searchFaqs(faqListRequest));
+    }
 }

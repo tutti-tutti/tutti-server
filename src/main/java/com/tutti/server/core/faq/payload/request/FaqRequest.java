@@ -14,7 +14,7 @@ public record FaqRequest(
     @Schema(description = "답변", example = "마이페이지에서 반품 신청을 할 수 있습니다.")
     String answer,
     @Schema(description = "공개 여부", example = "true")
-    Boolean isView
+    boolean isView
 ) {
 
 }
