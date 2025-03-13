@@ -2,6 +2,7 @@ package com.tutti.server.core.product.api;
 
 import com.tutti.server.core.product.application.ProductService;
 import com.tutti.server.core.product.payload.ProductApiResponse;
+import com.tutti.server.core.product.payload.ProductResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/products") // 이걸 다시 뿌려줘야 하나 ?
+@RequestMapping("/products")
 public class ProductApi implements ProductApiSpec {
 
   private final ProductService productService;
@@ -23,4 +24,9 @@ public class ProductApi implements ProductApiSpec {
     return productService.getAllProducts();
   }
 
+  @Override
+  @GetMapping
+  public List<ProductResponse> getProducts() {
+    return List.of();
+  }
 }

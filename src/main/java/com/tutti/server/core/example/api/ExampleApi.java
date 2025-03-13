@@ -14,24 +14,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/examples")
 public class ExampleApi implements ExampleApiSpec {
 
-    @GetMapping
-    public void get() {
+  @GetMapping
+  public void get() {
 
-    }
+  }
 
-    @PostMapping
-    public void register() {
+  @PostMapping
+  public void register() {
 
-    }
+  }
 
-    @PutMapping("{exampleId}")
-    public void modify(@PathVariable("exampleId") Long exampleId) {
+  @PutMapping("{exampleId}")
+  public void modify(@PathVariable("exampleId") Long exampleId) {
 
-    }
+  }
 
-    @DeleteMapping("{exampleId}")
-    public void remove(@PathVariable("exampleId") Long exampleId) {
+  @DeleteMapping("{exampleId}")
+  public void remove(@PathVariable("exampleId") Long exampleId) {
 
-    }
+  }
 
 }
