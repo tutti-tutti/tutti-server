@@ -3,14 +3,14 @@ package com.tutti.server.core.review.application;
 import com.tutti.server.core.review.domain.Review;
 import com.tutti.server.core.review.infrastructure.ReviewRepository;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewService {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
+    final private ReviewRepository reviewRepository;
 
     // @Autowired
     // private OrderItemRepository orderItemRepository; // OrderItemRepository는 아직 구현되지 않음
