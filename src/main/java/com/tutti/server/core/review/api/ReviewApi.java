@@ -1,8 +1,8 @@
 package com.tutti.server.core.review.api;
 
-import com.tutti.server.core.review.application.ReviewService;
-import com.tutti.server.core.review.domain.Review;
+import com.tutti.server.core.review.application.ReviewCreateServiceImpl;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
+import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/reviews")
 @RequiredArgsConstructor
-public class ReviewController {
+public class ReviewApi implements ReviewApiSpec {
 
-    private final ReviewService reviewService;
+    private final ReviewCreateServiceImpl reviewCreateServiceImpl;
 
     // 리뷰 작성 API
     @PostMapping
@@ -32,7 +32,7 @@ public class ReviewController {
 
         try {
             // 리뷰 작성
-            Review review = reviewService.createReview("testUser", reviewCreateRequest);
+            ReviewCreateResponse review = reviewCreateServiceImpl.createReview(reviewCreateRequest);
             return ResponseEntity.ok("리뷰 작성이 완료되었습니다.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

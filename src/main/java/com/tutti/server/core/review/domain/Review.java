@@ -4,6 +4,7 @@ import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +24,9 @@ public class Review extends BaseEntity {
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
+    @Column(name = "nickname", nullable = false)
+    private String nickname;
+
     @Column(name = "order_item_id", nullable = false)
     private Long orderItemId;
 
@@ -32,58 +36,42 @@ public class Review extends BaseEntity {
     @Column(nullable = false, length = 500)
     private String content;
 
-    // 최대 4개의 리뷰 이미지를 저장할 수 있도록 설정
-    @Column(name = "review_image_url1", length = 255)
-    private String reviewImageUrl1;
-
-    @Column(name = "review_image_url2", length = 255)
-    private String reviewImageUrl2;
-
-    @Column(name = "review_image_url3", length = 255)
-    private String reviewImageUrl3;
-
-    @Column(name = "review_image_url4", length = 255)
-    private String reviewImageUrl4;
+    // 리뷰 이미지 URL을 저장할 필드 (하드코딩된 이미지를 배열로 저장)
+    @Column(name = "review_image_urls", length = 1000)
+    private String reviewImageUrls;
 
     @Column(name = "like_count", nullable = false)
     private long likeCount = 0L;
 
-    /**
-     * 리뷰 생성 메서드 (사진 개수가 0~4개일 수 있음)
-     */
     public static Review createReview(Long productId, Long memberId, Long orderItemId,
-        Integer rating, String content, String[] reviewImages) {
+        Integer rating, String content, List<String> reviewImages, String nickname) {
+        // 리뷰 이미지 URL 배열을 문자열로 합쳐서 저장
+        String reviewImagesString = String.join(",", reviewImages);
+
         return Review.builder()
             .productId(productId)
             .memberId(memberId)
+            .nickname(nickname)
             .orderItemId(orderItemId)
             .rating(rating)
             .content(content)
-            .reviewImageUrl1(reviewImages.length > 0 ? reviewImages[0] : null)
-            .reviewImageUrl2(reviewImages.length > 1 ? reviewImages[1] : null)
-            .reviewImageUrl3(reviewImages.length > 2 ? reviewImages[2] : null)
-            .reviewImageUrl4(reviewImages.length > 3 ? reviewImages[3] : null)
+            .reviewImageUrls(reviewImagesString) // 이미지 URL을 문자열로 저장
             .likeCount(0L)
             .build();
     }
 
-    public void updateReviewImage1(String reviewImageUrl1) {
-        this.reviewImageUrl1 = reviewImageUrl1;
+    // 이미지를 업데이트하는 메서드들
+    public void updateReviewImages(List<String> reviewImages) {
+        this.reviewImageUrls = String.join(",", reviewImages);  // 이미지 배열을 문자열로 합쳐서 저장
     }
 
-    public void updateReviewImage2(String reviewImageUrl2) {
-        this.reviewImageUrl2 = reviewImageUrl2;
-    }
-
-    public void updateReviewImage3(String reviewImageUrl3) {
-        this.reviewImageUrl3 = reviewImageUrl3;
-    }
-
-    public void updateReviewImage4(String reviewImageUrl4) {
-        this.reviewImageUrl4 = reviewImageUrl4;
-    }
-
+    // 좋아요 수 증가
     public void increaseLike() {
         this.likeCount += 1;
+    }
+
+    // 문자열로 저장된 reviewImageUrls을 다시 List<String> 형태로 변환하는 유틸리티 메서드
+    public List<String> getReviewImages() {
+        return List.of(this.reviewImageUrls.split(","));
     }
 }
