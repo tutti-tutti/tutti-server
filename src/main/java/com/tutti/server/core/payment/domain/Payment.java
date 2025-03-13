@@ -35,12 +35,9 @@ public class Payment extends BaseEntity {
     @Column(nullable = false)
     private PaymentStatus paymentStatus;
 
-    @Column(nullable = false)
-    private int paidAmount;
-
     private LocalDateTime completedAt;
 
-    @Column(nullable = false)
+    @Column
     private String tossPaymentKey; // tossPaymentsKey
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,28 +49,29 @@ public class Payment extends BaseEntity {
     private Order order; // 주문 id
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_method_id", nullable = false)
+    @JoinColumn(name = "payment_method_id") // 결제 요청이 왔을 때는 몰라도 됨.
     private PaymentMethod paymentMethod; // 결제 수단 id
 
     @Builder
     public Payment(String orderName, int amount, PaymentStatus paymentStatus,
-            int paidAmount, String tossPaymentKey, Member member,
+            String tossPaymentKey, Member member,
             Order order, PaymentMethod paymentMethod) {
         this.orderName = orderName;
         this.amount = amount;
         this.paymentStatus = paymentStatus;
-        this.paidAmount = paidAmount;
         this.tossPaymentKey = tossPaymentKey;
         this.member = member;
         this.order = order;
         this.paymentMethod = paymentMethod;
     }
 
-    public void completePayment() {
+    // 결제 승인 후 PaymentKey 저장하는 방식으로 변경.
+    public void completePayment(String tossPaymentKey) {
         if (this.paymentStatus == PaymentStatus.PAYMENT_COMPLETED) {
             throw new IllegalStateException("이미 결제가 완료된 주문입니다.");
         }
         this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;
+        this.tossPaymentKey = tossPaymentKey;
         this.completedAt = LocalDateTime.now();
     }
 }

@@ -1,5 +1,7 @@
 package com.tutti.server.core.member.domain;
 
+import static com.tutti.server.core.member.utils.NicknameGenerator.generateNickname;
+
 import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -77,13 +79,6 @@ public class Member extends BaseEntity {
         this.nickname = generateNickname(email); // 자동 생성
         this.memberStatus = MemberStatus.ACTIVE;
         this.isEmailVerified = false;
-    }
-
-    private String generateNickname(String email) {
-        if (email != null && email.contains("@")) {
-            return email.split("@")[0];
-        }
-        return "user" + System.currentTimeMillis(); // 예외 처리
     }
 
     public static Member createEmailMember(String email, String password) {
