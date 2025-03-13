@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @FeignClient(name = "productFeignClient", url = "http://1.230.77.225:4796")
 public interface ProductFeignClient {
 
+  // api url 노출 안되게
   @GetMapping("/products?_limit=100")
   List<ProductApiResponse> getProducts();
 }
