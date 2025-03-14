@@ -41,7 +41,7 @@ public class Review extends BaseEntity {
     private String reviewImageUrls;
 
     @Column(name = "like_count", nullable = false)
-    private long likeCount = 0L;
+    private long likeCount;
 
     public static Review createReview(Long productId, Long memberId, Long orderItemId,
         Integer rating, String content, List<String> reviewImages, String nickname) {
