@@ -88,7 +88,7 @@
 ## **4. (READ) 사용자는 상품 상세 페이지에서 초기 10개의 리뷰를 조회할 수 있다.**
 
 **Controller**: `ReviewController`  
-**Endpoint**: `GET /reviews/{product_id}`
+**Endpoint**: `GET /{product_id}`
 
 - [ ] 사용자는 특정 상품의 리뷰를 초기 화면에서 10개만 조회할 수 있다.
 - [ ] 로그인하지 않은 사용자도 조회할 수 있다.

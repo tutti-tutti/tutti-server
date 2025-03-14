@@ -1,5 +1,6 @@
 package com.tutti.server.core.faq.application;
 
+import com.tutti.server.core.faq.payload.request.FaqFeedbackRequest;
 import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
 import com.tutti.server.core.faq.payload.response.FaqListResponse;
@@ -17,4 +18,6 @@ public interface FaqService {
     List<FaqResponse> getTopFaqs(int limit);
 
     FaqResponse getFaqById(Long faqId);
+
+    void faqFeedback(Long faqId, FaqFeedbackRequest feedback);
 }

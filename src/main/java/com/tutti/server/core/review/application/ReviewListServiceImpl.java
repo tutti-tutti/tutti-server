@@ -1,7 +1,6 @@
 package com.tutti.server.core.review.application;
 
 import com.tutti.server.core.review.domain.Review;
-import com.tutti.server.core.review.infrastructure.ReviewLikeRepository;
 import com.tutti.server.core.review.infrastructure.ReviewRepository;
 import com.tutti.server.core.review.payload.request.ReviewListRequest;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
@@ -20,12 +19,20 @@ import org.springframework.stereotype.Service;
 public class ReviewListServiceImpl implements ReviewListService {
 
     private final ReviewRepository reviewRepository;
-    private final ReviewLikeRepository reviewLikeRepository;
 
     @Override
     public ReviewListResponse getReviews(ReviewListRequest request) {
-        Pageable pageable = PageRequest.of(0, request.size(), getSort(request.sort()));
-        Page<Review> reviewsPage = reviewRepository.findByProductId(request.productId(), pageable);
+        long cursorId = 0L;
+        if (request.nextCursor() != null) {
+            cursorId = Long.parseLong(request.nextCursor());
+        }
+
+        Pageable pageable = PageRequest.of(0, 20, getSort(request.sort()));
+
+        Page<Review> reviewsPage;
+        // 커서 값이 있을 경우, 해당 ID 이후의 리뷰를 가져옴
+        reviewsPage = reviewRepository.findByProductIdAndIdGreaterThan(
+            request.productId(), cursorId, pageable);
 
         List<ReviewResponse> reviewResponses = reviewsPage.stream()
             .map(this::convertToReviewResponse)
@@ -36,28 +43,25 @@ public class ReviewListServiceImpl implements ReviewListService {
             nextCursor = reviewsPage.getContent().get(reviewsPage.getContent().size() - 1).getId()
                 .toString();
         }
-        return new ReviewListResponse(reviewResponses, nextCursor);
+
+        return new ReviewListResponse(reviewResponses, nextCursor); // List<ReviewResponse> 반환
     }
 
     private Sort getSort(String sort) {
-        switch (sort) {
-            case "rating_desc":
-                return Sort.by(Sort.Order.desc("rating"));
-            case "like_desc":
-                return Sort.by(Sort.Order.desc("likeCount"));
-            case "created_at_desc":
-            default:
-                return Sort.by(Sort.Order.desc("createdAt"));
-        }
+        return switch (sort) {
+            case "latest" -> Sort.by(Sort.Order.asc("creat"));
+            case "rating" -> Sort.by(Sort.Order.desc("rating"));
+            default -> Sort.by(Sort.Order.desc("createdAt"));
+        };
     }
 
     private ReviewResponse convertToReviewResponse(Review review) {
-        long likeCount = reviewLikeRepository.countByReview(review);
         return new ReviewResponse(
             review.getId(),
+            review.getProductId(),
+            review.getNickname(),
             review.getContent(),
             review.getRating(),
-            likeCount,
             review.getCreatedAt()
         );
     }

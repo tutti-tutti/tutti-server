@@ -1,5 +1,6 @@
 package com.tutti.server.core.faq.application;
 
+import com.tutti.server.core.faq.payload.request.FaqFeedbackRequest;
 import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
 import com.tutti.server.core.faq.payload.response.FaqListResponse;
@@ -17,6 +18,7 @@ public class FaqServiceImpl implements FaqService {
     private final FaqSearchListServiceImpl faqSearchListServiceImpl;
     private final FaqTopViewedListServiceImpl faqTopViewedListServiceImpl;
     private final FaqViewDetailServiceImpl faqViewDetailServiceImpl;
+    private final FaqFeedbackServiceImpl faqFeedbackServiceImpl;
 
     public List<String> getCategories() {
         return faqCategoryListServiceImpl.getCategories();
@@ -36,6 +38,10 @@ public class FaqServiceImpl implements FaqService {
 
     public FaqResponse getFaqById(Long faqId) {
         return faqViewDetailServiceImpl.findFaqById(faqId);
+    }
+
+    public void faqFeedback(Long faqId, FaqFeedbackRequest feedback) {
+        faqFeedbackServiceImpl.updateFaqFeedback(faqId, feedback);
     }
 
 }
