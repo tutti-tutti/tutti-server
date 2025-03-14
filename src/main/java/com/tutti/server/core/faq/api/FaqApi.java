@@ -43,6 +43,7 @@ public class FaqApi implements FaqApiSpec {
     public ResponseEntity<FaqResponse> getFaqById(Long faqId) {
         FaqResponse faqResponse = faqServiceImpl.getFaqById(faqId);
         return ResponseEntity.ok(faqResponse);
+    }
 
     @Override
     @GetMapping("/search")
