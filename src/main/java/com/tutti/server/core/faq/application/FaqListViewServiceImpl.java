@@ -6,19 +6,17 @@ import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.response.FaqListResponse;
 import com.tutti.server.core.faq.payload.response.FaqResponse;
 import com.tutti.server.core.faq.payload.response.FaqSearchResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class FaqListViewServiceImpl implements FaqListViewService {
 
     private final FaqRepository faqRepository;
-
-    public FaqListViewServiceImpl(FaqRepository faqRepository) {
-        this.faqRepository = faqRepository;
-    }
 
     @Transactional(readOnly = true)
     public FaqListResponse getFaqs(FaqListRequest request) {

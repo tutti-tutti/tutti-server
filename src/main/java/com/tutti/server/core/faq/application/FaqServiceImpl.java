@@ -1,12 +1,15 @@
 package com.tutti.server.core.faq.application;
 
 import com.tutti.server.core.faq.payload.request.FaqListRequest;
+import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
 import com.tutti.server.core.faq.payload.response.FaqListResponse;
 import com.tutti.server.core.faq.payload.response.FaqResponse;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class FaqServiceImpl implements FaqService {
 
     private final FaqCategoryListServiceImpl faqCategoryListServiceImpl;
@@ -14,18 +17,6 @@ public class FaqServiceImpl implements FaqService {
     private final FaqSearchListServiceImpl faqSearchListServiceImpl;
     private final FaqTopViewedListServiceImpl faqTopViewedListServiceImpl;
     private final FaqViewDetailServiceImpl faqViewDetailServiceImpl;
-
-    public FaqServiceImpl(FaqCategoryListServiceImpl faqCategoryListServiceImpl,
-        FaqListViewServiceImpl faqListViewServiceImpl,
-        FaqSearchListServiceImpl faqSearchListServiceImpl,
-        FaqTopViewedListServiceImpl faqTopViewedListServiceImpl,
-        FaqViewDetailServiceImpl faqViewDetailServiceImpl) {
-        this.faqCategoryListServiceImpl = faqCategoryListServiceImpl;
-        this.faqListViewServiceImpl = faqListViewServiceImpl;
-        this.faqSearchListServiceImpl = faqSearchListServiceImpl;
-        this.faqTopViewedListServiceImpl = faqTopViewedListServiceImpl;
-        this.faqViewDetailServiceImpl = faqViewDetailServiceImpl;
-    }
 
     public List<String> getCategories() {
         return faqCategoryListServiceImpl.getCategories();
@@ -35,7 +26,7 @@ public class FaqServiceImpl implements FaqService {
         return faqListViewServiceImpl.getFaqs(request);
     }
 
-    public FaqListResponse searchFaqs(FaqListRequest request) {
+    public FaqListResponse searchFaqs(FaqSearchRequest request) {
         return faqSearchListServiceImpl.searchFaqs(request);
     }
 
