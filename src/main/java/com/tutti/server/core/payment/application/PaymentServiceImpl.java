@@ -25,7 +25,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentResponse requestPayment(PaymentRequest request) {
 
-        Order order = validateOrder(request.orderId());
+        Order order = validateOrder(request.orderId()); //tossOrderId 내부적으로는
         validateDuplicatePayment(order.getId());
         validatePaymentAmount(order, request.amount());
         Payment savedPayment = createAndSavePayment(order, request);
@@ -33,8 +33,10 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     // 주문 정보 검증 메서드
-    private Order validateOrder(Long orderId) {
-        return orderRepository.findOne(orderId);
+    private Order validateOrder(String tossOrderId) {
+        return orderRepository.findByTossOrderId(tossOrderId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "해당 orderId에 해당하는 주문을 찾을 수 없습니다: " + tossOrderId));
     }
 
     // 기존 결제 여부 검증 메서드
@@ -63,7 +65,7 @@ public class PaymentServiceImpl implements PaymentService {
     // 결제 객체 생성 및 저장 메서드
     private Payment createAndSavePayment(Order order, PaymentRequest request) {
         Payment payment = PaymentRequest.toEntity(order, order.getMember(), request.amount(),
-                request.orderName());
+                request.orderName(), order.getOrderNumber());
         return paymentRepository.save(payment);
     }
 }

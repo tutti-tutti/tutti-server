@@ -4,12 +4,10 @@ import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.domain.PaymentStatus;
 import com.tutti.server.core.payment.infrastructure.PaymentMethodRepository;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
+import com.tutti.server.core.payment.payload.ParsedTossApiResponse;
 import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,54 +31,57 @@ public class PaymentConfirmServiceImpl implements PaymentConfirmService {
     @Transactional
     public Map<String, Object> confirmPayment(PaymentConfirmRequest request) {
 
-        Map<String, Object> requestBody = Map.of(
+        // 1. 요청 바디 생성
+        Map<String, Object> requestBody = buildRequestBody(request);
+
+        // 2. 결제 정보 조회
+        Payment payment = getPayment(request.orderId()); //orderId는 토스orderId입니다.
+
+        // 3. Toss Payments API 호출
+        Map<String, Object> response = sendConfirmRequest(requestBody);
+
+        // 4. API 응답을 DTO로 변환(형변환)
+        ParsedTossApiResponse parsedResponse = ParsedTossApiResponse.fromResponse(response);
+
+        // 5. 결제 상태 업데이트
+        updatePayment(payment, parsedResponse);
+
+        return response;
+    }
+
+    private Map<String, Object> buildRequestBody(PaymentConfirmRequest request) {
+        return Map.of(
                 "paymentKey", request.paymentKey(),
                 "orderId", request.orderId(),
                 "amount", request.amount()
         );
+    }
 
-        Payment payment = paymentRepository.findByTossOrderId(request.orderId())
+    private Payment getPayment(String orderId) {
+        return paymentRepository.findByTossOrderId(orderId)
                 .orElseThrow(() -> new DomainException(ExceptionType.ORDER_NOT_FOUND));
+    }
 
-        Map<String, Object> response = restClient.post()
+    private Map<String, Object> sendConfirmRequest(Map<String, Object> requestBody) {
+        return restClient.post()
                 .uri("https://api.tosspayments.com/v1/payments/confirm")
                 .headers(headers -> headers.setBasicAuth(widgetSecretKey, ""))
                 .body(requestBody)
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
+    }
 
-        // Map에서 데이터 추출 (캐스팅 필요)
-
-        String paymentStatusStr = (String) response.get("status");
-        String paymentMethodTypeStr = (String) response.get("method");
-        String approvedAtStr = (String) response.get("approvedAt");
-        Integer totalAmount = (Integer) response.get("totalAmount");
-
-//        PaymentMethod paymentMethod = paymentMethodRepository.findByMethodType(
-//                        PaymentMethodType.fromString(paymentMethodTypeStr)) // 한글 → Enum 변환
-//                .orElseThrow(() -> new IllegalStateException("해당 결제 수단이 존재하지 않습니다."));
-
-//        PaymentMethodType paymentMethodType = PaymentMethodType.fromString(paymentMethodTypeStr);
-
-        int amount = (totalAmount != null) ? totalAmount : 0;
-
-//         결제 상태 업데이트
-        // approvedAtStr을 OffsetDateTime으로 파싱한 후 LocalDateTime으로 변환
-        OffsetDateTime offsetDateTime = OffsetDateTime.parse(approvedAtStr,
-                DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        LocalDateTime approvedAt = offsetDateTime.toLocalDateTime();
-
-        // 결제 상태 업데이트
+    private void updatePayment(Payment payment, ParsedTossApiResponse parsedResponse) {
         payment.updatePayment(
-                request.paymentKey(),
-                PaymentStatus.valueOf(paymentStatusStr),
-                approvedAt,
-                amount
+                parsedResponse.paymentKey(),
+                PaymentStatus.valueOf(parsedResponse.status()),
+                parsedResponse.approvedAt(),
+                parsedResponse.amount()
         );
         paymentRepository.save(payment);
-
-        return response; // ✅ JSON 응답 그대로 반환
     }
+
+
 }
 
