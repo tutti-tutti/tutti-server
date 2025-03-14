@@ -102,4 +102,8 @@ public class Member extends BaseEntity {
         this.isEmailVerified = true;
     }
 
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
 }
