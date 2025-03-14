@@ -34,18 +34,19 @@ public class FaqListViewServiceImpl implements FaqListViewService {
     }
 
     private Page<FaqResponse> findFaqs(FaqListRequest request, PageRequest pageRequest) {
-        Page<Faq> faqs;
+        Page<Faq> faqs = findFaqsByCriteria(request, pageRequest);
+        return faqs.map(FaqResponse::fromEntity);
+    }
 
+    private Page<Faq> findFaqsByCriteria(FaqListRequest request, PageRequest pageRequest) {
         if (request.query() != null && !request.query().isEmpty()) {
-            faqs = faqRepository.findByQuestionContainingIgnoreCaseAndDeleteStatusFalseAndIsViewTrue(
+            return faqRepository.findByQuestionContainingIgnoreCaseAndDeleteStatusFalseAndIsViewTrue(
                 request.query(), pageRequest);
         } else if (request.category() != null && request.subcategory() != null) {
-            faqs = faqRepository.findByFaqCategory_MainCategoryAndFaqCategory_SubCategoryAndDeleteStatusFalseAndIsViewTrue(
+            return faqRepository.findByFaqCategory_MainCategoryAndFaqCategory_SubCategoryAndDeleteStatusFalseAndIsViewTrue(
                 request.category(), request.subcategory(), pageRequest);
         } else {
-            faqs = faqRepository.findByDeleteStatusFalseAndIsViewTrue(pageRequest);
+            return faqRepository.findByDeleteStatusFalseAndIsViewTrue(pageRequest);
         }
-
-        return faqs.map(FaqResponse::fromEntity);
     }
 }
