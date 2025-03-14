@@ -27,7 +27,7 @@ public class FaqApi implements FaqApiSpec {
     }
 
     @Override
-    @GetMapping("/popular")
+    @GetMapping("/top")
     public ResponseEntity<List<FaqResponse>> getTopFaqs() {
         return ResponseEntity.ok(faqServiceImpl.getTopFaqs(10));
     }
@@ -43,7 +43,6 @@ public class FaqApi implements FaqApiSpec {
     public ResponseEntity<FaqResponse> getFaqById(Long faqId) {
         FaqResponse faqResponse = faqServiceImpl.getFaqById(faqId);
         return ResponseEntity.ok(faqResponse);
-    }
 
     @Override
     @GetMapping("/search")
