@@ -27,7 +27,7 @@ public class FaqApi implements FaqApiSpec {
     }
 
     @Override
-    @GetMapping("/popular")
+    @GetMapping("/top")
     public ResponseEntity<List<FaqResponse>> getTopFaqs() {
         return ResponseEntity.ok(faqServiceImpl.getTopFaqs(10));
     }
