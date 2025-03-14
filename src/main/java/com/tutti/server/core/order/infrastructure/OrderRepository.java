@@ -13,5 +13,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                 .orElseThrow(() -> new DomainException(ExceptionType.ORDER_NOT_FOUND));
     }
 
-    Optional<Order> findByTossOrderId(String tossOrderId); //TODO TEST
+    Optional<Order> findByOrderNumber(String orderNumber);
 }

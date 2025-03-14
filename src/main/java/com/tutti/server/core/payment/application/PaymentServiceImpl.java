@@ -34,7 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     // 주문 정보 검증 메서드
     private Order validateOrder(String tossOrderId) {
-        return orderRepository.findByTossOrderId(tossOrderId)
+        return orderRepository.findByOrderNumber(tossOrderId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "해당 orderId에 해당하는 주문을 찾을 수 없습니다: " + tossOrderId));
     }
