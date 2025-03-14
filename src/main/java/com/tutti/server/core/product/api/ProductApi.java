@@ -2,7 +2,6 @@ package com.tutti.server.core.product.api;
 
 import com.tutti.server.core.product.application.ProductService;
 import com.tutti.server.core.product.payload.ProductApiResponse;
-import com.tutti.server.core.product.payload.ProductResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +23,9 @@ public class ProductApi implements ProductApiSpec {
     return productService.getAllProducts();
   }
 
-  @Override
-  @GetMapping
-  public List<ProductResponse> getProducts() {
-    return List.of();
-  }
+//  @Override
+//  @GetMapping
+//  public List<ProductResponse> getProducts() {
+//    return List.of();
+//  }
 }
