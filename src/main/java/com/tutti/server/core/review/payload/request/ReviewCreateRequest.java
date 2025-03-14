@@ -7,7 +7,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 
+@Schema(description = "리뷰 작성 요청")
 public record ReviewCreateRequest(
+
+    @Schema(description = "상품 ID", example = "1")
+    @NotNull(message = "상품 ID는 필수입니다.")
+    Long productId,  // 상품 ID
 
     @Schema(description = "상품 평점 (1~5)", example = "5")
     @NotNull(message = "상품 평점은 필수입니다.")
@@ -19,10 +24,6 @@ public record ReviewCreateRequest(
     @NotNull(message = "리뷰 내용은 필수입니다.")
     @Size(max = 500, message = "리뷰 내용은 500자 이내여야 합니다.")  // 길이 제한 500자
     String content,  // 리뷰 내용
-
-    @Schema(description = "주문 아이템 ID", example = "1")
-    @NotNull(message = "주문 아이템 ID는 필수입니다.")
-    Long orderItemId,  // 주문 아이템 ID
 
     @Schema(description = "리뷰 작성자 닉네임", example = "tutti")
     @NotNull(message = "리뷰 작성자 닉네임은 필수입니다.")
