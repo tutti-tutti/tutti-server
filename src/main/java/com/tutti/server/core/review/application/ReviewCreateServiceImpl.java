@@ -1,6 +1,5 @@
 package com.tutti.server.core.review.application;
 
-import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.review.domain.Review;
 import com.tutti.server.core.review.infrastructure.ReviewRepository;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 public class ReviewCreateServiceImpl implements ReviewCreateService {
 
     private final ReviewRepository reviewRepository;
-    private final MemberRepository memberRepository;  // Inject MemberRepository
 
     // nickname을 memberId로 찾는 메서드 (하드코딩)
     public String getNicknameByMemberId(Long memberId) {
@@ -43,7 +41,7 @@ public class ReviewCreateServiceImpl implements ReviewCreateService {
         Review review = Review.createReview(
             reviewCreateRequest.orderItemId(),
             memberId,
-            reviewCreateRequest.orderItemId(),
+            reviewCreateRequest.orderItemId(),  // 동일한 orderItemId를 두 번 사용하는 것은 확인 필요
             reviewCreateRequest.rating(),
             reviewCreateRequest.content(),
             reviewImages,  // List<String>으로 이미지를 전달
