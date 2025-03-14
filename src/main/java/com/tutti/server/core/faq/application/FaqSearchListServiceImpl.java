@@ -1,0 +1,70 @@
+package com.tutti.server.core.faq.application;
+
+import com.tutti.server.core.faq.domain.Faq;
+import com.tutti.server.core.faq.infrastructure.FaqRepository;
+import com.tutti.server.core.faq.payload.request.FaqListRequest;
+import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
+import com.tutti.server.core.faq.payload.response.FaqListResponse;
+import com.tutti.server.core.faq.payload.response.FaqResponse;
+import com.tutti.server.core.faq.payload.response.FaqSearchResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class FaqSearchListServiceImpl implements FaqSearchListService {
+
+    private final FaqRepository faqRepository;
+
+    @Transactional(readOnly = true)
+    public FaqListResponse searchFaqs(FaqSearchRequest request) {
+        // FaqSearchRequest를 FaqListRequest로 변환
+        FaqListRequest faqListRequest = convertToFaqListRequest(request);
+
+        // 페이지 요청 생성
+        PageRequest pageRequest = PageRequest.of(faqListRequest.page() - 1, faqListRequest.size());
+
+        // FAQ 검색
+        Page<FaqResponse> faqResponses = findFaqs(faqListRequest, pageRequest);
+
+        // FAQ 목록 응답 생성
+        return new FaqListResponse(
+            (int) faqResponses.getTotalElements(), // 총 FAQ 수
+            faqListRequest.page(),                 // 현재 페이지
+            faqListRequest.size(),                 // 페이지 크기
+            new FaqSearchResponse(faqResponses.getContent()) // 결과 콘텐츠
+        );
+    }
+
+    private FaqListRequest convertToFaqListRequest(FaqSearchRequest request) {
+        return new FaqListRequest(
+            request.query(),            // 검색어
+            null,                       // 카테고리는 기본값 null로 설정, 필요시 수정
+            null,                       // 서브카테고리도 기본값 null로 설정, 필요시 수정
+            request.page(),             // 페이지 번호
+            request.size()              // 페이지당 데이터 개수
+        );
+    }
+
+    private Page<FaqResponse> findFaqs(FaqListRequest request, PageRequest pageRequest) {
+        // 기본적으로 빈 페이지 선언
+        Page<Faq> faqs;
+
+        // 쿼리 조건에 따른 처리
+        if (request.query() != null && !request.query().isEmpty()) {
+            faqs = faqRepository.findByQuestionContainingIgnoreCaseAndDeleteStatusFalseAndIsViewTrue(
+                request.query(), pageRequest);
+        } else if (request.category() != null && request.subcategory() != null) {
+            faqs = faqRepository.findByFaqCategory_MainCategoryAndFaqCategory_SubCategoryAndDeleteStatusFalseAndIsViewTrue(
+                request.category(), request.subcategory(), pageRequest);
+        } else {
+            faqs = faqRepository.findByDeleteStatusFalseAndIsViewTrue(pageRequest);
+        }
+
+        // Faq 엔티티를 FaqResponse 레코드로 변환 후 반환
+        return faqs.map(FaqResponse::fromEntity);
+    }
+}
