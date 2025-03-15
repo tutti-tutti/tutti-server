@@ -10,6 +10,7 @@ import com.tutti.server.core.review.application.ReviewLikeServiceImpl;
 import com.tutti.server.core.review.application.ReviewListServiceImpl;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
 import com.tutti.server.core.review.payload.request.ReviewDeleteRequest;
+import com.tutti.server.core.review.payload.request.ReviewLikeRequest;
 import com.tutti.server.core.review.payload.request.ReviewListRequest;
 import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
 import com.tutti.server.core.review.payload.response.ReviewDeleteResponse;
@@ -166,11 +167,12 @@ public class ReviewApi implements ReviewApiSpec {
         String token = authorizationHeader.replace("Bearer ", "");
         String userEmail = jwtUtil.getEmail(token);
 
-        // userEmail을 memberId로 변환하는 과정
         Long memberId = convertEmailToMemberId(userEmail);
 
+        ReviewLikeRequest request = new ReviewLikeRequest(reviewId, memberId);
+
         try {
-            reviewLikeServiceImpl.likeReview(reviewId, memberId);
+            reviewLikeServiceImpl.likeReview(request);
             return ResponseEntity.ok("좋아요가 추가되었습니다.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -180,38 +182,40 @@ public class ReviewApi implements ReviewApiSpec {
         }
     }
 
-    // userEmail을 memberId로 변환하는 메서드
     private Long convertEmailToMemberId(String userEmail) {
-        // 이메일을 기반으로 memberId를 찾아서 반환하는 로직
+
         Member member = memberRepository.findByEmail(userEmail)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
         return member.getId();
     }
 
-//    /**
-//     * 리뷰 좋아요 취소 API 사용자가 자신이 좋아요를 누른 리뷰의 좋아요를 취소할 수 있습니다. 인증된 사용자만 사용 가능합니다.
-//     *
-//     * @param reviewId            좋아요를 취소할 리뷰의 ID
-//     * @param authorizationHeader 요청 헤더에 포함된 JWT 토큰
-//     * @return ResponseEntity 좋아요 취소 결과
-//     */
-//    @Override
-//    @DeleteMapping("/{reviewId}/like")
-//    public ResponseEntity<String> unlikeReview(
-//        @PathVariable("reviewId") Long reviewId,
-//        @RequestHeader("Authorization") String authorizationHeader) {
-//
-//        String token = authorizationHeader.replace("Bearer ", "");
-//        String userEmail = jwtUtil.getEmail(token);
-//
-//        try {
-//            reviewService.unlikeReview(reviewId, userEmail);
-//            return ResponseEntity.ok("좋아요가 취소되었습니다.");
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//                .body("잘못된 요청입니다: " + e.getMessage());
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
-//        }
-//    }
+    /**
+     * 리뷰 좋아요 취소 API 사용자가 자신이 좋아요를 누른 리뷰의 좋아요를 취소할 수 있습니다. 인증된 사용자만 사용 가능합니다.
+     *
+     * @param reviewId            좋아요를 취소할 리뷰의 ID
+     * @param authorizationHeader 요청 헤더에 포함된 JWT 토큰
+     * @return ResponseEntity 좋아요 취소 결과
+     */
+    @Override
+    @DeleteMapping("/{reviewId}/reviewLike")
+    public ResponseEntity<String> cancelLikeReview(
+        @PathVariable("reviewId") Long reviewId,
+        @RequestHeader("Authorization") String authorizationHeader) {
+
+        String token = authorizationHeader.replace("Bearer ", "");
+        String userEmail = jwtUtil.getEmail(token);
+        Long memberId = convertEmailToMemberId(userEmail);
+
+        ReviewLikeRequest request = new ReviewLikeRequest(reviewId, memberId);
+
+        try {
+            reviewLikeServiceImpl.cancelLikeReview(request);
+            return ResponseEntity.ok("좋아요가 취소되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("잘못된 요청입니다: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
+        }
+    }
 }

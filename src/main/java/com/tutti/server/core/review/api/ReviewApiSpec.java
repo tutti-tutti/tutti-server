@@ -30,7 +30,7 @@ public interface ReviewApiSpec {
 
     @Operation(summary = "리뷰 좋아요 추가 API", description = "사용자가 특정 리뷰에 좋아요를 추가합니다.")
     ResponseEntity<String> likeReview(Long reviewId, String userEmail);
-//
-//    @Operation(summary = "리뷰 좋아요 취소 API", description = "사용자가 특정 리뷰의 좋아요를 취소합니다.")
-//    ResponseEntity<String> unlikeReview(Long reviewId, String userEmail);
+
+    @Operation(summary = "리뷰 좋아요 취소 API", description = "사용자가 특정 리뷰의 좋아요를 취소합니다.")
+    ResponseEntity<String> cancelLikeReview(Long reviewId, String userEmail);
 }
