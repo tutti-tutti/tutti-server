@@ -1,6 +1,6 @@
 package com.tutti.server.core.faq.api;
 
-import com.tutti.server.core.faq.application.FaqServiceImpl;
+import com.tutti.server.core.faq.application.user.FaqServiceImpl;
 import com.tutti.server.core.faq.payload.request.FaqFeedbackRequest;
 import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/faqs")
+@RequestMapping("/faqs")
 @RequiredArgsConstructor
 public class FaqApi implements FaqApiSpec {
 

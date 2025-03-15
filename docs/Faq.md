@@ -74,9 +74,9 @@
 **Controller**: `FaqController`  
 **Endpoint**: `PATCH /api/faqs/{faqId}/feedback`
 
-- [ ] 사용자가 특정 FAQ에 긍정/부정 피드백을 남길 수 있다.
-- [ ] `positive = true`일 경우 `positive 카운트` 증가
-- [ ] `positive = false`일 경우 `negative 카운트` 증가
+- [X] 사용자가 특정 FAQ에 긍정/부정 피드백을 남길 수 있다.
+- [X] `positive = true`일 경우 `positive 카운트` 증가
+- [X] `positive = false`일 경우 `negative 카운트` 증가
 
 ---
 

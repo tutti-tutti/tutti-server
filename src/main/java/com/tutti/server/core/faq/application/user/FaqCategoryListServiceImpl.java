@@ -1,4 +1,4 @@
-package com.tutti.server.core.faq.application;
+package com.tutti.server.core.faq.application.user;
 
 import com.tutti.server.core.faq.infrastructure.FaqCategoryRepository;
 import java.util.List;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FaqCategoryListServiceImpl implements FaqCategoryListService {
 
     private final FaqCategoryRepository faqCategoryRepository;
-    
+
     @Transactional(readOnly = true)
     public List<String> getCategories() {
         return faqCategoryRepository.findDistinctMainCategories();

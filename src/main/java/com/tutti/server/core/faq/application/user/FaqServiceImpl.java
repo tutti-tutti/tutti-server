@@ -1,4 +1,4 @@
-package com.tutti.server.core.faq.application;
+package com.tutti.server.core.faq.application.user;
 
 import com.tutti.server.core.faq.payload.request.FaqFeedbackRequest;
 import com.tutti.server.core.faq.payload.request.FaqListRequest;

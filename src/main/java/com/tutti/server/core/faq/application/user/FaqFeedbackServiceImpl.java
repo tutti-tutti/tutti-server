@@ -1,9 +1,8 @@
-package com.tutti.server.core.faq.application;
+package com.tutti.server.core.faq.application.user;
 
 import com.tutti.server.core.faq.domain.Faq;
 import com.tutti.server.core.faq.infrastructure.FaqRepository;
 import com.tutti.server.core.faq.payload.request.FaqFeedbackRequest;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +16,7 @@ public class FaqFeedbackServiceImpl implements FaqFeedbackService {
     @Transactional
     @Override
     public void updateFaqFeedback(Long faqId, FaqFeedbackRequest request) {
-        Faq faq = faqRepository.findById(faqId)
-            .orElseThrow(() -> new EntityNotFoundException("FAQ not found"));
+        Faq faq = faqRepository.findOne(faqId);
 
         if (request.feedback()) {
             faq.incrementPositive();
