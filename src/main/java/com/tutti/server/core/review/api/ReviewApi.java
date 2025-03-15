@@ -42,7 +42,6 @@ public class ReviewApi implements ReviewApiSpec {
         @Valid @RequestBody ReviewCreateRequest reviewCreateRequest) {
 
         try {
-            // 리뷰 작성
             ReviewCreateResponse review = reviewCreateServiceImpl.createReview(reviewCreateRequest);
             return ResponseEntity.ok("리뷰 작성이 완료되었습니다.");
         } catch (IllegalArgumentException e) {

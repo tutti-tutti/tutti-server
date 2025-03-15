@@ -37,4 +37,34 @@ public class Review extends BaseEntity {
     @Column
     private LocalDateTime createdAt;
 
+<<<<<<< HEAD
+=======
+    public static Review createReview(Long productId, Long memberId, Long orderItemId,
+        Integer rating, String content, List<String> reviewImages, String nickname) {
+        String reviewImagesString = String.join(",", reviewImages);
+
+        return Review.builder()
+            .productId(productId)
+            .memberId(memberId)
+            .nickname(nickname)
+            .orderItemId(orderItemId)
+            .rating(rating)
+            .content(content)
+            .reviewImageUrls(reviewImagesString)
+            .likeCount(0L)
+            .build();
+    }
+
+    public void updateReviewImages(List<String> reviewImages) {
+        this.reviewImageUrls = String.join(",", reviewImages);
+    }
+
+    public void increaseLike() {
+        this.likeCount += 1;
+    }
+
+    public List<String> getReviewImages() {
+        return List.of(this.reviewImageUrls.split(","));
+    }
+>>>>>>> bde671b548ffdf548ba19939efb514a77f589427
 }
