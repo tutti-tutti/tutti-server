@@ -1,4 +1,4 @@
-package com.tutti.server.core.faq.application;
+package com.tutti.server.core.faq.application.user;
 
 import com.tutti.server.core.faq.domain.Faq;
 import com.tutti.server.core.faq.infrastructure.FaqRepository;
@@ -6,6 +6,8 @@ import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.response.FaqListResponse;
 import com.tutti.server.core.faq.payload.response.FaqResponse;
 import com.tutti.server.core.faq.payload.response.FaqSearchResponse;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +22,10 @@ public class FaqListViewServiceImpl implements FaqListViewService {
 
     @Transactional(readOnly = true)
     public FaqListResponse getFaqs(FaqListRequest request) {
-        PageRequest pageRequest = PageRequest.of(request.page() - 1, request.size());
+        int page = Math.max(request.page() - 1, 0);
+        int size = Math.max(request.size(), 1);
+
+        PageRequest pageRequest = PageRequest.of(page, size);
         Page<FaqResponse> faqResponses = findFaqs(request, pageRequest);
 
         return new FaqListResponse(
@@ -44,7 +49,11 @@ public class FaqListViewServiceImpl implements FaqListViewService {
             return faqRepository.findByFaqCategory_MainCategoryAndFaqCategory_SubCategoryAndDeleteStatusFalseAndIsViewTrue(
                 request.category(), request.subcategory(), pageRequest);
         } else {
-            return faqRepository.findByDeleteStatusFalseAndIsViewTrue(pageRequest);
+            Page<Faq> faqs = faqRepository.findByDeleteStatusFalseAndIsViewTrue(pageRequest);
+            if (faqs.getTotalElements() == 0) {
+                throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
+            }
+            return faqs;
         }
     }
 }
