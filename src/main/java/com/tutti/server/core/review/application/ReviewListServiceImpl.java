@@ -22,34 +22,38 @@ public class ReviewListServiceImpl implements ReviewListService {
 
     @Override
     public ReviewListResponse getReviews(ReviewListRequest request) {
-        long cursorId = 0L;
-        if (request.nextCursor() != null) {
-            cursorId = Long.parseLong(request.nextCursor());
-        }
+        return getReviewsWithPagination(
+            request.productId(), 20, request.sort(), request.nextCursor());
+    }
 
-        Pageable pageable = PageRequest.of(0, 20, getSort(request.sort()));
+    @Override
+    public ReviewListResponse getInitialReviews(Long productId, Integer size, String sort) {
+        return getReviewsWithPagination(productId, size, sort, null);
+    }
 
-        Page<Review> reviewsPage;
-        // 커서 값이 있을 경우, 해당 ID 이후의 리뷰를 가져옴
-        reviewsPage = reviewRepository.findByProductIdAndIdGreaterThan(
-            request.productId(), cursorId, pageable);
+    @Override
+    public ReviewListResponse getReviewsWithPagination(Long productId, Integer size, String sort,
+        String nextCursor) {
+        long cursorId = (nextCursor != null) ? Long.parseLong(nextCursor) : 0L;
+        Pageable pageable = PageRequest.of(0, size, getSort(sort));
 
-        List<ReviewResponse> reviewResponses = reviewsPage.stream()
-            .map(this::convertToReviewResponse)
-            .collect(Collectors.toList());
+        Page<Review> reviewsPage = reviewRepository.findByProductIdAndIdGreaterThan(
+            productId, cursorId, pageable);
 
-        String nextCursor = null;
+        List<ReviewResponse> reviewResponses = convertToReviewResponseList(reviewsPage);
+
+        String nextCursorValue = null;
         if (reviewsPage.hasNext()) {
-            nextCursor = reviewsPage.getContent().get(reviewsPage.getContent().size() - 1).getId()
-                .toString();
+            nextCursorValue = reviewsPage.getContent().get(reviewsPage.getContent().size() - 1)
+                .getId().toString();
         }
 
-        return new ReviewListResponse(reviewResponses, nextCursor); // List<ReviewResponse> 반환
+        return new ReviewListResponse(reviewResponses, nextCursorValue);
     }
 
     private Sort getSort(String sort) {
-        return switch (sort) {
-            case "latest" -> Sort.by(Sort.Order.asc("creat"));
+        return switch (sort.toLowerCase()) {
+            case "latest" -> Sort.by(Sort.Order.desc("latest"));
             case "rating" -> Sort.by(Sort.Order.desc("rating"));
             default -> Sort.by(Sort.Order.desc("createdAt"));
         };
@@ -64,5 +68,11 @@ public class ReviewListServiceImpl implements ReviewListService {
             review.getRating(),
             review.getCreatedAt()
         );
+    }
+
+    private List<ReviewResponse> convertToReviewResponseList(Page<Review> reviewsPage) {
+        return reviewsPage.stream()
+            .map(this::convertToReviewResponse)
+            .collect(Collectors.toList());
     }
 }
