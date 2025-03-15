@@ -4,7 +4,6 @@ package com.tutti.server.core.payment.application;
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.payment.domain.Payment;
-import com.tutti.server.core.payment.domain.PaymentStatus;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.payment.payload.PaymentRequest;
 import com.tutti.server.core.payment.payload.PaymentResponse;
@@ -40,12 +39,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     // 기존 결제 여부 검증 메서드
     private void validateDuplicatePayment(Long orderId) {
-        paymentRepository.findByOrderId(orderId)
-                .ifPresent(payment -> {
-                    throw payment.getPaymentStatus() == PaymentStatus.DONE
-                            ? new DomainException(ExceptionType.PAYMENT_ALREADY_COMPLETED)
-                            : new DomainException(ExceptionType.PAYMENT_ALREADY_PROCESSING);
-                });
+        if (paymentRepository.existsByOrderId(orderId)) {
+            throw new DomainException(ExceptionType.PAYMENT_ALREADY_PROCESSING);
+        }
     }
 
 
