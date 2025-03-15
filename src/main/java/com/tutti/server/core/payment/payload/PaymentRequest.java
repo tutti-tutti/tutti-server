@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull;
 public record PaymentRequest(
 
         @NotNull(message = "주문 ID는 필수입니다.")
-        Long orderId,
+        String orderId,
 
         @Min(value = 1, message = "결제 금액은 최소 1원 이상이어야 합니다.")
         int amount,
@@ -20,14 +20,16 @@ public record PaymentRequest(
         String orderName) {
 
     // 요청이 들어왔을때 첫 결제가 생성됨.
-    public static Payment toEntity(Order order, Member member, int amount, String orderName) {
+    public static Payment toEntity(Order order, Member member, int amount, String orderName,
+            String tossOrderId) {
         return Payment.builder()
                 .orderName(orderName)
                 .amount(amount)
-                .paymentStatus(PaymentStatus.PAYMENT_REQUESTED)
+                .paymentStatus(PaymentStatus.READY)
                 .tossPaymentKey(null)
                 .member(member)
                 .order(order)
+                .tossOrderId(tossOrderId)
                 .paymentMethod(null)
                 .build();
     }

@@ -25,7 +25,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentResponse requestPayment(PaymentRequest request) {
 
-        Order order = validateOrder(request.orderId());
+        Order order = validateOrder(request.orderId()); //tossOrderId임 request의 orderId는
         validateDuplicatePayment(order.getId());
         validatePaymentAmount(order, request.amount());
         Payment savedPayment = createAndSavePayment(order, request);
@@ -33,8 +33,9 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     // 주문 정보 검증 메서드
-    private Order validateOrder(Long orderId) {
-        return orderRepository.findOne(orderId);
+    private Order validateOrder(String tossOrderId) {
+        return orderRepository.findByOrderNumber(tossOrderId)
+                .orElseThrow(() -> new DomainException(ExceptionType.ORDER_NOT_FOUND));
     }
 
     // 기존 결제 여부 검증 메서드
@@ -47,7 +48,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         paymentRepository.findByOrderId(orderId)
-                .filter(payment -> payment.getPaymentStatus() == PaymentStatus.PAYMENT_COMPLETED)
+                .filter(payment -> payment.getPaymentStatus() == PaymentStatus.DONE)
                 .ifPresent(payment -> {
                     throw new DomainException(ExceptionType.PAYMENT_ALREADY_COMPLETED);
                 });
@@ -63,7 +64,7 @@ public class PaymentServiceImpl implements PaymentService {
     // 결제 객체 생성 및 저장 메서드
     private Payment createAndSavePayment(Order order, PaymentRequest request) {
         Payment payment = PaymentRequest.toEntity(order, order.getMember(), request.amount(),
-                request.orderName());
+                request.orderName(), order.getOrderNumber());
         return paymentRepository.save(payment);
     }
 }
