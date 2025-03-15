@@ -7,6 +7,6 @@ public enum ExceptionCode {
     B01, B02, B03, B04,
     C01,
     D01,
-    P01, P02, P03, P04,
+    P01, P02, P03, P04, P05,
     F01, F02;
 }
