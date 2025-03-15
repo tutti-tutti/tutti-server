@@ -43,4 +43,26 @@ public class ReviewLike extends BaseEntity {
         }
         this.isLiked = !this.isLiked;
     }
+
+    // 좋아요 상태 확인 기능 추가
+    public boolean isLiked() {
+        return this.isLiked;
+    }
+
+
+    // 예외 처리, 상태 확인과 토글을 한 메서드에서 처리하도록 추가
+    public void likeReview(Long memberIdFromToken) {
+        if (!this.memberId.equals(memberIdFromToken)) {
+            throw new IllegalArgumentException("잘못된 사용자 요청입니다.");
+        }
+        this.isLiked = true;
+    }
+
+    // 좋아요 상태를 취소하는 메서드
+    public void cancelLikeReview(Long memberIdFromToken) {
+        if (!this.memberId.equals(memberIdFromToken)) {
+            throw new IllegalArgumentException("잘못된 사용자 요청입니다.");
+        }
+        this.isLiked = false;
+    }
 }
