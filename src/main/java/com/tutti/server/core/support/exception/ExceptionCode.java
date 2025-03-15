@@ -8,5 +8,5 @@ public enum ExceptionCode {
     C01,
     D01,
     P01, P02, P03, P04,
-    F01, F02;
+    F01, F02, F03;
 }
