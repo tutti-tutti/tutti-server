@@ -74,4 +74,9 @@ public class Payment extends BaseEntity {
         this.tossPaymentKey = tossPaymentKey;
         this.completedAt = LocalDateTime.now();
     }
+
+    public void cancelPayment(LocalDateTime canceledAt) {
+        this.paymentStatus = PaymentStatus.PAYMENT_CANCELED;
+        this.completedAt = canceledAt;
+    }
 }
