@@ -1,7 +1,6 @@
 package com.tutti.server.core.review.application;
 
 import com.tutti.server.core.review.domain.Review;
-import com.tutti.server.core.review.infrastructure.ReviewLikeRepository;
 import com.tutti.server.core.review.infrastructure.ReviewRepository;
 import com.tutti.server.core.review.payload.request.ReviewListRequest;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
@@ -20,45 +19,56 @@ import org.springframework.stereotype.Service;
 public class ReviewListServiceImpl implements ReviewListService {
 
     private final ReviewRepository reviewRepository;
-    private final ReviewLikeRepository reviewLikeRepository;
 
     @Override
     public ReviewListResponse getReviews(ReviewListRequest request) {
-        Pageable pageable = PageRequest.of(0, request.size(), getSort(request.sort()));
-        Page<Review> reviewsPage = reviewRepository.findByProductId(request.productId(), pageable);
+        return getReviewsWithPagination(
+            request.productId(), 20, request.sort(), request.nextCursor());
+    }
 
-        List<ReviewResponse> reviewResponses = reviewsPage.stream()
-            .map(this::convertToReviewResponse)
-            .collect(Collectors.toList());
 
-        String nextCursor = null;
+    @Override
+    public ReviewListResponse getReviewsWithPagination(Long productId, Integer size, String sort,
+        String nextCursor) {
+        long cursorId = (nextCursor != null) ? Long.parseLong(nextCursor) : 0L;
+        Pageable pageable = PageRequest.of(0, size, getSort(sort));
+
+        Page<Review> reviewsPage = reviewRepository.findByProductIdAndIdGreaterThan(
+            productId, cursorId, pageable);
+
+        List<ReviewResponse> reviewResponses = convertToReviewResponseList(reviewsPage);
+
+        String nextCursorValue = null;
         if (reviewsPage.hasNext()) {
-            nextCursor = reviewsPage.getContent().get(reviewsPage.getContent().size() - 1).getId()
-                .toString();
+            nextCursorValue = reviewsPage.getContent().get(reviewsPage.getContent().size() - 1)
+                .getId().toString();
         }
-        return new ReviewListResponse(reviewResponses, nextCursor);
+
+        return new ReviewListResponse(reviewResponses, nextCursorValue);
     }
 
     private Sort getSort(String sort) {
-        switch (sort) {
-            case "rating_desc":
-                return Sort.by(Sort.Order.desc("rating"));
-            case "like_desc":
-                return Sort.by(Sort.Order.desc("likeCount"));
-            case "created_at_desc":
-            default:
-                return Sort.by(Sort.Order.desc("createdAt"));
-        }
+        return switch (sort.toLowerCase()) {
+            case "latest" -> Sort.by(Sort.Order.desc("latest"));
+            case "rating" -> Sort.by(Sort.Order.desc("rating"));
+            default -> Sort.by(Sort.Order.desc("createdAt"));
+        };
     }
 
     private ReviewResponse convertToReviewResponse(Review review) {
-        long likeCount = reviewLikeRepository.countByReview(review);
         return new ReviewResponse(
             review.getId(),
+            review.getProductId(),
+            review.getNickname(),
             review.getContent(),
             review.getRating(),
-            likeCount,
             review.getCreatedAt()
         );
+    }
+
+    private List<ReviewResponse> convertToReviewResponseList(Page<Review> reviewsPage) {
+        return reviewsPage.stream()
+            .map(this::convertToReviewResponse)
+            .collect(Collectors.toList());
     }
 }
