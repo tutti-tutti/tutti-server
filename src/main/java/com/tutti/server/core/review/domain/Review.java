@@ -45,7 +45,6 @@ public class Review extends BaseEntity {
 
     public static Review createReview(Long productId, Long memberId, Long orderItemId,
         Integer rating, String content, List<String> reviewImages, String nickname) {
-        // 리뷰 이미지 URL 배열을 문자열로 합쳐서 저장
         String reviewImagesString = String.join(",", reviewImages);
 
         return Review.builder()
@@ -55,22 +54,19 @@ public class Review extends BaseEntity {
             .orderItemId(orderItemId)
             .rating(rating)
             .content(content)
-            .reviewImageUrls(reviewImagesString) // 이미지 URL을 문자열로 저장
+            .reviewImageUrls(reviewImagesString)
             .likeCount(0L)
             .build();
     }
 
-    // 이미지를 업데이트하는 메서드들
     public void updateReviewImages(List<String> reviewImages) {
-        this.reviewImageUrls = String.join(",", reviewImages);  // 이미지 배열을 문자열로 합쳐서 저장
+        this.reviewImageUrls = String.join(",", reviewImages);
     }
 
-    // 좋아요 수 증가
     public void increaseLike() {
         this.likeCount += 1;
     }
 
-    // 문자열로 저장된 reviewImageUrls을 다시 List<String> 형태로 변환하는 유틸리티 메서드
     public List<String> getReviewImages() {
         return List.of(this.reviewImageUrls.split(","));
     }
