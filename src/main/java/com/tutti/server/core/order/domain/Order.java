@@ -40,6 +40,8 @@ public class Order extends BaseEntity {
     private LocalDateTime completed_at;
     private int orderCount;
 
+    private String orderNumber;
+
     @Builder
     public Order(Member member, int deliveryFee, int totalAmount, PaymentMethodType paymentType,
             String orderStatus, LocalDateTime completed_at, int orderCount) {

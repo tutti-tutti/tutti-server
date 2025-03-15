@@ -11,5 +11,4 @@ public interface ProductItemRepository extends JpaRepository<ProductItem, Long> 
         return findById(id)
                 .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_NOT_FOUND));
     }
-
 }

@@ -38,6 +38,7 @@ public enum ExceptionType {
 
     // - 주문 -
     ORDER_NOT_FOUND(ExceptionCode.D01, "해당 주문을 찾을 수 없습니다."),
+    ORDER_ITEM_NOT_FOUND(ExceptionCode.D02, "해당 주문 상품을 찾을 수 없습니다."),
 
     // - 결제 -
     PAYMENT_NOT_FOUND(ExceptionCode.P01, "해당 결제 내역을 찾을 수 없습니다."),
