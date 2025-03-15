@@ -5,6 +5,8 @@ import com.tutti.server.core.member.domain.MemberStatus;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.member.jwt.JWTUtil;
 import com.tutti.server.core.member.payload.LoginRequest;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,25 +23,25 @@ public class AuthService {
     public Map<String, String> login(LoginRequest request) {
         // 1. 이메일 존재 여부 확인
         Member member = memberRepository.findByEmail(request.email())
-                .orElseThrow(() -> new IllegalArgumentException("이메일이 존재하지 않습니다."));
+                .orElseThrow(() -> new DomainException(ExceptionType.MEMBER_NOT_FOUND));
 
         // 2. 이메일 인증 여부 확인
         if (!member.isEmailVerified()) {
-            throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
+            throw new DomainException(ExceptionType.EMAIL_NOT_VERIFIED);
         }
 
         // 3. 계정 상태 확인
         if (member.getMemberStatus() == MemberStatus.WITHDRAWN) {
-            throw new IllegalArgumentException("탈퇴한 계정입니다.");
+            throw new DomainException(ExceptionType.ACCOUNT_WITHDRAWN);
         }
 
         if (member.getMemberStatus() == MemberStatus.BANNED) {
-            throw new IllegalArgumentException("정지된 계정입니다.");
+            throw new DomainException(ExceptionType.ACCOUNT_BANNED);
         }
 
         // 4. 비밀번호 검증
         if (!passwordEncoder.matches(request.password(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new DomainException(ExceptionType.LOGIN_PASSWORD_MISMATCH);
         }
 
         // 5. JWT 토큰 생성

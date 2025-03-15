@@ -23,25 +23,14 @@ public class EmailVerificationApi {
     public ResponseEntity<?> requestEmailVerification(@RequestBody Map<String, String> request) {
         String email = request.get("email");
 
-        if (email == null || email.isBlank()) {
-            return ResponseEntity.badRequest()
-                    .body(Collections.singletonMap("error", "이메일은 필수 입력 항목입니다."));
-        }
-
         emailVerificationService.sendVerificationEmail(email);
         return ResponseEntity.ok(Collections.singletonMap("message", "이메일 인증 코드가 발송되었습니다."));
     }
 
-    // 사용자가 입력한 인증 코드 검증
     @PostMapping("/email/confirm")
     public ResponseEntity<?> verifyEmail(@RequestBody EmailVerificationRequest request) {
-        boolean success = emailVerificationService.verifyEmail(request.email(),
+        emailVerificationService.verifyEmail(request.email(),
                 request.verificationCode());
-
-        if (!success) {
-            return ResponseEntity.badRequest()
-                    .body(Collections.singletonMap("error", "인증 코드가 올바르지 않거나 만료되었습니다."));
-        }
 
         return ResponseEntity.ok(Collections.singletonMap("message", "이메일 인증이 완료되었습니다."));
     }
