@@ -39,14 +39,11 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         String email = jwtUtil.getEmail(token);
-        // 🔹 email이 null인지 확인하는 로그 추가
         if (email == null) {
-            System.out.println("❌ JWT 토큰에서 email을 가져오지 못했습니다.");
+            System.out.println("JWT 토큰에서 email을 가져오지 못했습니다.");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
             return;
         }
-
-        //System.out.println("✅ JWT에서 추출한 이메일: " + email);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
