@@ -41,7 +41,6 @@ public class PasswordChangeService {
         }
 
         member.updatePassword(passwordEncoder.encode(request.newPassword()));
-        memberRepository.save(member);
     }
 
     private boolean isValidPassword(String password) {
