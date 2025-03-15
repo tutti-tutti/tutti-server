@@ -1,6 +1,5 @@
 package com.tutti.server.core.payment.api;
 
-import com.tutti.server.core.payment.application.PaymentConfirmService;
 import com.tutti.server.core.payment.application.PaymentService;
 import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
 import com.tutti.server.core.payment.payload.PaymentRequest;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentApi {
 
     private final PaymentService paymentService;
-    private final PaymentConfirmService paymentConfirmService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -39,7 +37,7 @@ public class PaymentApi {
     public ResponseEntity<Map<String, Object>> confirmPayment(
             @Valid @RequestBody PaymentConfirmRequest request) {
 
-        Map<String, Object> response = paymentConfirmService.confirmPayment(request);
+        Map<String, Object> response = paymentService.confirmPayment(request);
         return ResponseEntity.ok(response);
     }
 }

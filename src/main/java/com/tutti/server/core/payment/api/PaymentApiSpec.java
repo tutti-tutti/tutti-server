@@ -14,7 +14,7 @@ public interface PaymentApiSpec {
     @Operation(summary = "결제 요청", description = "사용자가 결제를 요청하는 API")
     PaymentResponse requestPayment(PaymentRequest request);
 
-    @Operation(summary = "결제 확인", description = "사용자가 결제 승인을 요청하는 API")
+    @Operation(summary = "결제 승인", description = "사용자가 결제 승인을 요청하는 API")
     ResponseEntity<Map<String, Object>> confirmPayment(PaymentConfirmRequest request);
 
 }
