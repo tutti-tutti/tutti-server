@@ -25,7 +25,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentResponse requestPayment(PaymentRequest request) {
 
-        Order order = validateOrder(request.orderNumber()); //tossOrderId임
+        Order order = validateOrder(request.orderNumber());
         validateDuplicatePayment(order.getId());
         validatePaymentAmount(order, request.amount());
         Payment savedPayment = createAndSavePayment(order, request);
@@ -38,14 +38,14 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new DomainException(ExceptionType.ORDER_NOT_FOUND));
     }
 
-    //     기존 결제 여부 검증 메서드
+    // 기존 결제 여부 검증 메서드
     private void validateDuplicatePayment(Long orderId) {
-        paymentRepository.findByOrderId(orderId).ifPresent(payment -> {
-            if (payment.getPaymentStatus() == PaymentStatus.DONE) {
-                throw new DomainException(ExceptionType.PAYMENT_ALREADY_COMPLETED);
-            }
-            throw new DomainException(ExceptionType.PAYMENT_ALREADY_PROCESSING);
-        });
+        paymentRepository.findByOrderId(orderId)
+                .ifPresent(payment -> {
+                    throw payment.getPaymentStatus() == PaymentStatus.DONE
+                            ? new DomainException(ExceptionType.PAYMENT_ALREADY_COMPLETED)
+                            : new DomainException(ExceptionType.PAYMENT_ALREADY_PROCESSING);
+                });
     }
 
 
