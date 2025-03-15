@@ -23,7 +23,6 @@ public interface FaqRepository extends JpaRepository<Faq, Long> {
     Page<Faq> findByFaqCategory_MainCategoryAndFaqCategory_SubCategoryAndDeleteStatusFalseAndIsViewTrue(
         String mainCategory, String subCategory, Pageable pageable);
 
-
     Page<Faq> findByQuestionContainingIgnoreCaseAndDeleteStatusFalseAndIsViewTrue(
         String query, Pageable pageable);
 
@@ -35,4 +34,21 @@ public interface FaqRepository extends JpaRepository<Faq, Long> {
     @Modifying
     @Query("UPDATE Faq f SET f.viewCnt = f.viewCnt + 1 WHERE f.id = :faqId")
     void incrementViewCount(@Param("faqId") Long faqId);
+
+    default List<Faq> findTopFaqsOrThrow(Pageable pageable) {
+        List<Faq> faqs = findTopFaqs(pageable);
+        if (faqs.isEmpty()) {
+            throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
+        }
+        return faqs;
+    }
+
+    @Modifying
+    @Query("UPDATE Faq f SET f.viewCnt = f.viewCnt + 1 WHERE f.id = :faqId")
+    default void incrementViewCountOrThrow(@Param("faqId") Long faqId) {
+        if (!existsById(faqId)) {
+            throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
+        }
+        incrementViewCount(faqId);
+    }
 }

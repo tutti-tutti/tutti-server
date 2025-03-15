@@ -47,7 +47,8 @@ public enum ExceptionType {
 
     // - FAQ -
     FAQ_NOT_FOUND(ExceptionCode.F01, "존재하지 않는 FAQ 입니다."),
-    FAQ_CATEGORY_NOT_FOUND(ExceptionCode.F02, "존재하지 않는 카테고리입니다.");
+    FAQ_CATEGORY_NOT_FOUND(ExceptionCode.F02, "존재하지 않는 카테고리입니다."),
+    FAQ_FEEDBACK_FAILED(ExceptionCode.F03, "피드백 등록에 실패했습니다.");
 
     private final HttpStatus status;
 

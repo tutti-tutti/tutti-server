@@ -2,6 +2,8 @@ package com.tutti.server.core.faq.application.user;
 
 import com.tutti.server.core.faq.infrastructure.FaqRepository;
 import com.tutti.server.core.faq.payload.response.FaqResponse;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -16,10 +18,19 @@ public class FaqTopViewedListServiceImpl implements FaqTopViewedListService {
 
     @Transactional(readOnly = true)
     public List<FaqResponse> getTopFaqs(int limit) {
-        PageRequest pageable = PageRequest.of(0, limit);
-        return faqRepository.findTopFaqs(pageable)
-            .stream()
-            .map(FaqResponse::fromEntity)
-            .toList();
+        try {
+            PageRequest pageable = PageRequest.of(0, limit);
+            List<FaqResponse> topFaqs = faqRepository.findTopFaqs(pageable)
+                .stream()
+                .map(FaqResponse::fromEntity)
+                .toList();
+
+            if (topFaqs.isEmpty()) {
+                throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
+            }
+            return topFaqs;
+        } catch (Exception e) {
+            throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
+        }
     }
 }

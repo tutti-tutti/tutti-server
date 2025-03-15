@@ -7,6 +7,8 @@ import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
 import com.tutti.server.core.faq.payload.response.FaqListResponse;
 import com.tutti.server.core.faq.payload.response.FaqResponse;
 import com.tutti.server.core.faq.payload.response.FaqSearchResponse;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,15 +40,14 @@ public class FaqSearchListServiceImpl implements FaqSearchListService {
     private FaqListRequest convertToFaqListRequest(FaqSearchRequest request) {
         return new FaqListRequest(
             request.query(),
-            null,                       // 카테고리는 기본값 null로 설정, 필요시 수정
-            null,                       // 서브카테고리도 기본값 null로 설정, 필요시 수정
+            null,
+            null,
             request.page(),
             request.size()
         );
     }
 
     private Page<FaqResponse> findFaqs(FaqListRequest request, PageRequest pageRequest) {
-
         Page<Faq> faqs;
 
         if (request.query() != null && !request.query().isEmpty()) {
@@ -57,6 +58,10 @@ public class FaqSearchListServiceImpl implements FaqSearchListService {
                 request.category(), request.subcategory(), pageRequest);
         } else {
             faqs = faqRepository.findByDeleteStatusFalseAndIsViewTrue(pageRequest);
+        }
+
+        if (faqs.isEmpty()) {
+            throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
         }
 
         return faqs.map(FaqResponse::fromEntity);
