@@ -32,7 +32,7 @@ public class JWTUtil {
                     .build()
                     .parseSignedClaims(token)
                     .getPayload()
-                    .get("username", String.class);
+                    .get("email", String.class);
         } catch (ExpiredJwtException e) {
             throw new RuntimeException("토큰이 만료되었습니다.", e);
         } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
