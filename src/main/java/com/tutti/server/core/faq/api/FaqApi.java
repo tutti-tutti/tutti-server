@@ -1,6 +1,7 @@
 package com.tutti.server.core.faq.api;
 
-import com.tutti.server.core.faq.application.FaqServiceImpl;
+import com.tutti.server.core.faq.application.user.FaqServiceImpl;
+import com.tutti.server.core.faq.payload.request.FaqFeedbackRequest;
 import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
 import com.tutti.server.core.faq.payload.response.FaqListResponse;
@@ -10,11 +11,13 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/faqs")
+@RequestMapping("/faqs")
 @RequiredArgsConstructor
 public class FaqApi implements FaqApiSpec {
 
@@ -49,5 +52,11 @@ public class FaqApi implements FaqApiSpec {
     @GetMapping("/search")
     public ResponseEntity<FaqListResponse> searchFaqs(@Valid FaqSearchRequest request) {
         return ResponseEntity.ok(faqServiceImpl.searchFaqs(request));
+    }
+
+    @Override
+    @PatchMapping("/{faqId}/feedback")
+    public void faqFeedback(@PathVariable Long faqId, @Valid FaqFeedbackRequest request) {
+        faqServiceImpl.faqFeedback(faqId, request);
     }
 }

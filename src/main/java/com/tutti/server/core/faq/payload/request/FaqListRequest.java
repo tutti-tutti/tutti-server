@@ -11,7 +11,6 @@ public record FaqListRequest(
     @Schema(description = "페이지당 데이터 개수 (기본값: 10)", example = "10") int size
 ) {
 
-    // 페이지 기본값 설정
     public FaqListRequest {
         if (page < 1) {
             page = 1;
