@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,9 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JWTUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(JWTUtil jwtUtil) {
+    public SecurityConfig(JWTUtil jwtUtil, UserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService; // 🔹 생성자에서 주입
     }
 
     @Bean
@@ -41,7 +44,8 @@ public class SecurityConfig {
                         // JWT 기반 인증 (세션 사용 X)
                 )
                 // ✅ JWTFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
-                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JWTFilter(jwtUtil, userDetailsService),
+                        UsernamePasswordAuthenticationFilter.class)
                 .formLogin(form -> form.disable()) // 기본 로그인 폼 비활성화
                 .httpBasic(httpBasic -> httpBasic.disable()); // HTTP 기본 인증 비활성화
 
