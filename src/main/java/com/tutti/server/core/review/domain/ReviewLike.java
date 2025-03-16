@@ -37,7 +37,6 @@ public class ReviewLike extends BaseEntity {
         this.isLiked = true;
     }
 
-    // 좋아요 토글 기능 추가 (토큰을 통해 로그인한 사용자 검증)
     public void toggleLike(Long memberIdFromToken) {
         if (!this.memberId.equals(memberIdFromToken)) {
             throw new IllegalArgumentException("잘못된 사용자 요청입니다.");

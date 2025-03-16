@@ -10,7 +10,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     default Member findOne(Long id) {
         return findById(id)
-                .orElseThrow(() -> new DomainException(ExceptionType.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new DomainException(ExceptionType.MEMBER_NOT_FOUND));
     }
 
     boolean existsByEmail(String email);
