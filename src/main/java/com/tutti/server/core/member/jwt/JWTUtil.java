@@ -1,5 +1,7 @@
 package com.tutti.server.core.member.jwt;
 
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -34,11 +36,11 @@ public class JWTUtil {
                     .getPayload()
                     .get("email", String.class);
         } catch (ExpiredJwtException e) {
-            throw new RuntimeException("토큰이 만료되었습니다.", e);
+            throw new DomainException(ExceptionType.TOKEN_EXPIRED);
         } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-            throw new RuntimeException("유효하지 않은 JWT 토큰입니다.", e);
+            throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
         } catch (io.jsonwebtoken.security.SecurityException e) {
-            throw new RuntimeException("JWT 서명이 유효하지 않습니다.", e);
+            throw new DomainException(ExceptionType.INVALID_JWT_SIGNATURE);
         }
     }
 
@@ -56,29 +58,36 @@ public class JWTUtil {
             return true;
         } catch (MalformedJwtException | SignatureException | UnsupportedJwtException |
                  IllegalArgumentException e) {
-            // 잘못된 토큰 형식, 서명 불일치, 지원되지 않는 토큰, 잘못된 입력값 등
-            throw new RuntimeException("유효하지 않은 JWT 토큰입니다.", e);
+            throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
         }
     }
 
     public String createJwt(String email, String memberStatus, Long expiredMs) {
 
-        return Jwts.builder()
-                .claim("email", email)
-                .claim("memberStatus", memberStatus)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(secretKey)
-                .compact();
+        try {
+            return Jwts.builder()
+                    .claim("email", email)
+                    .claim("memberStatus", memberStatus)
+                    .issuedAt(new Date(System.currentTimeMillis()))
+                    .expiration(new Date(System.currentTimeMillis() + expiredMs))
+                    .signWith(secretKey)
+                    .compact();
+        } catch (Exception e) {
+            throw new DomainException(ExceptionType.JWT_CREATION_FAILED);
+        }
     }
 
     public String createRefreshToken(String email, Long expiredMs) {
-        return Jwts.builder()
-                .claim("email", email)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(secretKey)
-                .compact();
+        try {
+            return Jwts.builder()
+                    .claim("email", email)
+                    .issuedAt(new Date(System.currentTimeMillis()))
+                    .expiration(new Date(System.currentTimeMillis() + expiredMs))
+                    .signWith(secretKey)
+                    .compact();
+        } catch (Exception e) {
+            throw new DomainException(ExceptionType.JWT_CREATION_FAILED);
+        }
     }
 
 

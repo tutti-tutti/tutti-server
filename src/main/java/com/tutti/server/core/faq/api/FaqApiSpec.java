@@ -1,5 +1,6 @@
 package com.tutti.server.core.faq.api;
 
+import com.tutti.server.core.faq.payload.request.FaqFeedbackRequest;
 import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
 import com.tutti.server.core.faq.payload.response.FaqListResponse;
@@ -37,4 +38,7 @@ public interface FaqApiSpec {
 
     @Operation(summary = "FAQ 검색", description = "특정 키워드를 포함하는 FAQ를 검색합니다.")
     ResponseEntity<FaqListResponse> searchFaqs(FaqSearchRequest request);
+
+    @Operation(summary = "FAQ 피드백(긍정, 부정)", description = "FAQ에 대한 피드백을 등록합니다.")
+    void faqFeedback(Long faqId, FaqFeedbackRequest request);
 }

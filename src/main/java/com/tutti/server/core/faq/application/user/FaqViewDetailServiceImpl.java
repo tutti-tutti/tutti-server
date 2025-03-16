@@ -1,8 +1,10 @@
-package com.tutti.server.core.faq.application;
+package com.tutti.server.core.faq.application.user;
 
 import com.tutti.server.core.faq.domain.Faq;
 import com.tutti.server.core.faq.infrastructure.FaqRepository;
 import com.tutti.server.core.faq.payload.response.FaqResponse;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +18,16 @@ public class FaqViewDetailServiceImpl implements FaqViewDetailService {
 
     @Transactional
     public FaqResponse findFaqById(Long faqId) {
+        try {
+            Faq faq = faqRepository.findOne(faqId);
+            if (faq == null) {
+                throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
+            }
 
-        Faq faq = faqRepository.findOne(faqId);
-        faqIncrementViewCountServiceImpl.incrementViewCount(faqId);
-        return FaqResponse.fromEntity(faq);
+            faqIncrementViewCountServiceImpl.incrementViewCount(faqId);
+            return FaqResponse.fromEntity(faq);
+        } catch (Exception e) {
+            throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
+        }
     }
-
 }
