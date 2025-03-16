@@ -6,8 +6,6 @@ import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
 import com.tutti.server.core.payment.payload.PaymentRequest;
 import com.tutti.server.core.payment.payload.PaymentResponse;
 import com.tutti.server.core.payment.payload.PaymentViewResponse;
-import com.tutti.server.core.payment.payload.ViewMemberIdRequest;
-import com.tutti.server.core.payment.payload.ViewOrderIdRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,14 +49,14 @@ public class PaymentApi {
 
     // 회원ID로 결제 조회
     @GetMapping("/memberId/{memberId}")
-    public List<PaymentViewResponse> getMemberPayments(ViewMemberIdRequest memberId) {
+    public List<PaymentViewResponse> getMemberPayments(@PathVariable Long memberId) {
 
-        return paymentViewService.viewPaymentsByMemberId(memberId);
+        return paymentViewService.viewPaymentByMemberId(memberId);
     }
 
     // 주문ID로 결제 조회
     @GetMapping("/orderId/{orderId}")
-    public PaymentViewResponse getPaymentsViewOrderId(ViewOrderIdRequest orderId) {
+    public PaymentViewResponse getPaymentsViewOrderId(@PathVariable Long orderId) {
 
         return paymentViewService.viewPaymentByOrderId(orderId);
     }
