@@ -6,6 +6,10 @@ import com.tutti.server.core.review.payload.response.ReviewListResponse;
 public interface ReviewListService {
 
     ReviewListResponse getReviews(ReviewListRequest request);
+
+    ReviewListResponse getReviewsWithPagination(Long productId, Integer size, String sort,
+        String nextCursor);
+
 }
 
 
