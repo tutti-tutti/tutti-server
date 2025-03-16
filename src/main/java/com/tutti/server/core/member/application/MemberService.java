@@ -3,14 +3,18 @@ package com.tutti.server.core.member.application;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.domain.MemberAgreementMapping;
 import com.tutti.server.core.member.domain.TermsConditions;
+import com.tutti.server.core.member.domain.VerificationCode;
 import com.tutti.server.core.member.infrastructure.MemberAgreementMappingRepository;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.member.infrastructure.TermsConditionsRepository;
 import com.tutti.server.core.member.infrastructure.VerificationCodeRepository;
 import com.tutti.server.core.member.payload.SignupRequest;
 import com.tutti.server.core.member.payload.TermsAgreementRequest;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +29,9 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final TermsConditionsRepository termsConditionsRepository;
     private final MemberAgreementMappingRepository memberAgreementMappingRepository;
+
+    private static final Pattern PASSWORD_PATTERN =
+            Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$");
 
     public void signup(SignupRequest request) {
 
@@ -41,36 +48,44 @@ public class MemberService {
         // 3. 필수 약관 동의 여부 검증
         for (TermsConditions terms : requiredTerms) {
             if (!userAgreements.getOrDefault(terms.getId(), false)) {
-                throw new IllegalArgumentException(
-                        "필수 약관(" + terms.getTermsType().getDescription() + ")에 동의해야 합니다.");
+                throw new DomainException(ExceptionType.REQUIRED_TERMS_NOT_AGREED);
             }
         }
+
         // 회원 정보 저장
         // 1. 필수 필드 검증
         if (request.email() == null || request.password() == null
                 || request.passwordConfirm() == null) {
-            throw new IllegalArgumentException("이메일, 비밀번호 및 비밀번호 확인은 필수 입력 항목입니다.");
+            throw new DomainException(ExceptionType.MISSING_REQUIRED_FIELD);
         }
 
         // 2. 비밀번호 일치 확인
         if (!request.password().equals(request.passwordConfirm())) {
-            throw new IllegalArgumentException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            throw new DomainException(ExceptionType.PASSWORD_MISMATCH);
         }
 
-        // 3. 이메일 중복 확인
+        // 3. 비밀번호 길이 확인
+        if (request.password().length() < 8) {
+            throw new DomainException(ExceptionType.PASSWORD_TOO_SHORT);
+        }
+
+        // 4. 복잡도 확인 (정규식 사용)
+        if (!PASSWORD_PATTERN.matcher(request.password()).matches()) {
+            throw new DomainException(ExceptionType.PASSWORD_COMPLEXITY_NOT_MET);
+        }
+
+        // 5. 이메일 중복 확인
         if (memberRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+            throw new DomainException(ExceptionType.EMAIL_ALREADY_EXISTS);
         }
 
-        // 4. 이메일 인증 여부 확인
+        // 6. 이메일 인증 여부 확인
+        // 5. 이메일 인증 여부 확인 (중복 제거)
         var verificationCode = verificationCodeRepository.findByEmail(request.email())
-                .orElseThrow(() -> new IllegalArgumentException("이메일 인증을 완료해야 회원가입이 가능합니다."));
+                .filter(VerificationCode::isVerified)
+                .orElseThrow(() -> new DomainException(ExceptionType.EMAIL_NOT_VERIFIED));
 
-        if (!verificationCode.isVerified()) {
-            throw new IllegalArgumentException("이메일 인증을 완료해야 회원가입이 가능합니다.");
-        }
-
-        // 5. 비밀번호 해싱 후 저장
+        // 7. 비밀번호 해싱 후 저장
         String encodedPassword = passwordEncoder.encode(request.password());
         Member member = Member.createEmailMember(request.email(), encodedPassword);
 
@@ -80,8 +95,7 @@ public class MemberService {
         // 약관 동의 정보 저장
         for (TermsAgreementRequest termsAgreement : request.termsAgreement()) {
             TermsConditions terms = termsConditionsRepository.findById(termsAgreement.termId())
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "유효하지 않은 약관 ID: " + termsAgreement.termId()));
+                    .orElseThrow(() -> new DomainException(ExceptionType.TERMS_NOT_FOUND));
 
             MemberAgreementMapping agreementMapping = MemberAgreementMapping.builder()
                     .member(member)
