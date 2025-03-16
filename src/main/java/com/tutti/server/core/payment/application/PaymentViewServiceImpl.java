@@ -1,11 +1,11 @@
 package com.tutti.server.core.payment.application;
 
 
-import com.tutti.server.core.order.infrastructure.OrderItemRepository;
-import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.payment.payload.PaymentViewResponse;
+import com.tutti.server.core.payment.payload.ViewMemberIdRequest;
+import com.tutti.server.core.payment.payload.ViewOrderIdRequest;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
@@ -19,21 +19,32 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentViewServiceImpl implements PaymentViewService {
 
     private final PaymentRepository paymentRepository;
-    private final OrderRepository orderRepository;
-    private final OrderItemRepository orderItemRepository;
 
+    //meberId로 결제 조회
     @Override
-    @Transactional
-    public List<PaymentViewResponse> viewPaymentsByMemberId(Long memberId) {
+    @Transactional(readOnly = true)
+    public List<PaymentViewResponse> viewPaymentsByMemberId(ViewMemberIdRequest request) {
 
-        List<Payment> payments = findPaymentsByMemberId(memberId);
+        // memberId로 결제 조회
+        List<Payment> payments = findPaymentsByMemberId(request.memberId());
 
         // 결제 내역이 없으면 예외 던지기
         checkIfPaymentsExist(payments);
 
         // 결제 내역을 PaymentViewResponse로 변환
-        return mapPaymentsToViewResponse(payments);
+        return PaymentsToViewResponse(payments);
+    }
 
+    //orderId로 결제 조회
+    @Override
+    @Transactional(readOnly = true)
+    public PaymentViewResponse viewPaymentByOrderId(ViewOrderIdRequest request) {
+
+        // 결제 정보 조회
+        Payment payment = paymentRepository.findByOrderId(request.orderId())
+                .orElseThrow(() -> new DomainException(ExceptionType.PAYMENT_NOT_FOUND));
+
+        return PaymentViewResponse.fromEntity(payment);
     }
 
     private List<Payment> findPaymentsByMemberId(Long memberId) {
@@ -46,31 +57,9 @@ public class PaymentViewServiceImpl implements PaymentViewService {
         }
     }
 
-    private List<PaymentViewResponse> mapPaymentsToViewResponse(List<Payment> payments) {
+    private List<PaymentViewResponse> PaymentsToViewResponse(List<Payment> payments) {
         return payments.stream()
                 .map(PaymentViewResponse::fromEntity)
                 .collect(Collectors.toList());
-    }
-
-
-    @Override
-    @Transactional
-    public PaymentViewResponse getPaymentByOrderId(Long orderId) {
-
-        // 유효성 검사
-        if (orderId == null) {
-            throw new NullPointerException("주문ID가 유효하지 않습니다.");
-        }
-
-        if (!orderRepository.existsById(orderId)) {
-            throw new DomainException(ExceptionType.ORDER_NOT_FOUND);
-        }
-
-        // 결제 정보 조회
-        Payment payment = paymentRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new DomainException(ExceptionType.PAYMENT_NOT_FOUND));
-
-        return PaymentViewResponse.fromEntity(payment);
-
     }
 }
