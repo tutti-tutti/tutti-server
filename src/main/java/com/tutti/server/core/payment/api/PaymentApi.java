@@ -33,11 +33,11 @@ public class PaymentApi {
         return paymentService.requestPayment(request);
     }
 
-    @PostMapping("/confirm")
-    public ResponseEntity<Map<String, Object>> confirmPayment(
+    @PostMapping("/confirm/success")
+    public ResponseEntity<Map<String, String>> confirmPayment(
             @Valid @RequestBody PaymentConfirmRequest request) {
-
-        Map<String, Object> response = paymentService.confirmPayment(request);
-        return ResponseEntity.ok(response);
+        paymentService.confirmPayment(request);
+        Map<String, String> body = Map.of("message", "결제가 완료되었습니다.");
+        return ResponseEntity.ok(body);
     }
 }

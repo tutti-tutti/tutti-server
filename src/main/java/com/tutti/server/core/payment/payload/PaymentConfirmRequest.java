@@ -9,7 +9,7 @@ public record PaymentConfirmRequest(
         String paymentKey,
 
         @NotBlank(message = "주문 ID는 필수입니다.")
-        String orderId,
+        String orderId, // 수정 불가
 
         @Min(1)
         int amount

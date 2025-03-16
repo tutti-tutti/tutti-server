@@ -80,16 +80,13 @@ public class Payment extends BaseEntity {
     }
 
     // Toss 결제 승인 후 상태 업데이트
-    public void updatePayment(
-            String tossPaymentKey,
+    public void confirmPayment(PaymentMethod paymentMethod, String tossPaymentKey,
             PaymentStatus status,
-//            PaymentMethod method, //TODO ERD 고민좀 해봐야할듯.
-            LocalDateTime completedAt,
-            int amount
-    ) {
+            LocalDateTime completedAt, int amount) {
+        this.paymentMethod = paymentMethod;
+        // paymentKey, paymentStatus, approvedAt, amount 등도 함께 업데이트
         this.tossPaymentKey = tossPaymentKey;
         this.paymentStatus = status;
-//        this.paymentMethod = method;
         this.completedAt = completedAt;
         this.amount = amount;
     }

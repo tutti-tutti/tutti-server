@@ -39,8 +39,6 @@ public class Order extends BaseEntity {
 
     private LocalDateTime completed_at;
     private int orderCount;
-    private String orderNumber; //TODO 테스트용으로 잠시
-
     private String orderNumber;
 
     @Builder
