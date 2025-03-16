@@ -26,12 +26,15 @@ public class OrderItem extends BaseEntity {
     @JoinColumn(name = "product_item_id", nullable = false)
     private ProductItem productItem;
 
+    private String productItemOption;
+    private String productName;
+    private String productImgUrl;
     private int quantity;
-
     private int price;
 
     @Builder
-    public OrderItem(Order order, ProductItem productItem, int quantity, int price) {
+    public OrderItem(Order order, ProductItem productItem, String productItemOption,
+            String productName, String productImgUrl, int quantity, int price) {
         this.order = order;
         this.productItem = productItem;
         this.quantity = quantity;
