@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record FaqUpdateResponse(
 
     @Schema(description = "FAQ ID", example = "1")
-    Long faqId,
+    long faqId,
 
     @Schema(description = "FAQ 질문", example = "배송 기간은 얼마나 걸리나요?")
     String question,
@@ -15,7 +15,7 @@ public record FaqUpdateResponse(
     String answer,
 
     @Schema(description = "FAQ 노출 여부", example = "true")
-    Boolean isView,
+    boolean isView,
 
     @Schema(description = "카테고리 이름", example = "배송 관련 > 국내 배송")
     String categoryName
