@@ -42,10 +42,6 @@ public class OrderHistory {
     private CreatedByType createdByType;
 
     private long createdById;
-
-    @Column(length = 100)
-    private String cancelReason;
-
     private boolean latestVersion;
 
     @Column
@@ -54,12 +50,12 @@ public class OrderHistory {
 
     @Builder
     public OrderHistory(Long id, Order order, OrderStatus orderStatus, CreatedByType createdByType,
-            String cancelReason, boolean latestVersion) {
+            long createdById, boolean latestVersion) {
         this.id = id;
         this.order = order;
         this.orderStatus = orderStatus;
         this.createdByType = createdByType;
-        this.cancelReason = cancelReason;
+        this.createdById = createdById;
         this.latestVersion = latestVersion;
         this.createdAt = LocalDateTime.now();
     }
