@@ -4,7 +4,6 @@ import com.tutti.server.core.review.domain.Review;
 import com.tutti.server.core.review.infrastructure.ReviewRepository;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
 import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,36 +13,21 @@ public class ReviewCreateServiceImpl implements ReviewCreateService {
 
     private final ReviewRepository reviewRepository;
 
-    public String getNicknameByMemberId(Long memberId) {
-        if (memberId == 1L) {
-            return "testUser";
-        }
-        return "defaultUser";
-    }
-
-    @Override
     public ReviewCreateResponse createReview(ReviewCreateRequest reviewCreateRequest) {
-        String username = "testUser";
 
-        Long memberId = getMemberIdFromUsername(username);
+        String reviewImagesString = String.join(",", reviewCreateRequest.reviewImages());
 
-        String nickname = getNicknameByMemberId(memberId);
-
-        List<String> reviewImages = reviewCreateRequest.reviewImages();
-
-        Review review = Review.createReview(
-            reviewCreateRequest.orderItemId(),
-            memberId,
-            reviewCreateRequest.orderItemId(),
-            reviewCreateRequest.rating(),
-            reviewCreateRequest.content(),
-            reviewImages,
-            nickname
-        );
+        Review review = Review.builder()
+            .productId(reviewCreateRequest.productId())
+            .nickname(reviewCreateRequest.nickname())
+            .rating(reviewCreateRequest.rating())
+            .content(reviewCreateRequest.content())
+            .reviewImageUrls(reviewImagesString)
+            .build();
 
         reviewRepository.save(review);
 
-        return new ReviewCreateResponse("리뷰 작성이 완료되었습니다.");
+        return new ReviewCreateResponse("리뷰가 등록되었습니다.");
     }
 
     private Long getMemberIdFromUsername(String username) {

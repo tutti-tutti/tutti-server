@@ -37,10 +37,38 @@ public class ReviewLike extends BaseEntity {
         this.isLiked = true;
     }
 
+    public ReviewLike(Review review, Long memberId, boolean isLiked) {
+        this.review = review;
+        this.memberId = memberId;
+        this.isLiked = isLiked;
+    }
+
     public void toggleLike(Long memberIdFromToken) {
         if (!this.memberId.equals(memberIdFromToken)) {
             throw new IllegalArgumentException("잘못된 사용자 요청입니다.");
         }
         this.isLiked = !this.isLiked;
     }
+
+    // 좋아요 상태 확인 기능 추가
+    public boolean isLiked() {
+        return this.isLiked;
+    }
+
+    // 좋아요 상태를 '좋아요'로 설정하는 메서드
+    public void likeReview(Long memberIdFromToken) {
+        if (!this.memberId.equals(memberIdFromToken)) {
+            throw new IllegalArgumentException("잘못된 사용자 요청입니다.");
+        }
+        this.isLiked = true;
+    }
+
+    // 좋아요 상태를 '취소'하는 메서드
+    public void cancelLikeReview(Long memberIdFromToken) {
+        if (!this.memberId.equals(memberIdFromToken)) {
+            throw new IllegalArgumentException("잘못된 사용자 요청입니다.");
+        }
+        this.isLiked = false;
+    }
 }
+

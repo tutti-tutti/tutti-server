@@ -90,4 +90,10 @@ public class FaqApi implements FaqApiSpec {
             throw new DomainException(ExceptionType.FAQ_FEEDBACK_FAILED);  // 예외 처리
         }
     }
+
+    @Override
+    @PatchMapping("/{faqId}/feedback")
+    public void faqFeedback(@PathVariable Long faqId, @Valid FaqFeedbackRequest request) {
+        faqServiceImpl.faqFeedback(faqId, request);
+    }
 }
