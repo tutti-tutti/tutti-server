@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 public enum ExceptionType {
 
     DEFAULT_ERROR(INTERNAL_SERVER_ERROR, ExceptionCode.E500, "알 수 없는 이유로 서버에서 요청을 처리할 수 없습니다.",
-            ERROR),
+        ERROR),
     UNAUTHORIZED_ERROR(HttpStatus.UNAUTHORIZED, ExceptionCode.E401, "권한이 없습니다", INFO),
 
     // - 회원 인증 관련 -
@@ -69,7 +69,10 @@ public enum ExceptionType {
     // - FAQ -
     FAQ_NOT_FOUND(ExceptionCode.F01, "존재하지 않는 FAQ 입니다."),
     FAQ_CATEGORY_NOT_FOUND(ExceptionCode.F02, "존재하지 않는 카테고리입니다."),
-    FAQ_FEEDBACK_FAILED(ExceptionCode.F03, "피드백 등록에 실패했습니다.");
+    FAQ_FEEDBACK_FAILED(ExceptionCode.F03, "피드백 등록에 실패했습니다."),
+
+    // - 상품 리뷰 -
+    REVIEW_NOT_FOUND(ExceptionCode.R01, "존재하지 않는 리뷰입니다.");
 
     private final HttpStatus status;
 
