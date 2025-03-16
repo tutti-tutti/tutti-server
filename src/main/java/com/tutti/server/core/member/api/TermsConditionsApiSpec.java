@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "약관 API", description = "이용 약관 및 정책 관련 API")
-@RequestMapping("api/v1/members/terms")
+@RequestMapping("members/terms")
 public interface TermsConditionsApiSpec {
 
     @Operation(summary = "전체 약관 조회", description = "모든 약관을 조회합니다.")

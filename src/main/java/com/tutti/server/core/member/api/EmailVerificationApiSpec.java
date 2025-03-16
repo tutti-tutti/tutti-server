@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "회원 이메일 인증 API", description = "이메일 인증 관련 API")
-@RequestMapping("api/v1/members")
+@RequestMapping("members")
 public interface EmailVerificationApiSpec {
 
     @Operation(summary = "이메일 인증 코드 전송", description = "사용자의 이메일로 인증 코드를 전송합니다.")

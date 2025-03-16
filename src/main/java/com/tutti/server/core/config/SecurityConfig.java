@@ -31,10 +31,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (API 요청을 위해 필요)
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers("/**")
-//                        "/api/v1/members/email/verify",
-//                                "/api/v1/members/email/confirm",
-//                                "/api/v1/members/signup/email",
-//                                "/api/v1/members/login/email")
+//                        "members/email/verify",
+//                                "members/email/confirm",
+//                                "members/signup/email",
+//                                "members/login/email")
                                 .requestMatchers("/**") // ✅ 모든 URL 허용
                                 .permitAll() // ✅ 로그인 관련 URL 허용
                                 .anyRequest().authenticated() // 나머지는 인증 필요

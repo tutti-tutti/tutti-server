@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "인증 API", description = "로그인 및 인증 관련 API")
-@RequestMapping("/api/v1/members")
+@RequestMapping("members")
 public interface AuthApiSpec {
 
     @Operation(summary = "이메일 로그인", description = "이메일과 비밀번호를 이용해 로그인을 진행합니다.")

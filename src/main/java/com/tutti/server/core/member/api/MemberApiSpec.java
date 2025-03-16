@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "회원 API", description = "회원 관련 API")
-@RequestMapping("api/v1/members")
+@RequestMapping("members")
 public interface MemberApiSpec {
 
     @Operation(summary = "회원가입", description = "이메일을 이용한 회원가입을 진행합니다.")

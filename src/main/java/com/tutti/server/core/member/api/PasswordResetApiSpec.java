@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "비밀번호 재설정 API", description = "회원 비밀번호 재설정 API")
-@RequestMapping("api/v1/members")
+@RequestMapping("members")
 public interface PasswordResetApiSpec {
 
     @Operation(summary = "비밀번호 재설정", description = "이메일 인증을 통해 비밀번호를 재설정합니다.")
