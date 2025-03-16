@@ -37,6 +37,12 @@ public class ReviewLike extends BaseEntity {
         this.isLiked = true;
     }
 
+    public ReviewLike(Review review, Long memberId, boolean isLiked) {
+        this.review = review;
+        this.memberId = memberId;
+        this.isLiked = isLiked;
+    }
+
     public void toggleLike(Long memberIdFromToken) {
         if (!this.memberId.equals(memberIdFromToken)) {
             throw new IllegalArgumentException("잘못된 사용자 요청입니다.");
@@ -49,8 +55,7 @@ public class ReviewLike extends BaseEntity {
         return this.isLiked;
     }
 
-
-    // 예외 처리, 상태 확인과 토글을 한 메서드에서 처리하도록 추가
+    // 좋아요 상태를 '좋아요'로 설정하는 메서드
     public void likeReview(Long memberIdFromToken) {
         if (!this.memberId.equals(memberIdFromToken)) {
             throw new IllegalArgumentException("잘못된 사용자 요청입니다.");
@@ -58,7 +63,7 @@ public class ReviewLike extends BaseEntity {
         this.isLiked = true;
     }
 
-    // 좋아요 상태를 취소하는 메서드
+    // 좋아요 상태를 '취소'하는 메서드
     public void cancelLikeReview(Long memberIdFromToken) {
         if (!this.memberId.equals(memberIdFromToken)) {
             throw new IllegalArgumentException("잘못된 사용자 요청입니다.");
