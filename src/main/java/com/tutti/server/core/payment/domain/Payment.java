@@ -53,18 +53,12 @@ public class Payment extends BaseEntity {
     private PaymentMethod paymentMethod; // 결제 수단 id
 
     @Column
-    private String tossOrderId; // tossPayment에서 6자 이상 64자이하의 orderId가 필요하나 기존 id 를건들지 않고 만드는 쪽으로 생각중.
+    private String orderNumber;
 
     @Builder
-    public Payment(String orderName,
-            int amount,
-            PaymentStatus paymentStatus,
-            String tossPaymentKey,
-            Member member,
-            Order order,
-            PaymentMethod paymentMethod,
-            String tossOrderId
-    ) {
+    public Payment(String orderName, int amount, PaymentStatus paymentStatus,
+            String tossPaymentKey, Member member,
+            Order order, PaymentMethod paymentMethod, String orderNumber) {
         this.orderName = orderName;
         this.amount = amount;
         this.paymentStatus = paymentStatus;
@@ -72,7 +66,7 @@ public class Payment extends BaseEntity {
         this.member = member;
         this.order = order;
         this.paymentMethod = paymentMethod;
-        this.tossOrderId = tossOrderId;
+        this.orderNumber = orderNumber;
     }
 
     // 결제 승인 후 PaymentKey 저장하는 방식으로 변경.

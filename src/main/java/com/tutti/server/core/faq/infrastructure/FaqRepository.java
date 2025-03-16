@@ -20,33 +20,35 @@ public interface FaqRepository extends JpaRepository<Faq, Long> {
             .orElseThrow(() -> new DomainException(ExceptionType.FAQ_NOT_FOUND));
     }
 
-    /**
-     * 특정 카테고리 및 서브카테고리의 FAQ 목록 조회 (삭제되지 않고 isView = true인 데이터만)
-     */
     Page<Faq> findByFaqCategory_MainCategoryAndFaqCategory_SubCategoryAndDeleteStatusFalseAndIsViewTrue(
         String mainCategory, String subCategory, Pageable pageable);
 
-    /**
-     * 특정 키워드를 포함하는 FAQ 목록 조회 (삭제되지 않고 isView = true인 데이터만)
-     */
     Page<Faq> findByQuestionContainingIgnoreCaseAndDeleteStatusFalseAndIsViewTrue(
         String query, Pageable pageable);
 
-    /**
-     * 전체 FAQ 목록 조회 (삭제되지 않고 isView = true인 데이터만)
-     */
     Page<Faq> findByDeleteStatusFalseAndIsViewTrue(Pageable pageable);
 
-    /**
-     * 인기 FAQ 목록 조회 (삭제되지 않고 isView = true인 데이터만, 조회수 기준 정렬)
-     */
     @Query("SELECT f FROM Faq f WHERE f.deleteStatus = false AND f.isView = true ORDER BY f.viewCnt DESC")
     List<Faq> findTopFaqs(Pageable pageable);
 
-    /**
-     * 조회수 증가 (UPDATE 쿼리 실행)
-     */
     @Modifying
     @Query("UPDATE Faq f SET f.viewCnt = f.viewCnt + 1 WHERE f.id = :faqId")
     void incrementViewCount(@Param("faqId") Long faqId);
+
+    default List<Faq> findTopFaqsOrThrow(Pageable pageable) {
+        List<Faq> faqs = findTopFaqs(pageable);
+        if (faqs.isEmpty()) {
+            throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
+        }
+        return faqs;
+    }
+
+    @Modifying
+    @Query("UPDATE Faq f SET f.viewCnt = f.viewCnt + 1 WHERE f.id = :faqId")
+    default void incrementViewCountOrThrow(@Param("faqId") Long faqId) {
+        if (!existsById(faqId)) {
+            throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
+        }
+        incrementViewCount(faqId);
+    }
 }

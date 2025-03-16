@@ -14,10 +14,9 @@ public interface FaqCategoryRepository extends JpaRepository<FaqCategory, Long> 
 
     default FaqCategory findOne(Long id) {
         return findById(id)
-                .orElseThrow(() -> new DomainException(ExceptionType.FAQ_CATEGORY_NOT_FOUND));
+            .orElseThrow(() -> new DomainException(ExceptionType.FAQ_CATEGORY_NOT_FOUND));
     }
 
-    // 메인 카테고리 목록만 조회 (중복 제거)
     @Query("SELECT DISTINCT f.mainCategory FROM FaqCategory f")
     List<String> findDistinctMainCategories();
 

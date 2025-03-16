@@ -36,13 +36,21 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentResponse requestPayment(PaymentRequest request) {
 
-        Order order = validateOrder(request.orderId()); //tossOrderId 내부적으로는
+        Order order = validateOrderAndPaymentAmount(request.orderNumber(), request.amount());
         validateDuplicatePayment(order.getId());
-        validatePaymentAmount(order, request.amount());
         Payment savedPayment = createAndSavePayment(order, request);
         return PaymentResponse.fromEntity(savedPayment);
     }
 
+    private Order validateOrderAndPaymentAmount(String orderNumber, int amount) {
+        return orderRepository.findByOrderNumber(orderNumber)
+                .map(order -> {
+                    if (order.getTotalAmount() != amount) {
+                        throw new DomainException(ExceptionType.PAYMENT_AMOUNT_MISMATCH);
+                    }
+                    return order;
+                })
+                .orElseThrow(() -> new DomainException(ExceptionType.ORDER_NOT_FOUND));
     // 결제 승인
     @Override
     @org.springframework.transaction.annotation.Transactional
@@ -75,24 +83,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     // 기존 결제 여부 검증 메서드
     private void validateDuplicatePayment(Long orderId) {
-
-        boolean exists = paymentRepository.existsByOrderId(orderId);
-
-        if (exists) {
+        if (paymentRepository.existsByOrderId(orderId)) {
             throw new DomainException(ExceptionType.PAYMENT_ALREADY_PROCESSING);
-        }
-
-        paymentRepository.findByOrderId(orderId)
-                .filter(payment -> payment.getPaymentStatus() == PaymentStatus.DONE)
-                .ifPresent(payment -> {
-                    throw new DomainException(ExceptionType.PAYMENT_ALREADY_COMPLETED);
-                });
-    }
-
-    // 결제 금액 검증 메서드
-    private void validatePaymentAmount(Order order, int amount) {
-        if (order.getTotalAmount() != amount) {
-            throw new DomainException(ExceptionType.PAYMENT_AMOUNT_MISMATCH);
         }
     }
 

@@ -24,19 +24,12 @@ public class PasswordResetApi {
         String email = request.email();
         String verificationCode = request.verificationCode();
         String password = request.newPassword();
-        try {
-            emailVerificationService.verifyEmail(email, verificationCode);
+        // 1. 이메일 인증 코드 확인
+        emailVerificationService.verifyEmail(email, verificationCode);
 
-            if (!passwordResetService.isValidPassword(password)) {
-                return ResponseEntity.badRequest().body(
-                        Map.of("error", "비밀번호는 최소 8자 이상이며, 대문자, 소문자, 숫자, 특수문자를 포함해야 합니다."));
-            }
-            passwordResetService.updatePassword(email, password);
+        // 2. 비밀번호 재설정 요청
+        passwordResetService.resetPassword(email, password);
 
-            return ResponseEntity.ok(Map.of("message", "비밀번호가 성공적으로 변경되었습니다."));
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        return ResponseEntity.ok(Map.of("message", "비밀번호가 성공적으로 변경되었습니다."));
     }
 }

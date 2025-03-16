@@ -3,6 +3,8 @@ package com.tutti.server.core.member.application;
 import com.tutti.server.core.member.domain.TermsConditions;
 import com.tutti.server.core.member.domain.TermsType;
 import com.tutti.server.core.member.infrastructure.TermsConditionsRepository;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,6 @@ public class TermsConditionsService {
     @Transactional(readOnly = true)
     public TermsConditions getTermByType(TermsType termsType) {
         return termsConditionsRepository.findByTermsType(termsType)
-                .orElseThrow(() -> new IllegalArgumentException("해당 약관이 존재하지 않습니다: " + termsType));
+                .orElseThrow(() -> new DomainException(ExceptionType.TERMS_NOT_FOUND));
     }
 }
