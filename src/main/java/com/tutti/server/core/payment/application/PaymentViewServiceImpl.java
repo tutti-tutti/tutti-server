@@ -1,5 +1,8 @@
 package com.tutti.server.core.payment.application;
 
+
+import com.tutti.server.core.order.infrastructure.OrderItemRepository;
+import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.payment.payload.PaymentViewResponse;
@@ -13,9 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class PaymentViewByMemberServiceImpl implements PaymentViewByMemberService {
+public class PaymentViewServiceImpl implements PaymentViewService {
 
     private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
     @Override
     @Transactional
@@ -37,7 +42,7 @@ public class PaymentViewByMemberServiceImpl implements PaymentViewByMemberServic
 
     private void checkIfPaymentsExist(List<Payment> payments) {
         if (payments.isEmpty()) {
-            throw new DomainException(ExceptionType.MEMBER_NOT_FOUND);
+            throw new DomainException(ExceptionType.PAYMENT_NOT_FOUND);
         }
     }
 
@@ -47,4 +52,25 @@ public class PaymentViewByMemberServiceImpl implements PaymentViewByMemberServic
                 .collect(Collectors.toList());
     }
 
+
+    @Override
+    @Transactional
+    public PaymentViewResponse getPaymentByOrderId(Long orderId) {
+
+        // 유효성 검사
+        if (orderId == null) {
+            throw new NullPointerException("주문ID가 유효하지 않습니다.");
+        }
+
+        if (!orderRepository.existsById(orderId)) {
+            throw new DomainException(ExceptionType.ORDER_NOT_FOUND);
+        }
+
+        // 결제 정보 조회
+        Payment payment = paymentRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new DomainException(ExceptionType.PAYMENT_NOT_FOUND));
+
+        return PaymentViewResponse.fromEntity(payment);
+
+    }
 }
