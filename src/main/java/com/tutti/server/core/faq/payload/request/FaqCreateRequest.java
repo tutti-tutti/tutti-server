@@ -16,15 +16,10 @@ public record FaqCreateRequest(
     @NotNull(message = "답변은 필수입니다.")
     @Schema(description = "FAQ 답변", example = "상품은 3일 이내에 배송됩니다.")
     String answer,
-    
+
     @NotNull(message = "보기 여부는 필수입니다.")
     @Schema(description = "FAQ 보이기 여부", example = "true")
     boolean isView
 ) {
 
-    public FaqCreateRequest {
-        if (categoryId == null || question == null || answer == null) {
-            throw new IllegalArgumentException("필수 값이 누락되었습니다.");
-        }
-    }
 }
