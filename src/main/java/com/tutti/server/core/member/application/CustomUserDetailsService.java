@@ -1,6 +1,8 @@
 package com.tutti.server.core.member.application;
 
 import com.tutti.server.core.member.infrastructure.MemberRepository;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,6 +26,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                         member.getPassword(),
                         List.of() // 권한 없음
                 ))
-                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + email));
+                .orElseThrow(() -> new DomainException(ExceptionType.MEMBER_NOT_FOUND));
     }
 }

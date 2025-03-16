@@ -1,5 +1,7 @@
 package com.tutti.server.core.member.jwt;
 
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,26 +36,21 @@ public class JWTFilter extends OncePerRequestFilter {
         String token = authorization.replace("Bearer ", "");
 
         if (jwtUtil.isExpired(token)) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token Expired");
-            return;
+            throw new DomainException(ExceptionType.TOKEN_EXPIRED);
         }
 
         String email = jwtUtil.getEmail(token);
         if (email == null) {
-            System.out.println("JWT 토큰에서 email을 가져오지 못했습니다.");
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
-            return;
+            throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-        // 🔹 기존 `JwtAuthenticationToken(email)` 대신 `UsernamePasswordAuthenticationToken` 사용
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(userDetails, null,
                         userDetails.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        //System.out.println("✅ SecurityContext에 UserDetails 저장 완료");
 
         filterChain.doFilter(request, response);
     }
