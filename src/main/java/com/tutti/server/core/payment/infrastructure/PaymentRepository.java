@@ -6,7 +6,9 @@ import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     default Payment findOne(Long id) {
@@ -14,7 +16,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                 .orElseThrow(() -> new DomainException(ExceptionType.PAYMENT_NOT_FOUND));
     }
 
-    Optional<Payment> findByOrderId(Long orderId);
+    Optional<Payment> findByOrderNumber(String orderNumber);
 
     List<Payment> findByMemberId(Long memberId);
 
