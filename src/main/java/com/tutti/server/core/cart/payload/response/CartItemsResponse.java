@@ -7,9 +7,10 @@ import lombok.Builder;
 public record CartItemsResponse(
 
         Long cartItemId,
-        String option,
         String productItemName,
         String productImgUrl,
+        String productOptionName,
+        String productOptionValue,
         int quantity,
         int price,
         boolean soldOut
@@ -19,9 +20,10 @@ public record CartItemsResponse(
         // 이 빌더는 CartItemsResponse 의 빌더
         return CartItemsResponse.builder()
                 .cartItemId(cartItem.getId())
-                .option(cartItem.getProductItemOption())
                 .productItemName(cartItem.getProductName())
                 .productImgUrl(cartItem.getProductImgUrl())
+                .productOptionName(cartItem.getProductOptionName())
+                .productOptionValue(cartItem.getProductOptionValue())
                 .quantity(cartItem.getQuantity())
                 .price(cartItem.getPrice())
                 .soldOut(cartItem.isSoldOut())
