@@ -4,6 +4,5 @@ public enum PaymentMethodStatus {
 
     ACTIVE,// 활성
     EXPIRED, // 만료
-    DISABLED; // 비활성
-    
+    DISABLED // 비활성
 }

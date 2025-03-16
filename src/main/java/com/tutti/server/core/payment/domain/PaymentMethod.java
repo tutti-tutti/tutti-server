@@ -42,5 +42,4 @@ public class PaymentMethod extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentMethodStatus paymentMethodStatus; // ACTIVE, EXPIRED, DISABLED
-    
 }
