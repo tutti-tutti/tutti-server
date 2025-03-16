@@ -6,7 +6,6 @@ import com.tutti.server.core.review.payload.request.ReviewListRequest;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewResponse;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,8 +21,9 @@ public class ReviewListServiceImpl implements ReviewListService {
 
     @Override
     public ReviewListResponse getReviews(ReviewListRequest request) {
-        return getReviewsWithPagination(
-            request.productId(), 20, request.sort(), request.nextCursor());
+        int size = (request.size() == null) ? 20 : request.size();
+        String sort = (request.sort() == null) ? "created_at_desc" : request.sort();
+        return getReviewsWithPagination(request.productId(), size, sort, request.nextCursor());
     }
 
     @Override
@@ -34,18 +34,38 @@ public class ReviewListServiceImpl implements ReviewListService {
     @Override
     public ReviewListResponse getReviewsWithPagination(Long productId, Integer size, String sort,
         String nextCursor) {
-        long cursorId = (nextCursor != null) ? Long.parseLong(nextCursor) : 0L;
         Pageable pageable = PageRequest.of(0, size, getSort(sort));
+        Page<Review> reviewsPage;
 
-        Page<Review> reviewsPage = reviewRepository.findByProductIdAndIdGreaterThan(
-            productId, cursorId, pageable);
+        if (nextCursor != null) {
+            long cursor = Long.parseLong(nextCursor);
+
+            if ("rating_desc".equals(sort)) {
+                reviewsPage = reviewRepository.findByProductIdAndRatingLessThanEqual(
+                    productId, cursor, pageable);
+            }
+//            else if ("like_desc".equals(sort)) {
+//                reviewsPage = reviewRepository.findByProductIdAndLikeCountLessThanEqual(
+//                    productId, cursor, pageable);
+//            }
+            else {
+                reviewsPage = reviewRepository.findByProductIdAndIdLessThan(
+                    productId, cursor, pageable);
+            }
+        } else {
+            reviewsPage = reviewRepository.findByProductId(productId, pageable);
+        }
 
         List<ReviewResponse> reviewResponses = convertToReviewResponseList(reviewsPage);
 
         String nextCursorValue = null;
         if (reviewsPage.hasNext()) {
-            nextCursorValue = reviewsPage.getContent().get(reviewsPage.getContent().size() - 1)
-                .getId().toString();
+            Review lastReview = reviewsPage.getContent().get(reviewsPage.getContent().size() - 1);
+
+            nextCursorValue = switch (sort) {
+                case "rating_desc" -> String.valueOf(lastReview.getRating());
+                default -> lastReview.getId().toString();
+            };
         }
 
         return new ReviewListResponse(reviewResponses, nextCursorValue);
@@ -53,8 +73,8 @@ public class ReviewListServiceImpl implements ReviewListService {
 
     private Sort getSort(String sort) {
         return switch (sort.toLowerCase()) {
-            case "latest" -> Sort.by(Sort.Order.desc("latest"));
-            case "rating" -> Sort.by(Sort.Order.desc("rating"));
+            case "rating_desc" -> Sort.by(Sort.Order.desc("rating"), Sort.Order.desc("id"));
+            case "like_desc" -> Sort.by(Sort.Order.desc("likeCount"), Sort.Order.desc("id"));
             default -> Sort.by(Sort.Order.desc("createdAt"));
         };
     }
@@ -73,6 +93,6 @@ public class ReviewListServiceImpl implements ReviewListService {
     private List<ReviewResponse> convertToReviewResponseList(Page<Review> reviewsPage) {
         return reviewsPage.stream()
             .map(this::convertToReviewResponse)
-            .collect(Collectors.toList());
+            .toList();
     }
 }
