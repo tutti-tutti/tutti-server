@@ -2,9 +2,12 @@ package com.tutti.server.core.payment.domain;
 
 public enum PaymentStatus {
 
-    PAYMENT_REQUESTED,      // 결제 요청 (PG사에 결제 요청)
-    PAYMENT_APPROVED,       // 결제 승인 (PG사에서 결제 완료 응답)
-    PAYMENT_FAILED,         // 결제 실패 (PG사 결제 실패 응답)
-    PAYMENT_CANCELED,       // 결제 취소 (PG사에서 취소 완료 응답)
-    PAYMENT_COMPLETED       // 결제 완료 (PG사에서 결제 완료 응답)
+    READY,            // 초기 상태 (결제 생성됨)
+    IN_PROGRESS,      // 결제 인증 완료 (승인 대기 중)
+    WAITING_FOR_DEPOSIT, // 가상계좌 결제 대기 상태
+    DONE,             // 결제 승인 완료
+    CANCELED,         // 전체 결제 취소됨
+    PARTIAL_CANCELED, // 부분 취소됨
+    ABORTED,          // 결제 승인 실패
+    EXPIRED;          // 결제 만료됨
 }

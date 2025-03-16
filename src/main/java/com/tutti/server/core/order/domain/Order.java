@@ -27,6 +27,8 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    private String orderNumber;
+    private int orderCount;
     private int deliveryFee;
     private int totalAmount;
 
@@ -38,11 +40,12 @@ public class Order extends BaseEntity {
     private String orderStatus;
 
     private LocalDateTime completed_at;
-    private int orderCount;
+
 
     @Builder
-    public Order(Member member, int deliveryFee, int totalAmount, PaymentMethodType paymentType,
-            String orderStatus, LocalDateTime completed_at, int orderCount) {
+    public Order(Member member, String orderNumber, int orderCount, int deliveryFee,
+            int totalAmount, PaymentMethodType paymentType, String orderStatus,
+            LocalDateTime completed_at) {
         this.member = member;
         this.deliveryFee = deliveryFee;
         this.totalAmount = totalAmount;
@@ -50,5 +53,6 @@ public class Order extends BaseEntity {
         this.orderStatus = orderStatus;
         this.completed_at = completed_at;
         this.orderCount = orderCount;
+        this.orderNumber = orderNumber;
     }
 }

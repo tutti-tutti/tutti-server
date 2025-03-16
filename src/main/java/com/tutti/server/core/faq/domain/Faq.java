@@ -51,7 +51,6 @@ public class Faq extends BaseEntity {
         this.isView = isView;
     }
 
-    // FAQ 수정 메서드
     public void updateFaq(String question, String answer, Boolean isView) {
         if (question != null) {
             this.question = question;
@@ -64,35 +63,29 @@ public class Faq extends BaseEntity {
         }
     }
 
-    // FAQ 카테고리 변경
     public void updateCategory(FaqCategory faqCategory) {
         if (faqCategory != null) {
             this.faqCategory = faqCategory;
         }
     }
 
-    // 조회수 증가
     public void incrementViewCount() {
         this.viewCnt++;
     }
 
-    // 긍정 평가 증가
     public void incrementPositive() {
         this.positive++;
     }
 
-    // 부정 평가 증가
     public void incrementNegative() {
         this.negative++;
     }
 
-    // 삭제 처리
     public void markAsDeleted() {
         super.delete();
         this.deletedAt = LocalDateTime.now();
     }
 
-    // 현재 공개 여부 확인.
     public boolean isSameViewStatus(Boolean isView) {
         return Boolean.TRUE.equals(this.isView) == Boolean.TRUE.equals(isView);
     }
