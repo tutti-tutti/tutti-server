@@ -39,3 +39,5 @@ public record FaqCreateResponse(
         );
     }
 }
+
+
