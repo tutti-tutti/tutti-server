@@ -24,7 +24,7 @@ public class ReviewLike extends BaseEntity {
     private Review review;
 
     @Column(name = "member_id", nullable = false, updatable = false)
-    private Long memberId;
+    private long memberId;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

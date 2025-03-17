@@ -20,13 +20,13 @@ import org.hibernate.annotations.CreationTimestamp;
 public class Review extends BaseEntity {
 
     @Column(name = "product_id", nullable = false)
-    private Long productId;
+    private long productId;
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
     @Column(nullable = false)
-    private Integer rating;
+    private int rating;
 
     @Column(nullable = false, length = 500)
     private String content;

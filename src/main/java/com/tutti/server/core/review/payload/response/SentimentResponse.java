@@ -9,7 +9,7 @@ public record SentimentResponse(
     @Schema(description = "긍정 or 부정", example = "positive")
     String sentiment,
     @Schema(description = "긍정 확률", example = "0.8")
-    Double probability
+    double probability
 ) {
 
 }
