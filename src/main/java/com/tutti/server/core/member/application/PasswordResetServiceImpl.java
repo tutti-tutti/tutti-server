@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class PasswordResetService {
+public class PasswordResetServiceImpl implements PasswordResetServiceSpec {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
@@ -19,6 +19,7 @@ public class PasswordResetService {
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$");
 
+    @Override
     public void resetPassword(String email, String newPassword) {
         // 1. 사용자 존재 여부 확인
         Member member = memberRepository.findByEmail(email)
