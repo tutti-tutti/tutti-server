@@ -22,15 +22,15 @@ public class CartApi implements CartApiSpec {
     private final CartService cartService;
 
     @Override
-    @GetMapping
-    public List<CartItemsResponse> getCartItems(@RequestBody Long memberId) {
-        return cartService.getCartItems(memberId);
-    }
-
-    @Override
     @PostMapping
     public void addCartItem(@RequestBody @Valid CartItemCreateRequest request) {
         cartService.addCartItem(request);
+    }
+
+    @Override
+    @GetMapping
+    public List<CartItemsResponse> getCartItems(@RequestBody Long memberId) {
+        return cartService.getCartItems(memberId);
     }
 
     @Override

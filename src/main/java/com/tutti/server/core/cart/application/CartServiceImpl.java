@@ -23,15 +23,6 @@ public class CartServiceImpl implements CartService {
     private final ProductItemRepository productItemRepository;
 
     @Override
-    @Transactional(readOnly = true)
-    public List<CartItemsResponse> getCartItems(Long memberId) {
-        return cartItemRepository.findAllByMemberIdAndDeleteStatusFalse(memberId)
-                .stream()
-                .map(CartItemsResponse::fromEntity)
-                .toList();
-    }
-
-    @Override
     @Transactional
     // 기존 장바구니 상품이 있는지 확인하고, 없으면 새로 생성하는 메서드
     public void addCartItem(CartItemCreateRequest request) {
@@ -52,6 +43,15 @@ public class CartServiceImpl implements CartService {
 
         // 장바구니 상품 엔티티를 만들 때, 수량도 받아야 하기 때문에 파라미터로 request 가 필요하다
         cartItemRepository.save(request.toEntity(member, productItem));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CartItemsResponse> getCartItems(Long memberId) {
+        return cartItemRepository.findAllByMemberIdAndDeleteStatusFalse(memberId)
+                .stream()
+                .map(CartItemsResponse::fromEntity)
+                .toList();
     }
 
     @Override
