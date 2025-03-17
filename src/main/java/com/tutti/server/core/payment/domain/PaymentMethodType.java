@@ -30,6 +30,6 @@ public enum PaymentMethodType {
         return Arrays.stream(PaymentMethodType.values())
                 .filter(type -> type.displayName.equals(value))
                 .findFirst()
-                .orElseThrow(() -> new DomainException(ExceptionType.INVALID_METHOD_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ExceptionType.INVALID_METHOD));
     }
 }
