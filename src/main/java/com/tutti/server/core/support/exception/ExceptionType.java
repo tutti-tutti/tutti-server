@@ -15,6 +15,9 @@ public enum ExceptionType {
             ERROR),
     UNAUTHORIZED_ERROR(HttpStatus.UNAUTHORIZED, ExceptionCode.E401, "권한이 없습니다", INFO),
 
+    //Global
+    INVALID_INPUT(ExceptionCode.G01, "유효하지 않은 입력 값입니다."),
+
     // - 회원 인증 관련 -
     INVALID_EMAIL_FORMAT(ExceptionCode.A01, "올바른 이메일 주소를 입력해주세요."),
     EMAIL_ALREADY_VERIFIED(ExceptionCode.A02, "이미 인증된 이메일입니다."),
@@ -67,7 +70,8 @@ public enum ExceptionType {
     PAYMENT_AMOUNT_MISMATCH(ExceptionCode.P02, "결제 금액과 주문 금액이 일치하지 않습니다."),
     PAYMENT_ALREADY_COMPLETED(ExceptionCode.P03, "이미 결제가 완료된 주문입니다."),
     PAYMENT_ALREADY_PROCESSING(ExceptionCode.P04, "이미 결제가 진행 중인 주문입니다."),
-    PAYMENT_METHOD_NOT_FOUND(ExceptionCode.P05, "유효하지 않은 결제 수단입니다."),
+    INVALID_METHOD(ExceptionCode.P05, "유효하지 않은 결제 수단입니다."),
+    MISSING_METHOD_NOT_FOUND(ExceptionCode.P06, "결제 수단이 선택되지 않았습니다."),
 
     // - FAQ -
     FAQ_NOT_FOUND(ExceptionCode.F01, "존재하지 않는 FAQ 입니다."),
