@@ -13,6 +13,12 @@ public class SentimentApi implements SentimentApiSpec {
 
     private final RestClient restClient;
 
+    public SentimentApi() {
+        this.restClient = RestClient.builder()
+            .baseUrl("http://localhost:8000")
+            .build();
+    }
+
     @Override
     public SentimentResponse analyzeSentiment(SentimentRequest request) {
         return restClient.post()
