@@ -4,6 +4,8 @@ import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -14,4 +16,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     }
 
     Optional<Order> findByOrderNumber(String orderNumber);
+
+    Page<Order> findAllByMemberEmail(String memberEmail, Pageable pageable);
 }

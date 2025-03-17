@@ -10,6 +10,7 @@ import com.tutti.server.core.order.infrastructure.OrderHistoryRepository;
 import com.tutti.server.core.order.infrastructure.OrderItemRepository;
 import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
+import com.tutti.server.core.order.payload.response.OrderListResponse;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.support.exception.DomainException;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -125,5 +128,12 @@ public class OrderServiceImpl implements OrderService {
                 .filter(item -> item.getId().equals(productItemId))
                 .findFirst()
                 .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_MISMATCH));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagedModel<OrderListResponse> getOrders(String memberEmail, Pageable pageable) {
+        return new PagedModel<>(orderRepository.findAllByMemberEmail(memberEmail, pageable)
+                .map(OrderListResponse::fromEntity));
     }
 }
