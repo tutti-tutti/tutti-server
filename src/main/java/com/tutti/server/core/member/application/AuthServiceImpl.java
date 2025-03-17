@@ -14,12 +14,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthServiceImpl implements AuthServiceSpec {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
 
+    @Override
     public Map<String, String> login(LoginRequest request) {
         // 1. 이메일 존재 여부 확인
         Member member = memberRepository.findByEmail(request.email())

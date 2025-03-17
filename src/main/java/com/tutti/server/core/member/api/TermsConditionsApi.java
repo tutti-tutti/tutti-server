@@ -1,32 +1,29 @@
 package com.tutti.server.core.member.api;
 
-import com.tutti.server.core.member.application.TermsConditionsService;
+import com.tutti.server.core.member.application.TermsConditionsServiceImpl;
 import com.tutti.server.core.member.domain.TermsConditions;
 import com.tutti.server.core.member.domain.TermsType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/members/terms")
 @RequiredArgsConstructor
-public class TermsConditionsApi {
+public class TermsConditionsApi implements TermsConditionsApiSpec {
 
-    private final TermsConditionsService termsConditionsService;
+    private final TermsConditionsServiceImpl termsConditionsServiceImpl;
 
     //전체 약관
-    @GetMapping
+    @Override
     public ResponseEntity<List<TermsConditions>> getAllTerms() {
-        return ResponseEntity.ok(termsConditionsService.getAllTerms());
+        return ResponseEntity.ok(termsConditionsServiceImpl.getAllTerms());
     }
 
     //선택 약관
-    @GetMapping("/{type}")
+    @Override
     public ResponseEntity<TermsConditions> getTermByType(@PathVariable TermsType type) {
-        return ResponseEntity.ok(termsConditionsService.getTermByType(type));
+        return ResponseEntity.ok(termsConditionsServiceImpl.getTermByType(type));
     }
 }

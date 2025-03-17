@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberServiceImpl implements MemberServiceSpec {
 
     private final MemberRepository memberRepository;
     private final VerificationCodeRepository verificationCodeRepository;
@@ -33,6 +33,7 @@ public class MemberService {
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$");
 
+    @Override
     public void signup(SignupRequest request) {
 
         // 1. 필수 약관 조회
