@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class EmailVerificationService {
+public class EmailVerificationServiceImpl implements EmailVerificationServiceSpec {
 
     private final VerificationCodeRepository verificationCodeRepository;
     private final JavaMailSender mailSender;
@@ -24,6 +24,7 @@ public class EmailVerificationService {
         return String.valueOf(100000 + new Random().nextInt(900000));
     }
 
+    @Override
     public void sendVerificationEmail(String email) {
         validateEmailFormat(email); // 이메일 형식 검증
 
@@ -58,6 +59,7 @@ public class EmailVerificationService {
         mailSender.send(message);
     }
 
+    @Override
     public void verifyEmail(String email, String code) {
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(email)
                 .orElseThrow(() -> new DomainException(ExceptionType.INVALID_VERIFICATION_CODE));

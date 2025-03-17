@@ -12,11 +12,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class PasswordChangeService {
+public class PasswordChangeServiceImpl implements PasswordChangeServiceSpec {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Override
     @Transactional
     public void changePassword(String email, PasswordChangeRequest request) {
         Member member = memberRepository.findByEmail(email)

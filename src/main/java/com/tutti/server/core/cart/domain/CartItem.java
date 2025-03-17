@@ -8,7 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -25,13 +24,14 @@ public class CartItem extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_item_id", nullable = false)
     private ProductItem productItem;
 
-    private String productItemOption;
     private String productName;
     private String productImgUrl;
+    private String productOptionName;
+    private String productOptionValue;
 
     @Column(columnDefinition = "integer default 1")
     private int quantity;
@@ -40,13 +40,15 @@ public class CartItem extends BaseEntity {
     private boolean soldOut;
 
     @Builder
-    public CartItem(Member member, ProductItem productItem, String productItemOption, String productName,
-            String productImgUrl, int quantity, int price, boolean soldOut) {
+    public CartItem(Member member, ProductItem productItem, String productName,
+            String productImgUrl, String productOptionName, String productOptionValue, int quantity,
+            int price, boolean soldOut) {
         this.member = member;
         this.productItem = productItem;
-        this.productItemOption = productItemOption;
         this.productName = productName;
         this.productImgUrl = productImgUrl;
+        this.productOptionName = productOptionName;
+        this.productOptionValue = productOptionValue;
         this.quantity = quantity;
         this.price = price;
         this.soldOut = soldOut;

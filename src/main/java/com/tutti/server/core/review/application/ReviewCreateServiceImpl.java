@@ -1,10 +1,13 @@
 package com.tutti.server.core.review.application;
 
+import com.tutti.server.core.review.api.SentimentApi;
 import com.tutti.server.core.review.domain.Review;
 import com.tutti.server.core.review.infrastructure.ReviewRepository;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
+import com.tutti.server.core.review.payload.request.SentimentRequest;
 import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
-import java.util.List;
+import com.tutti.server.core.review.payload.response.SentimentResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,43 +16,29 @@ import org.springframework.stereotype.Service;
 public class ReviewCreateServiceImpl implements ReviewCreateService {
 
     private final ReviewRepository reviewRepository;
+    private final SentimentApi sentimentApi;
 
-    public String getNicknameByMemberId(Long memberId) {
-        if (memberId == 1L) {
-            return "testUser";
-        }
-        return "defaultUser";
-    }
-
-    @Override
+    @Transactional
     public ReviewCreateResponse createReview(ReviewCreateRequest reviewCreateRequest) {
-        String username = "testUser";
 
-        Long memberId = getMemberIdFromUsername(username);
+        String reviewImagesString = String.join(",", reviewCreateRequest.reviewImages());
 
-        String nickname = getNicknameByMemberId(memberId);
-
-        List<String> reviewImages = reviewCreateRequest.reviewImages();
-
-        Review review = Review.createReview(
-            reviewCreateRequest.orderItemId(),
-            memberId,
-            reviewCreateRequest.orderItemId(),
-            reviewCreateRequest.rating(),
-            reviewCreateRequest.content(),
-            reviewImages,
-            nickname
+        SentimentResponse sentimentResponse = sentimentApi.analyzeSentiment(
+            new SentimentRequest(reviewCreateRequest.content())
         );
+
+        Review review = Review.builder()
+            .productId(reviewCreateRequest.productId())
+            .nickname(reviewCreateRequest.nickname())
+            .rating(reviewCreateRequest.rating())
+            .content(reviewCreateRequest.content())
+            .reviewImageUrls(reviewImagesString)
+            .sentiment(sentimentResponse.sentiment())
+            .sentimentProbability(sentimentResponse.probability())
+            .build();
 
         reviewRepository.save(review);
 
-        return new ReviewCreateResponse("리뷰 작성이 완료되었습니다.");
-    }
-
-    private Long getMemberIdFromUsername(String username) {
-        if ("testUser".equals(username)) {
-            return 1L;
-        }
-        return 999L;
+        return new ReviewCreateResponse("리뷰가 등록되었습니다.");
     }
 }

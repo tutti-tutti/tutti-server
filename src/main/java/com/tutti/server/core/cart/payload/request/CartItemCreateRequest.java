@@ -8,8 +8,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record CartItemRequest(
+public record CartItemCreateRequest(
 
+        Long memberId,
+        
         @NotNull(message = "필수 옵션을 선택해주세요.")
         Long productItemId,
 
@@ -23,12 +25,13 @@ public record CartItemRequest(
         return CartItem.builder()
                 .member(member)
                 .productItem(productItem)
-                .productItemOption(productItem.getOptions())
                 .productName(productItem.getProduct().getName())
                 .productImgUrl(productItem.getProduct().getTitleUrl())
+                .productOptionName(productItem.getOptionName())
+                .productOptionValue(productItem.getOptionValue())
                 .quantity(quantity)
                 .price(productItem.getSellingPrice())
-//                .soldOut(productItem.getSoldOut())
+                .soldOut(productItem.isSoldOut())
                 .build();
     }
 }

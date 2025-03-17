@@ -12,17 +12,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class TermsConditionsService {
+public class TermsConditionsServiceImpl implements TermsConditionsServiceSpec {
 
     private final TermsConditionsRepository termsConditionsRepository;
 
     //전체 약관
+    @Override
     @Transactional(readOnly = true)
     public List<TermsConditions> getAllTerms() {
         return termsConditionsRepository.findAll();
     }
 
     //선택 약관
+    @Override
     @Transactional(readOnly = true)
     public TermsConditions getTermByType(TermsType termsType) {
         return termsConditionsRepository.findByTermsType(termsType)

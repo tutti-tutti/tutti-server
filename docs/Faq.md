@@ -74,9 +74,9 @@
 **Controller**: `FaqController`  
 **Endpoint**: `PATCH /api/faqs/{faqId}/feedback`
 
-- [ ] 사용자가 특정 FAQ에 긍정/부정 피드백을 남길 수 있다.
-- [ ] `positive = true`일 경우 `positive 카운트` 증가
-- [ ] `positive = false`일 경우 `negative 카운트` 증가
+- [X] 사용자가 특정 FAQ에 긍정/부정 피드백을 남길 수 있다.
+- [X] `positive = true`일 경우 `positive 카운트` 증가
+- [X] `positive = false`일 경우 `negative 카운트` 증가
 
 ---
 
@@ -85,9 +85,9 @@
 **Controller**: `FaqController`  
 **Endpoint**: `POST /api/faqs`
 
-- [ ] 관리자가 FAQ 등록 API를 호출하면 FAQ가 저장된다.
-- [ ] `isView` 필드를 설정할 수 있으며, 기본값은 `false`이다.
-- [ ] `viewCnt`는 기본값 `0`으로 설정된다.
+- [X] 관리자가 FAQ 등록 API를 호출하면 FAQ가 저장된다.
+- [X] `isView` 필드를 설정할 수 있으며, 기본값은 `true`이다.
+- [X] `viewCnt`는 기본값 `0`으로 설정된다.
 
 ---
 
@@ -96,8 +96,8 @@
 **Controller**: `FaqController`  
 **Endpoint**: `PUT /api/faqs/{faqId}`
 
-- [ ] 관리자가 기존 FAQ를 수정할 수 있다.
-- [ ] `isView` 필드도 수정 가능하다.
+- [X] 관리자가 기존 FAQ를 수정할 수 있다.
+- [X] `isView` 필드도 수정 가능하다.
 
 ---
 
