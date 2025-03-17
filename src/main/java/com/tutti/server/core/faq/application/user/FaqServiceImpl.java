@@ -15,16 +15,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FaqServiceImpl implements FaqService {
 
-    private final FaqCategoryListServiceImpl faqCategoryListServiceImpl;
-    private final FaqListViewServiceImpl faqListViewServiceImpl;
-    private final FaqSearchListServiceImpl faqSearchListServiceImpl;
-    private final FaqTopViewedListServiceImpl faqTopViewedListServiceImpl;
-    private final FaqViewDetailServiceImpl faqViewDetailServiceImpl;
-    private final FaqFeedbackServiceImpl faqFeedbackServiceImpl;
+    private final FaqCategoryListService faqCategoryListService;
+    private final FaqListViewService faqListViewService;
+    private final FaqSearchListService faqSearchListService;
+    private final FaqTopViewedListService faqTopViewedListService;
+    private final FaqViewDetailService faqViewDetailService;
+    private final FaqFeedbackService faqFeedbackService;
 
     public List<String> getCategories() {
         try {
-            return faqCategoryListServiceImpl.getCategories();
+            return faqCategoryListService.getCategories();
         } catch (Exception e) {
             throw new DomainException(ExceptionType.FAQ_CATEGORY_NOT_FOUND);
         }
@@ -32,7 +32,7 @@ public class FaqServiceImpl implements FaqService {
 
     public FaqListResponse getFaqs(FaqListRequest request) {
         try {
-            return faqListViewServiceImpl.getFaqs(request);
+            return faqListViewService.getFaqs(request);
         } catch (Exception e) {
             throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
         }
@@ -40,7 +40,7 @@ public class FaqServiceImpl implements FaqService {
 
     public FaqListResponse searchFaqs(FaqSearchRequest request) {
         try {
-            return faqSearchListServiceImpl.searchFaqs(request);
+            return faqSearchListService.searchFaqs(request);
         } catch (Exception e) {
             throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
         }
@@ -48,7 +48,7 @@ public class FaqServiceImpl implements FaqService {
 
     public List<FaqResponse> getTopFaqs(int limit) {
         try {
-            return faqTopViewedListServiceImpl.getTopFaqs(limit);
+            return faqTopViewedListService.getTopFaqs(limit);
         } catch (Exception e) {
             throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
         }
@@ -56,7 +56,7 @@ public class FaqServiceImpl implements FaqService {
 
     public FaqResponse getFaqById(Long faqId) {
         try {
-            return faqViewDetailServiceImpl.findFaqById(faqId);
+            return faqViewDetailService.findFaqById(faqId);
         } catch (Exception e) {
             throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
         }
@@ -64,7 +64,7 @@ public class FaqServiceImpl implements FaqService {
 
     public void faqFeedback(Long faqId, FaqFeedbackRequest feedback) {
         try {
-            faqFeedbackServiceImpl.updateFaqFeedback(faqId, feedback);
+            faqFeedbackService.updateFaqFeedback(faqId, feedback);
         } catch (Exception e) {
             throw new DomainException(ExceptionType.FAQ_FEEDBACK_FAILED);
         }

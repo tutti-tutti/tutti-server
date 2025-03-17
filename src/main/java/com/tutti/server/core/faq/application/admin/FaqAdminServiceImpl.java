@@ -11,16 +11,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FaqAdminServiceImpl implements FaqAdminService {
 
-    private final FaqAdminCreateServiceImpl faqAdminCreateServiceImpl;
-    private final FaqAdminUpdateServiceImpl faqAdminUpdateServiceImpl;
+    private final FaqAdminCreateService faqAdminCreateService;
+    private final FaqAdminUpdateService faqAdminUpdateService;
 
     @Override
     public FaqCreateResponse createFaq(FaqCreateRequest faqCreateRequest) {
-        return faqAdminCreateServiceImpl.createFaq(faqCreateRequest);
+        return faqAdminCreateService.createFaq(faqCreateRequest);
     }
 
     @Override
     public FaqUpdateResponse updateFaq(Long faqId, FaqUpdateRequest faqUpdateRequest) {
-        return faqAdminUpdateServiceImpl.updateFaq(faqId, faqUpdateRequest);
+        return faqAdminUpdateService.updateFaq(faqId, faqUpdateRequest);
     }
 }
