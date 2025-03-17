@@ -1,8 +1,19 @@
 package com.tutti.server.core.member.domain;
+
 import com.tutti.server.core.support.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
-import java.time.*;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -37,6 +48,9 @@ public class VerificationCode extends BaseEntity {
 
     // 인증 성공 시 호출할 메서드
     public void verify() {
+        if (isExpired()) {
+            throw new DomainException(ExceptionType.INVALID_VERIFICATION_CODE);
+        }
         this.isVerified = true;
     }
 

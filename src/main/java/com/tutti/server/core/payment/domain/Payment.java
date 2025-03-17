@@ -52,6 +52,9 @@ public class Payment extends BaseEntity {
     @JoinColumn(name = "payment_method_id") // 결제 요청이 왔을 때는 몰라도 됨.
     private PaymentMethod paymentMethod; // 결제 수단 id
 
+    @Column
+    private String orderNumber;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentMethodType paymentMethodType; // 결제 수단 타입
@@ -59,6 +62,7 @@ public class Payment extends BaseEntity {
     @Builder
     public Payment(String orderName, int amount, PaymentStatus paymentStatus,
             String tossPaymentKey, Member member,
+            Order order, PaymentMethod paymentMethod, String orderNumber) {
             Order order, PaymentMethod paymentMethod, PaymentMethodType paymentMethodType) {
         this.orderName = orderName;
         this.amount = amount;
@@ -67,16 +71,29 @@ public class Payment extends BaseEntity {
         this.member = member;
         this.order = order;
         this.paymentMethod = paymentMethod;
+        this.orderNumber = orderNumber;
         this.paymentMethodType = paymentMethodType;
     }
 
     // 결제 승인 후 PaymentKey 저장하는 방식으로 변경.
     public void completePayment(String tossPaymentKey) {
-        if (this.paymentStatus == PaymentStatus.PAYMENT_COMPLETED) {
+        if (this.paymentStatus == PaymentStatus.DONE) {
             throw new IllegalStateException("이미 결제가 완료된 주문입니다.");
         }
-        this.paymentStatus = PaymentStatus.PAYMENT_COMPLETED;
+        this.paymentStatus = PaymentStatus.DONE;
         this.tossPaymentKey = tossPaymentKey;
         this.completedAt = LocalDateTime.now();
+    }
+
+    // Toss 결제 승인 후 상태 업데이트
+    public void confirmPayment(PaymentMethod paymentMethod, String tossPaymentKey,
+            PaymentStatus status,
+            LocalDateTime completedAt, int amount) {
+        this.paymentMethod = paymentMethod;
+        // paymentKey, paymentStatus, approvedAt, amount 등도 함께 업데이트
+        this.tossPaymentKey = tossPaymentKey;
+        this.paymentStatus = status;
+        this.completedAt = completedAt;
+        this.amount = amount;
     }
 }

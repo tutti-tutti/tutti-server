@@ -42,4 +42,9 @@ public class PaymentHistory {
 
     @Column(nullable = false)
     private LocalDateTime statusUpdatedAt; // 결제 상태 변경 일시
+
+    // 최신 이력 상태 관리.
+    public void markAsOldHistory() {
+        this.latestStatus = false;
+    }
 }

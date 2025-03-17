@@ -27,9 +27,6 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    private int deliveryFee;
-    private int totalAmount;
-
     @Column(length = 50)
     @Enumerated(EnumType.STRING)
     private PaymentMethodType paymentType;
@@ -37,12 +34,17 @@ public class Order extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String orderStatus;
 
-    private LocalDateTime completed_at;
+    private String orderNumber;
     private int orderCount;
+    private int deliveryFee;
+    private int totalAmount;
+    private LocalDateTime completed_at;
+
 
     @Builder
-    public Order(Member member, int deliveryFee, int totalAmount, PaymentMethodType paymentType,
-            String orderStatus, LocalDateTime completed_at, int orderCount) {
+    public Order(Member member, String orderNumber, int orderCount, int deliveryFee,
+            int totalAmount, PaymentMethodType paymentType, String orderStatus,
+            LocalDateTime completed_at) {
         this.member = member;
         this.deliveryFee = deliveryFee;
         this.totalAmount = totalAmount;
@@ -50,5 +52,6 @@ public class Order extends BaseEntity {
         this.orderStatus = orderStatus;
         this.completed_at = completed_at;
         this.orderCount = orderCount;
+        this.orderNumber = orderNumber;
     }
 }

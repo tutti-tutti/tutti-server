@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,9 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JWTUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(JWTUtil jwtUtil) {
+    public SecurityConfig(JWTUtil jwtUtil, UserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService; // 🔹 생성자에서 주입
     }
 
     @Bean
@@ -28,10 +31,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (API 요청을 위해 필요)
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers("/**")
-//                        "/api/v1/members/email/verify",
-//                                "/api/v1/members/email/confirm",
-//                                "/api/v1/members/signup/email",
-//                                "/api/v1/members/login/email")
+//                        "members/email/verify",
+//                                "members/email/confirm",
+//                                "members/signup/email",
+//                                "members/login/email")
                                 .requestMatchers("/**") // ✅ 모든 URL 허용
                                 .permitAll() // ✅ 로그인 관련 URL 허용
                                 .anyRequest().authenticated() // 나머지는 인증 필요
@@ -41,7 +44,8 @@ public class SecurityConfig {
                         // JWT 기반 인증 (세션 사용 X)
                 )
                 // ✅ JWTFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
-                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JWTFilter(jwtUtil, userDetailsService),
+                        UsernamePasswordAuthenticationFilter.class)
                 .formLogin(form -> form.disable()) // 기본 로그인 폼 비활성화
                 .httpBasic(httpBasic -> httpBasic.disable()); // HTTP 기본 인증 비활성화
 

@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 
 public record SignupRequest(
 
@@ -22,7 +23,9 @@ public record SignupRequest(
         String password,
 
         @NotBlank(message = "비밀번호 확인은 필수 입력 항목입니다.")
-        String passwordConfirm
+        String passwordConfirm,
+
+        List<TermsAgreementRequest> termsAgreement
 ) {
 
 }
