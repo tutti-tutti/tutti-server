@@ -8,7 +8,10 @@ import java.util.List;
 @Tag(name = "products", description = "상품 API")
 public interface ProductApiSpec {
 
-  @Operation(summary = "상품 조회")
-  public List<ProductResponse> getProducts();
+//    @Operation(summary = "상품 조회")
+//    public List<ProductResponse> getProducts();
+
+    @Operation(summary = "상품 전체 조회")
+    public List<ProductResponse> getAllProducts();
 
 }

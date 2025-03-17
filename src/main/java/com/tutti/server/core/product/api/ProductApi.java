@@ -13,11 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/products")
 public class ProductApi implements ProductApiSpec {
 
-  private final ProductService productService;
+    private final ProductService productService;
 
-  @Override
-  @GetMapping
-  public List<ProductResponse> getProducts() {
-    return productService.getProducts();
-  }
+    /*
+        @Override
+        @GetMapping("/findAll")
+        public List<Product> getAllProducts() {
+            return productService.getAllProducts();
+        }
+    */
+    @Override
+    @GetMapping
+    public List<ProductResponse> getAllProducts() {
+        return productService.getProducts();
+    }
 }
