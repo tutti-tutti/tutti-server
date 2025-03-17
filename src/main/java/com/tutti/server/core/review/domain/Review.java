@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "reviews")
@@ -30,11 +31,23 @@ public class Review extends BaseEntity {
     @Column(nullable = false, length = 500)
     private String content;
 
-    // 리뷰 이미지 URL을 저장할 필드 (하드코딩된 이미지를 배열로 저장)
     @Column(name = "review_image_urls", length = 1000)
     private String reviewImageUrls;
 
-    @Column
+    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private int likeCount = 0;
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        if (this.likeCount > 0) {
+            this.likeCount--;
+        }
+    }
 }

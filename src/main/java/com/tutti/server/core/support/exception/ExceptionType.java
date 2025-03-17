@@ -54,13 +54,16 @@ public enum ExceptionType {
     PRODUCT_QNA_NOT_FOUND(ExceptionCode.B02, "존재하지 않는 QnA 입니다."),
     PRODUCT_REVIEW_NOT_FOUND(ExceptionCode.B03, "존재하지 않는 리뷰 입니다."),
     CATEGORY_NOT_FOUND(ExceptionCode.B04, "존재하지 않는 카테고리입니다."),
+    NON_EXISTENT_PRODUCT_INCLUDE(ExceptionCode.B05, "존재하지 않는 상품이 포함되어 있습니다."),
+    PRODUCT_MISMATCH(ExceptionCode.B06, "상품을 찾을 수 없습니다."),
 
     // - 장바구니 -
-    CART_ITEM_NOT_FOUND(ExceptionCode.C01, "존재하지 않는 상품입니다."),
+    CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.C01, "존재하지 않는 상품입니다.", ERROR),
 
     // - 주문 -
-    ORDER_NOT_FOUND(ExceptionCode.D01, "해당 주문을 찾을 수 없습니다."),
-    ORDER_ITEM_NOT_FOUND(ExceptionCode.D02, "해당 주문 상품을 찾을 수 없습니다."),
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.D01, "해당 주문을 찾을 수 없습니다.", ERROR),
+    ORDER_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.D02, "해당 주문 상품을 찾을 수 없습니다.", ERROR),
+    ORDER_HISTORY_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.D03, "해당 주문 이력을 찾을 수 없습니다.", ERROR),
 
     // - 결제 -
     PAYMENT_NOT_FOUND(ExceptionCode.P01, "해당 결제 내역을 찾을 수 없습니다."),
@@ -68,7 +71,6 @@ public enum ExceptionType {
     PAYMENT_ALREADY_COMPLETED(ExceptionCode.P03, "이미 결제가 완료된 주문입니다."),
     PAYMENT_ALREADY_PROCESSING(ExceptionCode.P04, "이미 결제가 진행 중인 주문입니다."),
     PAYMENT_METHOD_NOT_FOUND(ExceptionCode.P05, "유효하지 않은 결제 수단입니다."),
-
 
     // - FAQ -
     FAQ_NOT_FOUND(ExceptionCode.F01, "존재하지 않는 FAQ 입니다."),
