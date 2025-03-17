@@ -31,6 +31,12 @@ public class Review extends BaseEntity {
     @Column(nullable = false, length = 500)
     private String content;
 
+    @Column(name = "sentiment", length = 8)
+    private String sentiment;
+
+    @Column(name = "sentiment_probability")
+    private double sentimentProbability;
+
     @Column(name = "review_image_urls", length = 1000)
     private String reviewImageUrls;
 
