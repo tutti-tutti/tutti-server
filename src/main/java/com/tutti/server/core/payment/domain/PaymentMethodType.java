@@ -3,7 +3,9 @@ package com.tutti.server.core.payment.domain;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.Arrays;
+import lombok.Getter;
 
+@Getter
 public enum PaymentMethodType {
 
     CARD("카드"),
@@ -19,10 +21,6 @@ public enum PaymentMethodType {
 
     PaymentMethodType(String displayName) {
         this.displayName = displayName;
-    }
-
-    public String getDisplayName() {
-        return displayName;
     }
 
     // 한글 문자열을 Enum으로 변환하는 메서드
