@@ -152,7 +152,7 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentMethod findPaymentMethod(String methodName) {
         PaymentMethodType methodType = PaymentMethodType.fromString(methodName);
         return paymentMethodRepository.findByMethodType(methodType)
-                .orElseThrow(() -> new DomainException(ExceptionType.PAYMENT_METHOD_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ExceptionType.INVALID_METHOD));
     }
 
     // 2-6. 결제 승인 후 테이블 업데이트
