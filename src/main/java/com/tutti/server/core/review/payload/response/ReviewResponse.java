@@ -15,6 +15,9 @@ public record ReviewResponse(
     @Schema(description = "상품 ID", example = "1")
     long productId,
 
+    @Schema(description = "리뷰 작성자 이메일", example = "boseok.lee@hotmail.com")
+    String email,
+
     @Schema(description = "리뷰 작성자 닉네임", example = "tutti")
     String nickname,
 
@@ -49,6 +52,7 @@ public record ReviewResponse(
             review.getProductId(),
             review.getNickname(),
             review.getContent(),
+            review.getAuthorEmail(),
             review.getRating(),
             imageUrls,
             review.getLikeCount(),

@@ -25,6 +25,9 @@ public class Review extends BaseEntity {
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
+    @Column(name = "email", nullable = false)
+    private String email;
+
     @Column(nullable = false)
     private int rating;
 
@@ -55,5 +58,9 @@ public class Review extends BaseEntity {
         if (this.likeCount > 0) {
             this.likeCount--;
         }
+    }
+
+    public String getAuthorEmail() {
+        return this.email;
     }
 }
