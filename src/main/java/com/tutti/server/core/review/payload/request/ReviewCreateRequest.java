@@ -12,13 +12,13 @@ public record ReviewCreateRequest(
 
     @Schema(description = "상품 ID", example = "1")
     @NotNull(message = "상품 ID는 필수입니다.")
-    Long productId,  // 상품 ID
+    long productId,  // 상품 ID
 
     @Schema(description = "상품 평점 (1~5)", example = "5")
     @NotNull(message = "상품 평점은 필수입니다.")
     @Min(value = 1, message = "평점은 1 이상이어야 합니다.")  // 평점 최소 1점
     @Max(value = 5, message = "평점은 5 이하이어야 합니다.")  // 평점 최대 5점
-    Integer rating,  // 평점 (1~5)
+    int rating,  // 평점 (1~5)
 
     @Schema(description = "리뷰 내용", example = "좋아요!")
     @NotNull(message = "리뷰 내용은 필수입니다.")
