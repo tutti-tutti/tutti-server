@@ -1,13 +1,15 @@
 package com.tutti.server.core.order.payload.request;
 
+import com.tutti.server.core.cart.domain.CartItem;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.order.domain.CreatedByType;
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.order.domain.OrderHistory;
 import com.tutti.server.core.order.domain.OrderItem;
-import com.tutti.server.core.order.domain.OrderStatus;
 import com.tutti.server.core.payment.domain.PaymentMethodType;
 import com.tutti.server.core.product.domain.ProductItem;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.Builder;
 
@@ -21,7 +23,10 @@ public record OrderCreateRequest(
 
     public record OrderItemRequest(
 
+            @NotNull(message = "필수 옵션을 선택해주세요.")
             Long productItemId,
+
+            @Min(value = 1, message = "수량은 1 이상이어야 합니다.")
             int quantity
     ) {
 
@@ -37,6 +42,19 @@ public record OrderCreateRequest(
                     .price(productItem.getSellingPrice())
                     .build();
         }
+
+        public OrderItem toEntity(Order order, CartItem cartItem) {
+            return OrderItem.builder()
+                    .order(order)
+                    .productItem(cartItem.getProductItem())
+                    .productName(cartItem.getProductName())
+                    .productImgUrl(cartItem.getProductImgUrl())
+                    .productOptionName(cartItem.getProductOptionName())
+                    .productOptionValue(cartItem.getProductOptionValue())
+                    .quantity(quantity)
+                    .price(cartItem.getPrice())
+                    .build();
+        }
     }
 
     public Order toEntity(Member member, String orderNumber, int orderCount, int totalAmount,
@@ -47,13 +65,12 @@ public record OrderCreateRequest(
                 .orderStatus(orderStatus)
                 .orderNumber(orderNumber)
                 .orderCount(orderCount)
-                .deliveryFee(0)
                 .totalAmount(totalAmount)
                 .build();
     }
 
     public OrderHistory toEntity(Order order, CreatedByType createdByType, long createdById,
-            OrderStatus orderStatus) {
+            String orderStatus) {
         return OrderHistory.builder()
                 .order(order)
                 .orderStatus(orderStatus)

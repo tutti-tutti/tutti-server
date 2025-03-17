@@ -61,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
         // 7. 주문 이력 생성
         orderHistoryRepository.save(
                 orderCreateRequest.toEntity(order, CreatedByType.MEMBER, member.getId(),
-                        OrderStatus.WAITING_FOR_PAYMENT));
+                        OrderStatus.WAITING_FOR_PAYMENT.name()));
     }
 
     @Override

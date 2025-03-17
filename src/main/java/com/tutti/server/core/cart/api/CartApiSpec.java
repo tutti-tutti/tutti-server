@@ -9,11 +9,11 @@ import java.util.List;
 @Tag(name = "장바구니 API")
 public interface CartApiSpec {
 
-    @Operation(summary = "장바구니 상품 조회")
-    List<CartItemsResponse> getCartItems(Long memberId);
-
     @Operation(summary = "장바구니 상품 추가")
     void addCartItem(CartItemCreateRequest request);
+
+    @Operation(summary = "장바구니 상품 조회")
+    List<CartItemsResponse> getCartItems(Long memberId);
 
     @Operation(summary = "장바구니 상품 삭제")
     void removeCartItem(Long cartItemId, Long memberId);
