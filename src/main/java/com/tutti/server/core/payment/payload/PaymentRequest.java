@@ -29,9 +29,8 @@ public record PaymentRequest(
                 .tossPaymentKey(null)
                 .member(member)
                 .order(order)
+                .paymentMethodType(order.getPaymentType())
                 .orderNumber(orderNumber)
-                .paymentMethod(null)
                 .build();
     }
-
 }
