@@ -31,8 +31,6 @@ public record PaymentRequest(
                 .order(order)
                 .paymentMethodType(order.getPaymentType())
                 .orderNumber(orderNumber)
-                .paymentMethod(null)
                 .build();
     }
-
 }

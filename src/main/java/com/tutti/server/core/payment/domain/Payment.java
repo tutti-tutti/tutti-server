@@ -62,8 +62,9 @@ public class Payment extends BaseEntity {
     @Builder
     public Payment(String orderName, int amount, PaymentStatus paymentStatus,
             String tossPaymentKey, Member member,
-            Order order, PaymentMethod paymentMethod, String orderNumber) {
-            Order order, PaymentMethod paymentMethod, PaymentMethodType paymentMethodType) {
+            Order order, PaymentMethod paymentMethod, String orderNumber,
+            PaymentMethodType paymentMethodType) {
+
         this.orderName = orderName;
         this.amount = amount;
         this.paymentStatus = paymentStatus;
