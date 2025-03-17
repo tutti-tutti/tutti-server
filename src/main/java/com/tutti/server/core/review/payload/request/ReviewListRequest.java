@@ -13,12 +13,10 @@ public record ReviewListRequest(
     @Schema(description = "다음 페이지 조회를 위한 커서 값", example = "0") String nextCursor
 ) {
 
-    public ReviewListRequest {
-        if (size == null) {
-            size = 20;
-        }
-        if (sort == null) {
-            sort = "created_at_desc";
-        }
+    public ReviewListRequest(Long productId, Integer size, String sort, String nextCursor) {
+        this.productId = productId;
+        this.size = (size == null) ? 20 : size;
+        this.sort = (sort == null) ? "created_at_desc" : sort;
+        this.nextCursor = nextCursor;
     }
 }
