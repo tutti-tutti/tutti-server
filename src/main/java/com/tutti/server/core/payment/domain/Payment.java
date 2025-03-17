@@ -92,7 +92,7 @@ public class Payment extends BaseEntity {
     }
 
     public void cancelPayment(LocalDateTime canceledAt) {
-        this.paymentStatus = PaymentStatus.PAYMENT_CANCELED;
+        this.paymentStatus = PaymentStatus.CANCELED;
         this.completedAt = canceledAt;
     }
 }
