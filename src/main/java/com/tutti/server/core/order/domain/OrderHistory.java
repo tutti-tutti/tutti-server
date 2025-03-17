@@ -33,9 +33,8 @@ public class OrderHistory {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
-    private OrderStatus orderStatus;
+    private String orderStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
@@ -49,14 +48,12 @@ public class OrderHistory {
     private LocalDateTime createdAt;
 
     @Builder
-    public OrderHistory(Long id, Order order, OrderStatus orderStatus, CreatedByType createdByType,
+    public OrderHistory(Order order, String orderStatus, CreatedByType createdByType,
             long createdById, boolean latestVersion) {
-        this.id = id;
         this.order = order;
         this.orderStatus = orderStatus;
         this.createdByType = createdByType;
         this.createdById = createdById;
         this.latestVersion = latestVersion;
-        this.createdAt = LocalDateTime.now();
     }
 }
