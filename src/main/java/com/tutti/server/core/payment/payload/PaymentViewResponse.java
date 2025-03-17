@@ -1,7 +1,10 @@
 package com.tutti.server.core.payment.payload;
 
 import com.tutti.server.core.payment.domain.Payment;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public record PaymentViewResponse(
         Long paymentId,
@@ -26,9 +29,10 @@ public record PaymentViewResponse(
                 payment.getMember().getId(),
                 payment.getMember().getName(),
                 payment.getOrder().getId(),
-                payment.getPaymentMethod() != null ? payment.getPaymentMethod().getMethodType()
-                        .name() : null
+                Optional.ofNullable(payment.getPaymentMethod())
+                        .map(method -> method.getMethodType().name())
+                        .orElseThrow(() -> new DomainException(
+                                ExceptionType.MISSING_METHOD_NOT_FOUND))
         );
     }
-
 }

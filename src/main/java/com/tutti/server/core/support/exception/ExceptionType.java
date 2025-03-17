@@ -70,7 +70,8 @@ public enum ExceptionType {
     PAYMENT_AMOUNT_MISMATCH(ExceptionCode.P02, "결제 금액과 주문 금액이 일치하지 않습니다."),
     PAYMENT_ALREADY_COMPLETED(ExceptionCode.P03, "이미 결제가 완료된 주문입니다."),
     PAYMENT_ALREADY_PROCESSING(ExceptionCode.P04, "이미 결제가 진행 중인 주문입니다."),
-    PAYMENT_METHOD_NOT_FOUND(ExceptionCode.P05, "유효하지 않은 결제 수단입니다."),
+    INVALID_METHOD_NOT_FOUND(ExceptionCode.P05, "유효하지 않은 결제 수단입니다."),
+    MISSING_METHOD_NOT_FOUND(ExceptionCode.P06, "결제 수단이 선택되지 않았습니다."),
 
     // - FAQ -
     FAQ_NOT_FOUND(ExceptionCode.F01, "존재하지 않는 FAQ 입니다."),
