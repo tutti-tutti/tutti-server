@@ -55,10 +55,16 @@ public class Payment extends BaseEntity {
     @Column
     private String orderNumber;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentMethodType paymentMethodType; // 결제 수단 타입
+
     @Builder
     public Payment(String orderName, int amount, PaymentStatus paymentStatus,
             String tossPaymentKey, Member member,
-            Order order, PaymentMethod paymentMethod, String orderNumber) {
+            Order order, PaymentMethod paymentMethod, String orderNumber,
+            PaymentMethodType paymentMethodType) {
+
         this.orderName = orderName;
         this.amount = amount;
         this.paymentStatus = paymentStatus;
@@ -67,6 +73,7 @@ public class Payment extends BaseEntity {
         this.order = order;
         this.paymentMethod = paymentMethod;
         this.orderNumber = orderNumber;
+        this.paymentMethodType = paymentMethodType;
     }
 
     // 결제 승인 후 PaymentKey 저장하는 방식으로 변경.
