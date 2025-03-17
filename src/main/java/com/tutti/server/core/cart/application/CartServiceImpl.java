@@ -37,9 +37,9 @@ public class CartServiceImpl implements CartService {
     public void addCartItem(CartItemCreateRequest request) {
         cartItemRepository.findByMemberIdAndProductItemIdAndDeleteStatusFalse(request.memberId(),
                         request.productItemId())
-                // 이미 장바구니에 해당 상품이 있다면 삭제(soft delete)
+                // 이미 장바구니에 해당 상품이 있다면 수량만 업데이트
                 .ifPresentOrElse(item -> item.changeQuantity(request.quantity()),
-                        // 장바구니에 상품을 새로 생성하여 저장
+                        // 없다면 장바구니에 상품을 새로 생성하여 저장
                         () -> createCartItem(request));
     }
 
