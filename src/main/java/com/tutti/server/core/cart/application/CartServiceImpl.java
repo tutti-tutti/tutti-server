@@ -1,7 +1,7 @@
 package com.tutti.server.core.cart.application;
 
 import com.tutti.server.core.cart.infrastructure.CartItemRepository;
-import com.tutti.server.core.cart.payload.request.CartItemRequest;
+import com.tutti.server.core.cart.payload.request.CartItemCreateRequest;
 import com.tutti.server.core.cart.payload.response.CartItemsResponse;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
@@ -34,20 +34,20 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     // 기존 장바구니 상품이 있는지 확인하고, 없으면 새로 생성하는 메서드
-    public void addCartItem(Long memberId, CartItemRequest request) {
-        cartItemRepository.findByMemberIdAndProductItemIdAndDeleteStatusFalse(memberId,
+    public void addCartItem(CartItemCreateRequest request) {
+        cartItemRepository.findByMemberIdAndProductItemIdAndDeleteStatusFalse(request.memberId(),
                         request.productItemId())
-                // 이미 장바구니에 해당 상품이 있다면 삭제(soft delete)
-                .ifPresent(BaseEntity::delete);
-        // 장바구니에 상품을 새로 생성하여 저장
-        createCartItem(memberId, request);
+                // 이미 장바구니에 해당 상품이 있다면 수량만 업데이트
+                .ifPresentOrElse(item -> item.changeQuantity(request.quantity()),
+                        // 없다면 장바구니에 상품을 새로 생성하여 저장
+                        () -> createCartItem(request));
     }
 
     @Override
     @Transactional
     // 장바구니 상품을 엔티티로 저장하는 메서드
-    public void createCartItem(Long memberId, CartItemRequest request) {
-        var member = memberRepository.findOne(memberId);
+    public void createCartItem(CartItemCreateRequest request) {
+        var member = memberRepository.findOne(request.memberId());
         var productItem = productItemRepository.findOne(request.productItemId());
 
         // 장바구니 상품 엔티티를 만들 때, 수량도 받아야 하기 때문에 파라미터로 request 가 필요하다
