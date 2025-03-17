@@ -6,30 +6,20 @@ import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
 import com.tutti.server.core.review.payload.request.ReviewListRequest;
 import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/reviews")
 @RequiredArgsConstructor
 public class ReviewApi implements ReviewApiSpec {
 
     private final ReviewCreateServiceImpl reviewCreateServiceImpl;
     private final ReviewService reviewService;
 
-    // 리뷰 작성 API
     @Override
-    @PostMapping
-    public ResponseEntity<String> createReview(
-        @Valid @RequestBody ReviewCreateRequest reviewCreateRequest) {
-
+    public ResponseEntity<String> createReview(ReviewCreateRequest reviewCreateRequest) {
         try {
             ReviewCreateResponse review = reviewCreateServiceImpl.createReview(reviewCreateRequest);
             return ResponseEntity.ok("리뷰 작성이 완료되었습니다.");
@@ -42,10 +32,8 @@ public class ReviewApi implements ReviewApiSpec {
     }
 
     @Override
-    @GetMapping("/{productId}")
     public ResponseEntity<ReviewListResponse> getReviewList(
-        @Valid ReviewListRequest reviewListRequest) {
-
+        ReviewListRequest reviewListRequest) {
         ReviewListResponse response = reviewService.getReviews(reviewListRequest);
         return ResponseEntity.ok(response);
     }
