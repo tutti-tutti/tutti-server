@@ -7,8 +7,6 @@ import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.payload.PaymentCancelRequest;
 import com.tutti.server.core.refund.domain.Refund;
 import com.tutti.server.core.refund.infrastructure.RefundRepository;
-import com.tutti.server.core.support.exception.DomainException;
-import com.tutti.server.core.support.exception.ExceptionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +28,7 @@ public class RefundServiceImpl implements RefundService {
                 new PaymentCancelRequest(request.orderId(), request.cancelReason()));
 
         // 결제한 회원 정보 조회
-        Member member = memberRepository.findById(payment.getMember().getId())
-                .orElseThrow(() -> new DomainException(ExceptionType.MEMBER_NOT_FOUND));
+        Member member = memberRepository.findOne(payment.getMember().getId());
 
         // 환불 엔티티 생성 및 저장
         Refund refund = Refund.createCompletedRefund(payment, member);
