@@ -36,12 +36,7 @@ public class PaymentCancelServiceImpl implements PaymentCancelService {
         updatePaymentStatus(payment, parsedResponse);
         paymentHistoryService.savePaymentHistory(payment);
     }
-
-    private Payment findPaymentByOrderId(Long orderId) {
-        return paymentRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new DomainException(ExceptionType.PAYMENT_NOT_FOUND));
-    }
-
+    
     // 결제 상태 취소로 업데이트
     private void updatePaymentStatus(Payment payment, TossPaymentsCancelResponse response) {
         payment.cancelPayment(response.canceledAt());
