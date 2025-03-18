@@ -24,7 +24,7 @@ public class PaymentCancelServiceImpl implements PaymentCancelService {
     @Transactional
     public void paymentCancel(PaymentCancelRequest request) {
         // 결제 정보 조회 및 검증
-        Payment payment = findPaymentByOrderId(request.orderId());
+        Payment payment = paymentRepository.findPaymentByOrderId(request.orderId());
 
         checkPaymentCancelEligibility(payment);
 
