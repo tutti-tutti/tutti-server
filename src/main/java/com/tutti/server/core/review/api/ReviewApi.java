@@ -3,12 +3,12 @@ package com.tutti.server.core.review.api;
 import com.tutti.server.core.review.application.ReviewCreateServiceImpl;
 import com.tutti.server.core.review.application.ReviewService;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
-import com.tutti.server.core.review.payload.request.ReviewListRequest;
 import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
-import com.tutti.server.core.review.payload.response.ReviewListResponse;
+import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,10 +31,18 @@ public class ReviewApi implements ReviewApiSpec {
         }
     }
 
+    // 상품에 달린 리뷰 목록 엔드포인트 수정 필요?? 나중에 상품 쪽이랑 얘기 해봐야 할듯.
+//    @Override
+//    public ResponseEntity<ReviewListResponse> getReviewList(
+//        ReviewListRequest reviewListRequest) {
+//        ReviewListResponse response = reviewService.getReviews(reviewListRequest);
+//        return ResponseEntity.ok(response);
+//    }
+
     @Override
-    public ResponseEntity<ReviewListResponse> getReviewList(
-        ReviewListRequest reviewListRequest) {
-        ReviewListResponse response = reviewService.getReviews(reviewListRequest);
+    public ResponseEntity<ReviewDetailResponse> getReviewDetail(
+        @PathVariable("reviewId") long reviewId) {
+        ReviewDetailResponse response = reviewService.getReviewDetail(reviewId);
         return ResponseEntity.ok(response);
     }
 }
