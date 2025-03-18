@@ -1,7 +1,7 @@
 package com.tutti.server.core.refund.api;
 
+import com.tutti.server.core.payment.payload.PaymentCancelRequest;
 import com.tutti.server.core.refund.application.RefundService;
-import com.tutti.server.core.refund.payload.RefundRequest;
 import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class RefundApi implements RefundApiSpec {
 
     @PostMapping("/request")
     public ResponseEntity<Map<String, String>> requestRefund(
-            @Valid @RequestBody RefundRequest request) {
+            @Valid @RequestBody PaymentCancelRequest request) {
         refundService.requestRefund(request);
         return ResponseEntity.ok(Map.of("message", "결제가 취소되었습니다."));
     }

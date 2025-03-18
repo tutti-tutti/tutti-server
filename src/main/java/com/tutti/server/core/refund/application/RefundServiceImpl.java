@@ -7,7 +7,6 @@ import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.payload.PaymentCancelRequest;
 import com.tutti.server.core.refund.domain.Refund;
 import com.tutti.server.core.refund.infrastructure.RefundRepository;
-import com.tutti.server.core.refund.payload.RefundRequest;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class RefundServiceImpl implements RefundService {
 
     @Override
     @Transactional
-    public void requestRefund(RefundRequest request) {
+    public void requestRefund(PaymentCancelRequest request) {
 
         // 결제 취소 처리 (기존 결제 취소 로직 재사용)
         Payment payment = paymentCancelService.paymentCancel( //TODO 환불 상태가 환불완료인지도 검증해야함.

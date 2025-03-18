@@ -1,8 +1,8 @@
 package com.tutti.server.core.refund.application;
 
-import com.tutti.server.core.refund.payload.RefundRequest;
+import com.tutti.server.core.payment.payload.PaymentCancelRequest;
 
 public interface RefundService {
 
-    void requestRefund(RefundRequest request);
+    void requestRefund(PaymentCancelRequest request);
 }
