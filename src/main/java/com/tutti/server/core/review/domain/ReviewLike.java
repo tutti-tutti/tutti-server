@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -23,10 +24,7 @@ public class ReviewLike extends BaseEntity {
     private Review review;
 
     @Column(name = "member_id", nullable = false, updatable = false)
-    private Long memberId;
-
-    @Column(name = "is_liked", nullable = false)
-    private boolean isLiked;
+    private long memberId;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -34,13 +32,11 @@ public class ReviewLike extends BaseEntity {
     public ReviewLike(Review review, Long memberId) {
         this.review = review;
         this.memberId = memberId;
-        this.isLiked = true;
+        review.increaseLikeCount(); // 좋아요 추가 시 증가
     }
 
-    public void toggleLike(Long memberIdFromToken) {
-        if (!this.memberId.equals(memberIdFromToken)) {
-            throw new IllegalArgumentException("잘못된 사용자 요청입니다.");
-        }
-        this.isLiked = !this.isLiked;
+    @PreRemove
+    public void preRemove() {
+        review.decreaseLikeCount(); // 삭제 시 감소
     }
 }

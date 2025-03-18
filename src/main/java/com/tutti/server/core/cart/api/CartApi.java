@@ -1,7 +1,7 @@
 package com.tutti.server.core.cart.api;
 
 import com.tutti.server.core.cart.application.CartService;
-import com.tutti.server.core.cart.payload.request.CartItemRequest;
+import com.tutti.server.core.cart.payload.request.CartItemCreateRequest;
 import com.tutti.server.core.cart.payload.response.CartItemsResponse;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -22,21 +22,21 @@ public class CartApi implements CartApiSpec {
     private final CartService cartService;
 
     @Override
+    @PostMapping
+    public void addCartItem(@RequestBody @Valid CartItemCreateRequest request) {
+        cartService.addCartItem(request);
+    }
+
+    @Override
     @GetMapping
     public List<CartItemsResponse> getCartItems(@RequestBody Long memberId) {
         return cartService.getCartItems(memberId);
     }
 
     @Override
-    @PostMapping
-    public void addCartItem(Long memberId, @RequestBody @Valid CartItemRequest request) {
-        cartService.addCartItem(memberId, request);
-    }
-
-    @Override
     @PatchMapping("/{cartItemId}")
-    public void removeCartItem(@RequestBody Long memberId,
-            @PathVariable("cartItemId") Long cartItemId) {
-        cartService.removeCartItem(memberId, cartItemId);
+    public void removeCartItem(@PathVariable("cartItemId") Long cartItemId,
+            @RequestBody Long memberId) {
+        cartService.removeCartItem(cartItemId, memberId);
     }
 }
