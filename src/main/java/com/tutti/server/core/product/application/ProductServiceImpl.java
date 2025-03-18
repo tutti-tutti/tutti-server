@@ -1,18 +1,15 @@
 package com.tutti.server.core.product.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
 import com.tutti.server.core.product.payload.response.ProductResponse;
-
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
@@ -23,25 +20,17 @@ public class ProductServiceImpl implements ProductService {
     private final ProductItemRepository productItemRepository;
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
-    @Override
-    public List<ProductResponse> getProducts() {
-        // 모든 상품 리스트 조회
-        List<Product> allProducts = productRepository.findAll();
+    public List<ProductResponse> getAllProductsByCreated() {
+        // 생성일자 기준 내림차순으로 모든 상품 조회
+        List<Product> products = productRepository.findAllByOrderByCreatedAtDesc();
 
         // ProductResponse 리스트로 변환
-        return allProducts.stream()
+        return products.stream()
                 .map(product -> {
                     // 해당 상품의 ProductItem 중 가장 낮은 판매가격을 가진 항목 찾기
-                    ProductItem lowestPriceItem = productItemRepository.findByProductIdOrderBySellingPriceAsc(
-                                    product.getId())
-                            .stream()
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalStateException(
-                                    "Product with id " + product.getId() + " has no valid product items"));
+                    ProductItem lowestPriceItem = productItemRepository
+                            .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
+                            .orElseThrow(); // 예외 처리는 글로벌 예외 핸들러에서 처리
 
                     return ProductResponse.fromEntity(
                             product,
@@ -53,7 +42,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> getProductsByCategory(String category) {
-        return List.of();
+    public List<ProductResponse> getAllProductsByCategory(Long categoryId) {
+        List<Product> products = productRepository.findProductsByCategoryId(categoryId);
+
+        return products.stream()
+                .map(product -> {
+                    ProductItem lowestPriceItem = productItemRepository
+                            .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
+                            .orElseThrow(); // 예외 처리는 글로벌 예외 핸들러에서 처리
+
+                    return ProductResponse.fromEntity(
+                            product,
+                            lowestPriceItem,
+                            product.getStoreId()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 }

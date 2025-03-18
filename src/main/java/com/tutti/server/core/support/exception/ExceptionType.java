@@ -4,9 +4,10 @@ import static org.springframework.boot.logging.LogLevel.ERROR;
 import static org.springframework.boot.logging.LogLevel.INFO;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
-import lombok.Getter;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
 
 @Getter
 public enum ExceptionType {
@@ -48,9 +49,11 @@ public enum ExceptionType {
 
     // - 상품 -
     PRODUCT_NOT_FOUND(ExceptionCode.B01, "존재하지 않는 상품입니다."),
-    PRODUCT_QNA_NOT_FOUND(ExceptionCode.B02, "존재하지 않는 QnA 입니다."),
-    PRODUCT_REVIEW_NOT_FOUND(ExceptionCode.B03, "존재하지 않는 리뷰 입니다."),
-    CATEGORY_NOT_FOUND(ExceptionCode.B04, "존재하지 않는 카테고리입니다."),
+    PRODUCT_CATEGORY_MAP_NOT_FOUND(ExceptionCode.B02, "존재하지 않는 카테고리 상품입니다."),
+    PRODUCT_QNA_NOT_FOUND(ExceptionCode.B03, "존재하지 않는 QnA 입니다."),
+    PRODUCT_REVIEW_NOT_FOUND(ExceptionCode.B04, "존재하지 않는 리뷰 입니다."),
+    CATEGORY_NOT_FOUND(ExceptionCode.B05, "존재하지 않는 카테고리입니다."),
+    PRODUCT_ITEM_NOT_FOUND(ExceptionCode.B06, "상품의 옵션 정보를 찾을 수 없습니다."),
 
     // - 장바구니 -
     CART_ITEM_NOT_FOUND(ExceptionCode.C01, "존재하지 않는 상품입니다."),

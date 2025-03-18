@@ -302,6 +302,9 @@ VALUES (1, 1, '방탄 범퍼 젤리케이스 1+1 투명, 갤럭시S25 플러스'
        (100, 9, '다이슨 에어스트레이트 스트레이트너 세라믹핑크 로즈골드',
         'https://shopping-phinf.pstatic.net/main_5280075/52800758894.20250204172804.jpg', 'P100',
         NULL, '고데기/매직기', b'1', b'0', 3, 0, b'0');
+-- 생성 일시 업데이트
+UPDATE products
+SET created_at = DATE_ADD('2023-01-01', INTERVAL FLOOR(RAND() * 1095) DAY);
 
 -- ProductItem
 INSERT INTO tutti_dev.product_items (product_id, original_price, selling_price, option_name,
@@ -435,6 +438,8 @@ VALUES (1, NULL, '의류'),
        (3, NULL, '생필품'),
        (4, NULL, '디지털'),
        (5, NULL, '화장품');
+UPDATE product_items
+SET created_at = DATE_ADD('2023-01-01', INTERVAL FLOOR(RAND() * 1095) DAY);
 
 -- ProductCategoryMap
 INSERT INTO tutti_dev.product_category_maps (delete_status, category_id, product_id)

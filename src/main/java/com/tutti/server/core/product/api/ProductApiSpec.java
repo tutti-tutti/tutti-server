@@ -5,13 +5,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
-@Tag(name = "products", description = "상품 API")
+@Tag(name = "Products", description = "상품 API")
 public interface ProductApiSpec {
 
-//    @Operation(summary = "상품 조회")
-//    public List<ProductResponse> getProducts();
-
-    @Operation(summary = "상품 전체 조회")
-    public List<ProductResponse> getAllProducts();
-
+    @Operation(summary = "상품 전체 조회 (최신상품순)")
+    public List<ProductResponse> getAllProductsByCreated();
+    
 }

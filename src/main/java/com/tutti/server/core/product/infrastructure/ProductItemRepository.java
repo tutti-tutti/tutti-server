@@ -1,6 +1,7 @@
 package com.tutti.server.core.product.infrastructure;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,5 +26,7 @@ public interface ProductItemRepository extends JpaRepository<ProductItem, Long> 
            "AND pi.deleteStatus = false " +
            "ORDER BY pi.sellingPrice ASC")
     List<ProductItem> findByProductIdOrderBySellingPriceAsc(@Param("productId") Long productId);
+
+    Optional<ProductItem> findFirstByProductIdOrderBySellingPriceAsc(Long productId);
 
 }
