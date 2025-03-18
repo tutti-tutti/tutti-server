@@ -5,8 +5,4 @@ public record PaymentCancelRequest(
         String cancelReason
 ) {
 
-    public String getCancelReason() {
-        return cancelReason();
-    }
-
 }

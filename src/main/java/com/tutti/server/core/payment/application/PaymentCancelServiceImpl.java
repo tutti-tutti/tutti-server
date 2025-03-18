@@ -30,7 +30,7 @@ public class PaymentCancelServiceImpl implements PaymentCancelService {
 
         // TossPayments API 호출 및 응답 처리
         TossPaymentsCancelResponse parsedResponse = tossPaymentService.cancelPayment(
-                payment, request.getCancelReason());
+                payment, request.cancelReason());
 
         // 결제 상태 업데이트 및 결제 이력 저장
         updatePaymentStatus(payment, parsedResponse);
