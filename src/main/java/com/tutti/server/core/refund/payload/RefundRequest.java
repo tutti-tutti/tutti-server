@@ -9,7 +9,7 @@ public record RefundRequest(
         Long orderId,
 
         @NotBlank
-        String reason
+        String cancelReason
 ) {
 
 }

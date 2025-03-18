@@ -58,6 +58,7 @@ public class Refund extends BaseEntity {
         this.returnFee = returnFee;
         this.payment = payment;
         this.member = member;
+        this.refundCompletedAt = refundCompletedAt;
     }
 
     public void completeRefund() {
