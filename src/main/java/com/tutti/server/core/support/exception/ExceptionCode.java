@@ -13,7 +13,7 @@ public enum ExceptionCode {
     C01,
     D01, D02, D03, D04,
     P01, P02, P03, P04, P05, P06,
-    R01, R02,
+    R01, R02, R03,
     F01, F02, F03, F04,
     G01
 }
