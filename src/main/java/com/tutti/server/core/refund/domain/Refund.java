@@ -51,7 +51,7 @@ public class Refund extends BaseEntity {
 
     @Builder
     public Refund(int amount, RefundStatus refundStatus, PaymentMethodType refundMethod,
-            int returnFee, Payment payment, Member member) {
+            int returnFee, Payment payment, Member member, LocalDateTime refundCompletedAt) {
         this.amount = amount;
         this.refundStatus = refundStatus;
         this.refundMethod = refundMethod;
@@ -66,5 +66,17 @@ public class Refund extends BaseEntity {
         }
         this.refundStatus = RefundStatus.REFUND_COMPLETED;
         this.refundCompletedAt = LocalDateTime.now();
+    }
+
+    public static Refund createCompletedRefund(Payment payment, Member member) {
+        return Refund.builder()
+                .amount(payment.getAmount())
+                .refundStatus(RefundStatus.REFUND_COMPLETED)
+                .refundMethod(payment.getPaymentMethodType())
+                .returnFee(payment.getOrder().getDeliveryFee())
+                .payment(payment)
+                .member(member)
+                .refundCompletedAt(LocalDateTime.now())
+                .build();
     }
 }
