@@ -38,7 +38,7 @@ public class Order extends BaseEntity {
     private int orderCount;
     private int deliveryFee;
     private int totalAmount;
-    private LocalDateTime completed_at;
+    private LocalDateTime completedAt;
 
 
     @Builder
