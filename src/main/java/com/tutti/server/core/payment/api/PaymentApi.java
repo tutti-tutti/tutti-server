@@ -1,7 +1,9 @@
 package com.tutti.server.core.payment.api;
 
+import com.tutti.server.core.payment.application.PaymentCancelService;
 import com.tutti.server.core.payment.application.PaymentService;
 import com.tutti.server.core.payment.application.PaymentViewService;
+import com.tutti.server.core.payment.payload.PaymentCancelRequest;
 import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
 import com.tutti.server.core.payment.payload.PaymentRequest;
 import com.tutti.server.core.payment.payload.PaymentResponse;
@@ -29,6 +31,7 @@ public class PaymentApi {
 
     private final PaymentService paymentService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final PaymentCancelService paymentCancelService;
 
     private final PaymentViewService paymentViewService;
 
@@ -45,6 +48,14 @@ public class PaymentApi {
         paymentService.confirmPayment(request);
         Map<String, String> body = Map.of("message", "결제가 완료되었습니다.");
         return ResponseEntity.ok(body);
+    }
+
+    @PostMapping("/cancel")
+    public ResponseEntity<?> cancelPayment(
+            @Valid @RequestBody PaymentCancelRequest request) {
+        logger.info("결제 취소 요청: 주문 ID = {}", request.orderId());
+        paymentCancelService.paymentCancel(request);
+        return ResponseEntity.ok(Map.of("message", "결제가 취소되었습니다."));
     }
 
     // 회원ID로 결제 조회

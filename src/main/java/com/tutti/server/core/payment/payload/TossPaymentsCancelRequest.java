@@ -1,7 +1,6 @@
 package com.tutti.server.core.payment.payload;
 
-public record PaymentCancelRequest(
-        Long orderId,
+public record TossPaymentsCancelRequest(
         String cancelReason
 ) {
 

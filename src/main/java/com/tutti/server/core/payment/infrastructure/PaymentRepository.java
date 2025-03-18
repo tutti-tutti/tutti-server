@@ -16,6 +16,11 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                 .orElseThrow(() -> new DomainException(ExceptionType.PAYMENT_NOT_FOUND));
     }
 
+    default Payment findPaymentByOrderId(Long orderId) {
+        return findByOrderId(orderId)
+                .orElseThrow(() -> new DomainException(ExceptionType.PAYMENT_NOT_FOUND));
+    }
+
     Optional<Payment> findByOrderNumber(String orderNumber);
 
     List<Payment> findByMemberId(Long memberId);

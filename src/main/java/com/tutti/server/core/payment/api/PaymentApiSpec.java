@@ -1,5 +1,6 @@
 package com.tutti.server.core.payment.api;
 
+import com.tutti.server.core.payment.payload.PaymentCancelRequest;
 import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
 import com.tutti.server.core.payment.payload.PaymentRequest;
 import com.tutti.server.core.payment.payload.PaymentResponse;
@@ -18,6 +19,9 @@ public interface PaymentApiSpec {
 
     @Operation(summary = "결제 승인", description = "사용자가 결제 승인을 요청하는 API")
     ResponseEntity<Map<String, Object>> confirmPayment(PaymentConfirmRequest request);
+
+    @Operation(summary = "결제 취소", description = "사용자가 결제를 취소하는 API")
+    ResponseEntity<Map<String, String>> cancelPayment(PaymentCancelRequest request);
 
     @Operation(summary = "회원 ID로 결제 조회", description = "특정 회원 ID를 기반으로 결제 내역을 조회하는 API")
     List<PaymentViewResponse> getMemberPayments(Long memberId);
