@@ -8,16 +8,21 @@ import com.tutti.server.core.faq.payload.response.FaqUpdateResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/faqs/admin")
 public class FaqAdminApi implements FaqAdminApiSpec {
 
     private final FaqAdminServiceImpl faqAdminServiceImpl;
 
     @Override
+    @PostMapping
     public ResponseEntity<FaqCreateResponse> createFaq(
         @RequestBody FaqCreateRequest faqCreateRequest) {
         FaqCreateResponse response = faqAdminServiceImpl.createFaq(faqCreateRequest);
@@ -25,6 +30,7 @@ public class FaqAdminApi implements FaqAdminApiSpec {
     }
 
     @Override
+    @PutMapping("/{faqId}")
     public ResponseEntity<FaqUpdateResponse> updateFaq(@PathVariable Long faqId,
         @RequestBody FaqUpdateRequest faqUpdateRequest) {
         FaqUpdateResponse response = faqAdminServiceImpl.updateFaq(faqId, faqUpdateRequest);

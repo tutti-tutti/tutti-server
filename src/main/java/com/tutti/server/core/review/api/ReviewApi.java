@@ -37,9 +37,9 @@ public class ReviewApi implements ReviewApiSpec {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
         }
     }
-
-    // 상품에 달린 리뷰 목록 엔드포인트 수정 필요?? 나중에 상품 쪽이랑 얘기 해봐야 할듯.
+//    상품에 달린 리뷰 목록 엔드포인트 수정 필요?? 나중에 상품 쪽이랑 얘기 해봐야 할듯.
 //    @Override
+//        @GetMapping("/{productId}")
 //    public ResponseEntity<ReviewListResponse> getReviewList(
 //        ReviewListRequest reviewListRequest) {
 //        ReviewListResponse response = reviewService.getReviews(reviewListRequest);
