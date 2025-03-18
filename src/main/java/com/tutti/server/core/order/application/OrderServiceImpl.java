@@ -130,8 +130,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponse> getOrders(String email) {
-        return orderRepository.findAllByMemberEmailAndDeleteStatusFalse(email)
+    public List<OrderResponse> getOrders(Long memberId) {
+        return orderRepository.findAllByMemberIdAndDeleteStatusFalse(memberId)
                 .stream()
                 .map(order -> OrderResponse.fromEntity(order,
                         orderItemRepository.findAllByOrderId(order.getId())))

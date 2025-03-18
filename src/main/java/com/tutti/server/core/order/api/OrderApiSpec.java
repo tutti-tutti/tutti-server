@@ -5,7 +5,6 @@ import com.tutti.server.core.order.payload.response.OrderResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Tag(name = "주문 API")
 public interface OrderApiSpec {
@@ -14,5 +13,5 @@ public interface OrderApiSpec {
     void createOrder(OrderCreateRequest request);
 
     @Operation(summary = "주문 내역 전체 조회")
-    List<OrderResponse> getOrders(UserDetails user);
+    List<OrderResponse> getOrders(Long memberId);
 }

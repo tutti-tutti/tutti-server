@@ -25,5 +25,5 @@ public interface OrderService {
 
     ProductItem findProductItemById(List<ProductItem> productItems, Long productItemId);
 
-    List<OrderResponse> getOrders(String email);
+    List<OrderResponse> getOrders(Long memberId);
 }

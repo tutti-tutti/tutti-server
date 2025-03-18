@@ -6,8 +6,6 @@ import com.tutti.server.core.order.payload.response.OrderResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +28,7 @@ public class OrderApi implements OrderApiSpec {
     // 주문 전체 조회
     @Override
     @GetMapping
-    public List<OrderResponse> getOrders(@AuthenticationPrincipal UserDetails user) {
-        return orderService.getOrders(user.getUsername());
+    public List<OrderResponse> getOrders(@RequestBody Long memberId) {
+        return orderService.getOrders(memberId);
     }
 }
