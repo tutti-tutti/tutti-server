@@ -1,5 +1,6 @@
 package com.tutti.server.core.review.payload.response;
 
+import com.tutti.server.core.review.domain.Review;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "리뷰 작성 응답")
@@ -16,7 +17,7 @@ public record ReviewCreateResponse(
     @Schema(description = "리뷰 작성일", example = "2021-08-01") String createdAt
 ) {
 
-    public static ReviewCreateResponse from(com.tutti.server.core.review.domain.Review review) {
+    public static ReviewCreateResponse from(Review review) {
         return new ReviewCreateResponse(
             review.getId(),
             review.getMember().getId(),
