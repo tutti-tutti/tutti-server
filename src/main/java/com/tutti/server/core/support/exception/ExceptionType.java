@@ -77,6 +77,7 @@ public enum ExceptionType {
     // - 환불 -
     REFUND_REQUEST_NOT_ALLOWED(ExceptionCode.R01, "환불 및 결제취소 대상이 아닙니다."),
     REFUND_REQUEST_EXPIRED(ExceptionCode.R02, "환불 기간이 지났습니다."),
+    REFUND_ALREADY_COMPLETED(ExceptionCode.R03, "이미 환불이 완료된 결제입니다."),
 
     // - FAQ -
     FAQ_NOT_FOUND(ExceptionCode.F01, "존재하지 않는 FAQ 입니다."),
