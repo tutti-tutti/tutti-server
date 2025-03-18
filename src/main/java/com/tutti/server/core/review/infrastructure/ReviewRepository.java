@@ -15,13 +15,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     default Review findOne(Long id) {
         return findById(id)
-            .orElseThrow(() -> new DomainException(ExceptionType.FAQ_NOT_FOUND));
+            .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_REVIEW_NOT_FOUND));
     }
-
-    List<Review> findByProductId(Long productId, Pageable pageable);
 
     @Query("SELECT r FROM Review r WHERE r.productId = :productId AND r.id < :cursor ORDER BY r.createdAt DESC")
     List<Review> findReviewsByProductIdAndCursor(@Param("productId") Long productId,
         @Param("cursor") Long cursor, Pageable pageable);
-
 }
