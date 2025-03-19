@@ -48,7 +48,7 @@ public class Payment extends BaseEntity {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order; // 주문 id
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_method_id") // 결제 요청이 왔을 때는 몰라도 됨.
     private PaymentMethod paymentMethod; // 결제 수단 id
 
@@ -87,11 +87,9 @@ public class Payment extends BaseEntity {
     }
 
     // Toss 결제 승인 후 상태 업데이트
-    public void confirmPayment(PaymentMethod paymentMethod, String tossPaymentKey,
+    public void confirmPayment(String tossPaymentKey,
             PaymentStatus status,
             LocalDateTime completedAt, int amount) {
-        this.paymentMethod = paymentMethod;
-        // paymentKey, paymentStatus, approvedAt, amount 등도 함께 업데이트
         this.tossPaymentKey = tossPaymentKey;
         this.paymentStatus = status;
         this.completedAt = completedAt;
