@@ -16,7 +16,7 @@ public class ReturnsApi implements ReturnsApiSpec {
 
     private final ReturnsService returnsService;
 
-    @PostMapping("/reqeust")
+    @PostMapping("/request")
     public ResponseEntity<String> requestReturns(@RequestBody ReturnsRequest request) {
         returnsService.processReturnsRequest(request);
         return ResponseEntity.ok("반품 신청이 완료되었습니다.");
