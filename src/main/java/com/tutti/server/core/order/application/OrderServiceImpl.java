@@ -10,6 +10,7 @@ import com.tutti.server.core.order.infrastructure.OrderHistoryRepository;
 import com.tutti.server.core.order.infrastructure.OrderItemRepository;
 import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
+import com.tutti.server.core.order.payload.response.OrderResponse;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.support.exception.DomainException;
@@ -125,5 +126,15 @@ public class OrderServiceImpl implements OrderService {
                 .filter(item -> item.getId().equals(productItemId))
                 .findFirst()
                 .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_MISMATCH));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getOrders(Long memberId) {
+        return orderRepository.findAllByMemberIdAndDeleteStatusFalse(memberId)
+                .stream()
+                .map(order -> OrderResponse.fromEntity(order,
+                        orderItemRepository.findAllByOrderId(order.getId())))
+                .toList();
     }
 }
