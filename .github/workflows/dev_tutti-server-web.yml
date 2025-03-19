@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy WAR app to Azure Web App - tutti-server-web
+name: Build and deploy JAR app to Azure Web App - tutti-server-web
 
 on:
   push:
@@ -34,6 +34,7 @@ jobs:
       # Build with Gradle Wrapper
       - name: Build with Gradle Wrapper
         run: ./gradlew build
+        if: success()
 
       # Run tests with Gradle
       - name: Run tests with Gradle

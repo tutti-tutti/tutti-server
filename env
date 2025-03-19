@@ -1,0 +1,9 @@
+JWT_SECRET=7Jes6riw7JeQXzMy67CU7J207Yq4X+ydtOyDgeydmF/slYjsoITtlZxf7YKk
+GOOGLE_CLIENT_ID=871451963740-tp3m04sajpm66676up2g55bois43r3ft.apps.googleusercontent.com
+NAVER_CLIENT_ID=ODtm2Mihb886R7hVNxiC
+NAVER_CLIENT_SECRET=eIU215XadE
+MAIL_PORT=587
+MAIL_USERNAME=tutti.service.center@gmail.com
+MAIL_PASSWORD=lwetovoagudmjcdb
+TOSS_SECRET_KEY=test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6
+BASE_URL=http://localhost:8080
