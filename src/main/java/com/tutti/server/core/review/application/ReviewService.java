@@ -14,16 +14,12 @@ import org.springframework.stereotype.Service;
 public class ReviewService {
 
     private final ReviewCreateService reviewCreateService;
-    private final ReviewListService reviewListService;
     private final ReviewDetailService reviewDetailService;
     private final ReviewMyListService reviewMyListService;
+    private final ReviewByProductsDetailService reviewByProductsDetailService;
 
     public ReviewCreateResponse createReview(ReviewCreateRequest request) {
         return reviewCreateService.createReview(request);
-    }
-
-    public ReviewListResponse getReviews(ReviewListRequest request) {
-        return reviewListService.getReviews(request);
     }
 
     public ReviewDetailResponse getReviewDetail(long reviewId) {
@@ -32,5 +28,9 @@ public class ReviewService {
 
     public ReviewMyListResponse getMyReviewList(String email, Long cursor, int size) {
         return reviewMyListService.getMyList(email, cursor, size);
+    }
+
+    public ReviewListResponse getReviewsByProduct(Long productId, Long cursor, int size) {
+        return reviewByProductsDetailService.getReviewsByProductId(productId, cursor, size);
     }
 }

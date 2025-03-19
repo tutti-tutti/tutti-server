@@ -20,18 +20,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("""
             SELECT r FROM Review r 
-            WHERE r.productId = :productId 
-            AND (:cursor IS NULL OR r.id < :cursor)
-            ORDER BY r.createdAt DESC
-        """)
-    List<Review> findReviewsByProductIdAndCursor(
-        @Param("productId") Long productId,
-        @Param("cursor") Long cursor,
-        Pageable pageable
-    );
-
-    @Query("""
-            SELECT r FROM Review r 
             WHERE r.nickname = :nickname 
             ORDER BY r.id DESC
         """)
@@ -45,4 +33,19 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         """)
     List<Review> findNextMyReviews(@Param("nickname") String nickname, @Param("cursor") Long cursor,
         Pageable pageable);
+
+    List<Review> findFirstReviewsByProductId(Long productId, Pageable pageable);
+
+    @Query("""
+            SELECT r FROM Review r 
+            WHERE r.productId = :productId 
+            AND (:cursor IS NULL OR r.id < :cursor)
+            ORDER BY r.createdAt DESC
+        """)
+    List<Review> findReviewsByProductIdAndCursor(
+        @Param("productId") Long productId,
+        @Param("cursor") Long cursor,
+        Pageable pageable
+    );
+
 }

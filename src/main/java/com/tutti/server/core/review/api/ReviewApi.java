@@ -5,6 +5,7 @@ import com.tutti.server.core.review.application.ReviewService;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
 import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
 import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
+import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -41,15 +42,6 @@ public class ReviewApi implements ReviewApiSpec {
         }
     }
 
-    // 상품에 달린 리뷰 목록 엔드포인트 - 수정 필요할 가능성이 있음
-//    @Override
-//    @GetMapping("/{productId}")
-//    public ResponseEntity<ReviewListResponse> getReviewList(
-//        @RequestBody ReviewListRequest reviewListRequest) {  // 요청 본문에서 받도록 변경
-//        ReviewListResponse response = reviewService.getReviews(reviewListRequest);
-//        return ResponseEntity.ok(response);
-//    }
-
     @Override
     @GetMapping("/{reviewId}")
     public ResponseEntity<ReviewDetailResponse> getReviewDetail(
@@ -67,6 +59,18 @@ public class ReviewApi implements ReviewApiSpec {
         @RequestParam(defaultValue = "20") int size
     ) {
         ReviewMyListResponse response = reviewService.getMyReviewList(nickname, cursor, size);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/{productId}")
+    public ResponseEntity<ReviewListResponse> getReviewsByProductId(
+        @PathVariable Long productId,
+        @Parameter(description = "이전 페이지 마지막 ID (첫 요청 시 null 가능), empty value check!", allowEmptyValue = true)
+        @RequestParam(required = false) Long cursor,
+        @RequestParam(defaultValue = "20") int size
+    ) {
+        ReviewListResponse response = reviewService.getReviewsByProduct(productId, cursor, size);
         return ResponseEntity.ok(response);
     }
 }
