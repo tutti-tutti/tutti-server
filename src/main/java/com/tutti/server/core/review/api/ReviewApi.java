@@ -5,6 +5,8 @@ import com.tutti.server.core.review.application.ReviewService;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
 import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
 import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
+import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -37,11 +40,12 @@ public class ReviewApi implements ReviewApiSpec {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
         }
     }
-//    상품에 달린 리뷰 목록 엔드포인트 수정 필요?? 나중에 상품 쪽이랑 얘기 해봐야 할듯.
+
+    // 상품에 달린 리뷰 목록 엔드포인트 - 수정 필요할 가능성이 있음
 //    @Override
-//        @GetMapping("/{productId}")
+//    @GetMapping("/{productId}")
 //    public ResponseEntity<ReviewListResponse> getReviewList(
-//        ReviewListRequest reviewListRequest) {
+//        @RequestBody ReviewListRequest reviewListRequest) {  // 요청 본문에서 받도록 변경
 //        ReviewListResponse response = reviewService.getReviews(reviewListRequest);
 //        return ResponseEntity.ok(response);
 //    }
@@ -51,6 +55,18 @@ public class ReviewApi implements ReviewApiSpec {
     public ResponseEntity<ReviewDetailResponse> getReviewDetail(
         @PathVariable("reviewId") long reviewId) {
         ReviewDetailResponse response = reviewService.getReviewDetail(reviewId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/myReviews")
+    public ResponseEntity<ReviewMyListResponse> getMyReviewList(
+        @RequestParam String nickname,
+        @Parameter(description = "이전 페이지 마지막 ID (첫 요청 시 null 가능), empty value check!", allowEmptyValue = true)
+        @RequestParam(required = false) Long cursor,
+        @RequestParam(defaultValue = "20") int size
+    ) {
+        ReviewMyListResponse response = reviewService.getMyReviewList(nickname, cursor, size);
         return ResponseEntity.ok(response);
     }
 }

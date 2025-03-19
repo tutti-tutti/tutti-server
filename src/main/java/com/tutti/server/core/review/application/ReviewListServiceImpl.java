@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class ReviewListServiceImpl implements ReviewListService {
     private final ReviewRepository reviewRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public ReviewListResponse getReviews(ReviewListRequest request) {
         return getReviewsWithPagination(
             request.productId(),
@@ -31,21 +33,19 @@ public class ReviewListServiceImpl implements ReviewListService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ReviewListResponse getReviewsWithPagination(Long productId, Integer size, String sort,
         String nextCursor) {
         Long cursorId = (nextCursor != null && !nextCursor.isEmpty()) ? Long.parseLong(nextCursor)
             : Long.MAX_VALUE;
 
-        Pageable pageable = PageRequest.of(0, size + 1, getSort(sort)); // size + 1 개 조회
-
+        Pageable pageable = PageRequest.of(0, size + 1, getSort(sort));
         List<Review> reviews = reviewRepository.findReviewsByProductIdAndCursor(productId, cursorId,
             pageable);
 
-        // nextCursor 설정: 마지막으로 가져온 리뷰의 ID 사용
         String nextCursorValue =
             (reviews.size() > size) ? String.valueOf(reviews.get(size).getId()) : null;
 
-        // 응답 리스트: size만큼 잘라서 반환
         List<ReviewResponse> reviewResponses = reviews.stream()
             .limit(size)
             .map(ReviewResponse::from)
