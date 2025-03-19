@@ -1,6 +1,6 @@
 package com.tutti.server.core.member.application;
 
-import com.tutti.server.core.member.jwt.JWTUtil;
+import com.tutti.server.core.member.security.JWTUtil;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import lombok.RequiredArgsConstructor;

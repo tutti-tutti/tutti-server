@@ -1,4 +1,4 @@
-package com.tutti.server.core.member.jwt;
+package com.tutti.server.core.member.security;
 
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
@@ -6,14 +6,16 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+
 public class JWTUtil {
 
     public static final long ACCESS_TOKEN_EXPIRATION = 60 * 60 * 10L * 1000; // 10시간
@@ -21,10 +23,8 @@ public class JWTUtil {
 
     private SecretKey secretKey;
 
-    public JWTUtil() {
-        String secret = "7Jes6riw7JeQXzMy67CU7J207Yq4X+ydtOyDgeydmF/slYjsoITtlZxf7YKk";
-        this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
-                Jwts.SIG.HS256.key().build().getAlgorithm());
+    public JWTUtil(@Value("${jwt.secret}") String secret) {
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String getEmail(String token) {

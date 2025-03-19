@@ -49,6 +49,8 @@ public enum ExceptionType {
     INVALID_JWT_SIGNATURE(ExceptionCode.A43, "JWT 서명이 유효하지 않습니다."),
     JWT_CREATION_FAILED(ExceptionCode.A44, "JWT 토큰 생성에 실패했습니다."),
 
+    SOCIAL_ACCOUNT_ALREADY_EXISTS(ExceptionCode.A50, "JWT 토큰 생성에 실패했습니다."),
+
     // - 상품 -
     PRODUCT_NOT_FOUND(ExceptionCode.B01, "존재하지 않는 상품입니다."),
     PRODUCT_QNA_NOT_FOUND(ExceptionCode.B02, "존재하지 않는 QnA 입니다."),

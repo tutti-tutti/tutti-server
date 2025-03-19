@@ -8,6 +8,7 @@ public enum ExceptionCode {
     A20, A21, A22, A23, A24, //로그인 관련 예외 코드
     A30, A31,
     A41, A42, A43, A44,
+    A50,
 
     B01, B02, B03, B04, B05, B06,
     C01,

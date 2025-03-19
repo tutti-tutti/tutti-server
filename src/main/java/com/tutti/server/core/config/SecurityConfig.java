@@ -1,7 +1,9 @@
 package com.tutti.server.core.config;
 
-import com.tutti.server.core.member.jwt.JWTFilter;
-import com.tutti.server.core.member.jwt.JWTUtil;
+import com.tutti.server.core.member.application.CustomOAuth2UserService;
+import com.tutti.server.core.member.security.CustomSuccessHandler;
+import com.tutti.server.core.member.security.JWTFilter;
+import com.tutti.server.core.member.security.JWTUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,10 +21,16 @@ public class SecurityConfig {
 
     private final JWTUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomSuccessHandler customSuccessHandler;
 
-    public SecurityConfig(JWTUtil jwtUtil, UserDetailsService userDetailsService) {
+    public SecurityConfig(JWTUtil jwtUtil, UserDetailsService userDetailsService,
+            CustomOAuth2UserService customOAuth2UserService,
+            CustomSuccessHandler customSuccessHandler) {
         this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService; // 🔹 생성자에서 주입
+        this.userDetailsService = userDetailsService;
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.customSuccessHandler = customSuccessHandler;
     }
 
     @Bean
@@ -42,6 +50,11 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         // JWT 기반 인증 (세션 사용 X)
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)) // ✅ OAuth2 사용자 정보 처리
+                        .successHandler(customSuccessHandler) // ✅ OAuth2 로그인 성공 시 JWT 발급
                 )
                 // ✅ JWTFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
                 .addFilterBefore(new JWTFilter(jwtUtil, userDetailsService),

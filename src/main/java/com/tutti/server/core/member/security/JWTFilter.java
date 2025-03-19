@@ -1,4 +1,4 @@
-package com.tutti.server.core.member.jwt;
+package com.tutti.server.core.member.security;
 
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
