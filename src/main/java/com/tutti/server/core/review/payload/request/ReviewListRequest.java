@@ -9,14 +9,14 @@ import jakarta.validation.constraints.NotNull;
 public record ReviewListRequest(
     @NotNull @Schema(description = "상품 ID", example = "1") long productId,
     @Min(1) @Max(100) @Schema(description = "요청할 리뷰 개수 (기본값: 20)", example = "20") Integer size,
-    @Schema(description = "정렬 기준 (기본값: created_at_desc)", example = "created_at_desc") String sort,
+    @Schema(description = "정렬 기준 (기본값: rating_desc)", example = "rating_desc") String sort,
     @Schema(description = "다음 페이지 조회를 위한 커서 값", example = "0") String nextCursor
 ) {
 
     public ReviewListRequest(long productId, Integer size, String sort, String nextCursor) {
         this.productId = productId;
         this.size = (size == null) ? 20 : size;
-        this.sort = (sort == null) ? "created_at_desc" : sort;
+        this.sort = (sort == null) ? "rating_desc" : sort;
         this.nextCursor = nextCursor;
     }
 }
