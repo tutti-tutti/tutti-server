@@ -22,28 +22,7 @@ public class ReviewListServiceImpl implements ReviewListService {
     public ReviewListResponse getReviewsByProductId(Long productId, Long cursor, int size,
         String sort) {
         final PageRequest pageRequest = PageRequest.of(0, size);
-        List<Review> reviews;
-
-        if ("rating_desc".equals(sort)) {
-            reviews = Optional.ofNullable(cursor)
-                .map(c -> reviewRepository.findNextReviewsByProductOrderByRatingDesc(productId, c,
-                    pageRequest))
-                .orElseGet(
-                    () -> reviewRepository.findFirstReviewsByProductOrderByRatingDesc(productId,
-                        pageRequest));
-        } else if ("like_desc".equals(sort)) {
-            reviews = Optional.ofNullable(cursor)
-                .map(c -> reviewRepository.findNextReviewsByProductOrderByLikeDesc(productId, c,
-                    pageRequest))
-                .orElseGet(
-                    () -> reviewRepository.findFirstReviewsByProductOrderByLikeDesc(productId,
-                        pageRequest));
-        } else {
-            reviews = Optional.ofNullable(cursor)
-                .map(c -> reviewRepository.findNextReviewsByProduct(productId, c, pageRequest))
-                .orElseGet(
-                    () -> reviewRepository.findFirstReviewsByProduct(productId, pageRequest));
-        }
+        List<Review> reviews = getReviews(productId, cursor, sort, pageRequest);
 
         Long nextCursor = reviews.stream()
             .reduce((first, second) -> second)
@@ -55,5 +34,27 @@ public class ReviewListServiceImpl implements ReviewListService {
             .toList();
 
         return new ReviewListResponse(reviewResponses, nextCursor);
+    }
+
+    private List<Review> getReviews(Long productId, Long cursor, String sort,
+        PageRequest pageRequest) {
+        return switch (sort) {
+            case "rating_desc" -> Optional.ofNullable(cursor)
+                .map(c -> reviewRepository.findNextReviewsByProductOrderByRatingDesc(productId, c,
+                    pageRequest))
+                .orElseGet(
+                    () -> reviewRepository.findFirstReviewsByProductOrderByRatingDesc(productId,
+                        pageRequest));
+            case "like_desc" -> Optional.ofNullable(cursor)
+                .map(c -> reviewRepository.findNextReviewsByProductOrderByLikeDesc(productId, c,
+                    pageRequest))
+                .orElseGet(
+                    () -> reviewRepository.findFirstReviewsByProductOrderByLikeDesc(productId,
+                        pageRequest));
+            default -> Optional.ofNullable(cursor)
+                .map(c -> reviewRepository.findNextReviewsByProduct(productId, c, pageRequest))
+                .orElseGet(
+                    () -> reviewRepository.findFirstReviewsByProduct(productId, pageRequest));
+        };
     }
 }
