@@ -47,23 +47,11 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public Map<String, Object> confirmPayment(PaymentConfirmRequest request) {
-        log.info("결제 승인 요청 시작 - orderId: {}", request.orderId());
 
         Payment payment = checkPayment(request.orderId());
-
-        log.info("기존 결제 정보 조회 완료 - paymentId: {}, orderNumber: {}", payment.getId(),
-                payment.getOrderNumber());
-
         Map<String, Object> response = tossPaymentService.confirmPayment(request);
-        log.info("Toss 결제 승인 API 응답 수신 - response: {}", response);
-
         ParsedTossApiResponse parsedResponse = ParsedTossApiResponse.fromResponse(response);
-        log.info("Toss API 응답 파싱 완료 - paymentKey: {}, status: {}, approvedAt: {}",
-                parsedResponse.paymentKey(), parsedResponse.status(), parsedResponse.approvedAt());
-
         updatePayment(payment, parsedResponse);
-        log.info("결제 정보 업데이트 완료 - paymentId: {}", payment.getId());
-
         return response;
     }
 
