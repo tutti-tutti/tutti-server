@@ -31,7 +31,7 @@ public class Notice extends BaseEntity {
     private Member writer;
 
     @Column(nullable = false)
-    private int views = 0;
+    private int views;
 
     @Column(nullable = false)
     private boolean isPublished = true;
