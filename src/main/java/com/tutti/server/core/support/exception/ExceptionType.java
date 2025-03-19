@@ -79,11 +79,15 @@ public enum ExceptionType {
     REFUND_REQUEST_EXPIRED(ExceptionCode.R02, "환불 기간이 지났습니다."),
     REFUND_ALREADY_COMPLETED(ExceptionCode.R03, "이미 환불이 완료된 결제입니다."),
 
+    // - 반품 -
+    RETURNS_ALREADY_COMPLETED(ExceptionCode.R04, "이미 반품이 완료된 주문입니다."),
+    RETURNS_REQUEST_EXPIRED(ExceptionCode.R05, "반품 기간이 지났습니다."),
+
     // - FAQ -
     FAQ_NOT_FOUND(ExceptionCode.F01, "존재하지 않는 FAQ 입니다."),
     FAQ_CATEGORY_NOT_FOUND(ExceptionCode.F02, "존재하지 않는 카테고리입니다."),
     FAQ_FEEDBACK_FAILED(ExceptionCode.F03, "피드백 등록에 실패했습니다."),
-    RESOURCE_NOT_FOUND(ExceptionCode.F04, "FAQ 수정에 실패했습니다.");
+    RESOURCE_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.F04, "FAQ 수정에 실패했습니다.", ERROR);
 
     private final HttpStatus status;
 

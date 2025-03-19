@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 public class Returns extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "refund_id", nullable = false)
+    @JoinColumn(name = "refund_id")
     private Refund refund; // 환불 엔티티 참조
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -34,7 +34,7 @@ public class Returns extends BaseEntity {
     private Order order; // 주문 엔티티 참조
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "carrier_id", nullable = false)
+    @JoinColumn(name = "carrier_id")
     private Carrier carrier; // 택배사 엔티티 참조
 
     @Column(nullable = false)
