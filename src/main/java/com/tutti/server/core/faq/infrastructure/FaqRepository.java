@@ -52,7 +52,7 @@ public interface FaqRepository extends JpaRepository<Faq, Long> {
         incrementViewCount(faqId);
     }
 
-    default void deleteByIdOrThrow(Long faqId) {
+    default void deleteById(Long faqId) {
         Faq faq = findOne(faqId);
         delete(faq);
     }

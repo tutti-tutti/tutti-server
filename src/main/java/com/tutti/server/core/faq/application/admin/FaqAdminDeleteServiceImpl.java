@@ -14,7 +14,7 @@ public class FaqAdminDeleteServiceImpl implements FaqAdminDeleteService {
     @Override
     @Transactional
     public void deleteFaq(Long faqId) {
-        faqRepository.deleteByIdOrThrow(faqId);
+        faqRepository.deleteById(faqId);
     }
 }
 
