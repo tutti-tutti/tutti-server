@@ -31,6 +31,10 @@ jobs:
       - name: Grant execute permissions for gradlew
         run: chmod +x ./gradlew
 
+      # 코드 포맷
+      - name: Run Gradle format
+        run: ./gradlew format
+
       # Build with Gradle Wrapper
       - name: Build with Gradle Wrapper
         run: ./gradlew build
