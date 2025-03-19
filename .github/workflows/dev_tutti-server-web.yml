@@ -24,14 +24,41 @@ jobs:
           java-version: '17'
           distribution: 'microsoft'
 
-      - name: Build with Maven
-        run: mvn clean install
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
+
+      # gradlew 파일에 실행 권한을 추가합니다
+      - name: Grant execute permissions for gradlew
+        run: chmod +x ./gradlew
+
+      # Build with Gradle Wrapper
+      - name: Build with Gradle Wrapper
+        run: ./gradlew build
+        if: success()
+
+      # Run tests with Gradle
+      - name: Run tests with Gradle
+        run: ./gradlew test
+
+      # UTC가 기준이기 때문에 한국시간으로 맞추려면 +9시간 해야 한다
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYY-MM-DDTHH-mm-ss
+          utcOffset: "+09:00"
+
+      - name: Show Current Time
+        run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: '${{ github.workspace }}/build/libs/*.jar'
+
+      - name: List build directory contents
+        run: ls -la build/libs/
 
   deploy:
     runs-on: ubuntu-latest
@@ -42,13 +69,16 @@ jobs:
     permissions:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
-  
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: java-app
-      
+
+      - name: Check downloaded files
+        run: ls -la ${{ github.workspace }}/
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -62,5 +92,4 @@ jobs:
         with:
           app-name: 'tutti-server-web'
           slot-name: 'Production'
-          package: '*.jar'
-          
+          package: '${{ github.workspace }}/*.jar'
