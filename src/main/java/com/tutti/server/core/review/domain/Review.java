@@ -53,7 +53,7 @@ public class Review extends BaseEntity {
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private int likeCount = 0;
+    private int likeCount;
 
     public void increaseLikeCount() {
         this.likeCount++;
