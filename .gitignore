@@ -19,6 +19,9 @@ out/
 !**/src/test/
 !**/src/test/**
 
+### Ignore Test Code ###
+src/test/
+
 # 테스트 결과물은 무시
 **/src/test/**/build/
 **/src/test/**/out/
@@ -52,4 +55,5 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-src/main/resources/**.yml
+src/main/resources/application-local*.yml
+.env*

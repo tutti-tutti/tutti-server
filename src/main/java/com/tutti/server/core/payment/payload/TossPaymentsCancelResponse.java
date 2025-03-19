@@ -3,6 +3,7 @@ package com.tutti.server.core.payment.payload;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 
 public record TossPaymentsCancelResponse(
@@ -13,19 +14,20 @@ public record TossPaymentsCancelResponse(
 
     public static TossPaymentsCancelResponse fromResponse(Map<String, Object> response) {
         String status = (String) response.get("status");
-        String canceledAtStr = (String) response.get("canceledAt");
 
-        LocalDateTime canceledAt = null;
-        if (canceledAtStr != null) {
-            OffsetDateTime offsetDateTime = OffsetDateTime.parse(canceledAtStr,
-                    DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-            canceledAt = offsetDateTime.toLocalDateTime();
-        }
+        LocalDateTime canceledAt = ((List<?>) response.getOrDefault("cancels", List.of())).stream()
+                .filter(Map.class::isInstance)
+                .map(Map.class::cast)
+                .map(cancelMap -> cancelMap.get("canceledAt"))
+                .filter(String.class::isInstance)
+                .map(String.class::cast)
+                .map(canceledAtStr -> OffsetDateTime.parse(canceledAtStr,
+                        DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .map(OffsetDateTime::toLocalDateTime)
+                .findFirst()
+                .orElse(null);
 
-        return new TossPaymentsCancelResponse(
-                status,
-                canceledAt
-        );
+        return new TossPaymentsCancelResponse(status, canceledAt);
     }
 
 }

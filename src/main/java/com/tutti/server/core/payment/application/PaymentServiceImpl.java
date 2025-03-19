@@ -49,13 +49,9 @@ public class PaymentServiceImpl implements PaymentService {
     public Map<String, Object> confirmPayment(PaymentConfirmRequest request) {
 
         Payment payment = checkPayment(request.orderId());
-
         Map<String, Object> response = tossPaymentService.confirmPayment(request);
-
         ParsedTossApiResponse parsedResponse = ParsedTossApiResponse.fromResponse(response);
-
         updatePayment(payment, parsedResponse);
-
         return response;
     }
 
@@ -102,13 +98,6 @@ public class PaymentServiceImpl implements PaymentService {
 
         confirmPaymentDomain(payment, paymentMethod, parsedResponse);
 
-        payment.confirmPayment(
-                paymentMethod,
-                parsedResponse.paymentKey(),
-                PaymentStatus.valueOf(parsedResponse.status()),
-                parsedResponse.approvedAt(),
-                parsedResponse.amount()
-        );
         paymentRepository.save(payment);
         paymentHistoryService.savePaymentHistory(payment);
     }

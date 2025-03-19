@@ -3,20 +3,27 @@ package com.tutti.server.core.member.api;
 import com.tutti.server.core.member.application.EmailVerificationServiceImpl;
 import com.tutti.server.core.member.application.PasswordResetServiceImpl;
 import com.tutti.server.core.member.payload.PasswordResetRequest;
+import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("members")
 public class PasswordResetApi implements PasswordResetApiSpec {
 
     private final EmailVerificationServiceImpl emailVerificationServiceImpl;
     private final PasswordResetServiceImpl passwordResetServiceImpl;
 
     @Override
-    public ResponseEntity<Map<String, String>> resetPassword(PasswordResetRequest request) {
+    @PostMapping("/password/reset")
+    public ResponseEntity<Map<String, String>> resetPassword(
+        @RequestBody @Valid PasswordResetRequest request) {
         String email = request.email();
         String verificationCode = request.verificationCode();
         String password = request.newPassword();

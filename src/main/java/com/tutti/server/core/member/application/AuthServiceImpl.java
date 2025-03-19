@@ -46,9 +46,10 @@ public class AuthServiceImpl implements AuthServiceSpec {
         }
 
         // 5. JWT 토큰 생성
-        String accessToken = jwtUtil.createJwt(member.getEmail(), member.getMemberStatus().name(),
+        String accessToken = jwtUtil.createJwt(member.getId(), member.getEmail(),
+                member.getMemberStatus().name(),
                 JWTUtil.ACCESS_TOKEN_EXPIRATION);
-        String refreshToken = jwtUtil.createRefreshToken(member.getEmail(),
+        String refreshToken = jwtUtil.createRefreshToken(member.getId(), member.getEmail(),
                 JWTUtil.REFRESH_TOKEN_EXPIRATION);
 
         return Map.of(
