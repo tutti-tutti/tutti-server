@@ -7,6 +7,7 @@ import com.tutti.server.core.faq.payload.response.FaqCreateResponse;
 import com.tutti.server.core.faq.payload.response.FaqUpdateResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -36,5 +37,10 @@ public class FaqAdminApi implements FaqAdminApiSpec {
         FaqUpdateResponse response = faqAdminServiceImpl.updateFaq(faqId, faqUpdateRequest);
         return ResponseEntity.ok(response);
     }
-}
 
+    @DeleteMapping("/{faqId}")
+    public ResponseEntity<Void> deleteFaq(@PathVariable Long faqId) {
+        faqAdminServiceImpl.deleteFaq(faqId);
+        return ResponseEntity.noContent().build();
+    }
+}

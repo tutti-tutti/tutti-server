@@ -11,4 +11,5 @@ public interface FaqAdminService {
 
     FaqUpdateResponse updateFaq(Long FaqId, FaqUpdateRequest faqUpdateRequest);
 
+    void deleteFaq(Long FaqId);
 }
