@@ -28,21 +28,26 @@ public class OrderItem extends BaseEntity {
 
     private String productName;
     private String productImgUrl;
-    private String productOptionName;
-    private String productOptionValue;
+    private String productOptionName_1;
+    private String productOptionValue_1;
+    private String productOptionName_2;
+    private String productOptionValue_2;
     private int quantity;
-    private int price;
+    private int sellingPrice;
 
     @Builder
     public OrderItem(Order order, ProductItem productItem, String productName, String productImgUrl,
-            String productOptionName, String productOptionValue, int quantity, int price) {
+            String productOptionName_1, String productOptionValue_1, String productOptionName_2,
+            String productOptionValue_2, int quantity, int sellingPrice) {
         this.order = order;
         this.productItem = productItem;
         this.productName = productName;
         this.productImgUrl = productImgUrl;
-        this.productOptionName = productOptionName;
-        this.productOptionValue = productOptionValue;
+        this.productOptionName_1 = productOptionName_1;
+        this.productOptionValue_1 = productOptionValue_1;
+        this.productOptionName_2 = productOptionName_2;
+        this.productOptionValue_2 = productOptionValue_2;
         this.quantity = quantity;
-        this.price = price;
+        this.sellingPrice = sellingPrice;
     }
 }

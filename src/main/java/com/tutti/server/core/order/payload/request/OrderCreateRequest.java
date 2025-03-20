@@ -36,10 +36,12 @@ public record OrderCreateRequest(
                     .productItem(productItem)
                     .productName(productItem.getProduct().getName())
                     .productImgUrl(productItem.getProduct().getTitleUrl())
-//                    .productOptionName(productItem.getOptionName())
-//                    .productOptionValue(productItem.getOptionValue())
+                    .productOptionName_1(productItem.getFirstOptionName())
+                    .productOptionValue_1(productItem.getFirstOptionValue())
+                    .productOptionName_2(productItem.getSecondOptionName())
+                    .productOptionValue_2(productItem.getSecondOptionValue())
                     .quantity(quantity)
-                    .price(productItem.getSellingPrice())
+                    .sellingPrice(productItem.getSellingPrice())
                     .build();
         }
 
@@ -49,10 +51,12 @@ public record OrderCreateRequest(
                     .productItem(cartItem.getProductItem())
                     .productName(cartItem.getProductName())
                     .productImgUrl(cartItem.getProductImgUrl())
-                    .productOptionName(cartItem.getProductOptionName())
-                    .productOptionValue(cartItem.getProductOptionValue())
-                    .quantity(quantity)
-                    .price(cartItem.getPrice())
+//                    .productOptionName_1(cartItem.getProductOptionName_1())
+//                    .productOptionValue_1(cartItem.getFirstOptionValue())
+//                    .productOptionName_2(cartItem.getProductOptionName_1())
+//                    .productOptionValue_2(cartItem.getProductOptionName_1())
+//                    .quantity(quantity)
+//                    .sellingPrice(cartItem.getSellingPrice())
                     .build();
         }
     }

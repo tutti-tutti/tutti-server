@@ -48,7 +48,7 @@ public record OrderResponse(
                     .productOptionName(orderItem.getProductOptionName())
                     .productOptionValue(orderItem.getProductOptionValue())
                     .quantity(orderItem.getQuantity())
-                    .price(orderItem.getPrice())
+                    .price(orderItem.getSellingPrice())
                     .build();
         }
     }
