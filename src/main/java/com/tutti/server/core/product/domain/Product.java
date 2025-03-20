@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -40,7 +41,8 @@ public class Product extends BaseEntity {
     @Comment("productName")
     private String name;
 
-    @Column(name = "title_url", length = 2083)
+    @Column(name = "title_url", length = 2083, columnDefinition = "TEXT")
+    @Lob
     @NotNull
     @Comment("productImgUrl")
     private String titleUrl;
@@ -50,7 +52,8 @@ public class Product extends BaseEntity {
     @Comment("productCode")
     private String productCode;
 
-    @Column(name = "detail_url", length = 2083)
+    @Column(name = "detail_url", length = 2083, columnDefinition = "TEXT")
+    @Lob
     @Comment("이후추가")
     private String detailUrl;
 
