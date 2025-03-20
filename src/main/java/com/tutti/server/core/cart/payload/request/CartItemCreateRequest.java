@@ -11,8 +11,6 @@ import lombok.Builder;
 @Builder
 public record CartItemCreateRequest(
 
-        Long memberId,
-
         @NotNull(message = "필수 옵션을 선택해주세요.")
         Long productItemId,
 

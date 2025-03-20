@@ -3,9 +3,11 @@ package com.tutti.server.core.cart.api;
 import com.tutti.server.core.cart.application.CartService;
 import com.tutti.server.core.cart.payload.request.CartItemCreateRequest;
 import com.tutti.server.core.cart.payload.response.CartItemsResponse;
+import com.tutti.server.core.member.application.CustomUserDetails;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,20 +25,21 @@ public class CartApi implements CartApiSpec {
 
     @Override
     @PostMapping
-    public void addCartItem(@RequestBody @Valid CartItemCreateRequest request) {
-        cartService.addCartItem(request);
+    public void addCartItem(@AuthenticationPrincipal CustomUserDetails user,
+            @RequestBody @Valid CartItemCreateRequest request) {
+        cartService.addCartItem(user.getMemberId(), request);
     }
 
     @Override
     @GetMapping
-    public List<CartItemsResponse> getCartItems(@RequestBody Long memberId) {
-        return cartService.getCartItems(memberId);
+    public List<CartItemsResponse> getCartItems(@AuthenticationPrincipal CustomUserDetails user) {
+        return cartService.getCartItems(user.getMemberId());
     }
 
     @Override
     @PatchMapping("/{cartItemId}")
-    public void removeCartItem(@PathVariable("cartItemId") Long cartItemId,
-            @RequestBody Long memberId) {
-        cartService.removeCartItem(cartItemId, memberId);
+    public void removeCartItem(@AuthenticationPrincipal CustomUserDetails user,
+            @PathVariable("cartItemId") Long cartItemId) {
+        cartService.removeCartItem(user.getMemberId(), cartItemId);
     }
 }

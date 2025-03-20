@@ -25,20 +25,20 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     // 기존 장바구니 상품이 있는지 확인하고, 없으면 새로 생성하는 메서드
-    public void addCartItem(CartItemCreateRequest request) {
-        cartItemRepository.findByMemberIdAndProductItemIdAndDeleteStatusFalse(request.memberId(),
+    public void addCartItem(Long memberId, CartItemCreateRequest request) {
+        cartItemRepository.findByMemberIdAndProductItemIdAndDeleteStatusFalse(memberId,
                         request.productItemId())
                 // 이미 장바구니에 해당 상품이 있다면 수량만 업데이트
                 .ifPresentOrElse(item -> item.changeQuantity(request.quantity()),
                         // 없다면 장바구니에 상품을 새로 생성하여 저장
-                        () -> createCartItem(request));
+                        () -> createCartItem(memberId, request));
     }
 
     @Override
     @Transactional
     // 장바구니 상품을 엔티티로 저장하는 메서드
-    public void createCartItem(CartItemCreateRequest request) {
-        var member = memberRepository.findOne(request.memberId());
+    public void createCartItem(Long memberId, CartItemCreateRequest request) {
+        var member = memberRepository.findOne(memberId);
         var productItem = productItemRepository.findOne(request.productItemId());
 
         // 장바구니 상품 엔티티를 만들 때, 수량도 받아야 하기 때문에 파라미터로 request 가 필요하다
@@ -56,8 +56,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void removeCartItem(Long cartItemId, Long memberId) {
-        cartItemRepository.findByIdAndMemberIdAndDeleteStatusFalse(cartItemId, memberId)
+    public void removeCartItem(Long memberId, Long cartItemId) {
+        cartItemRepository.findByMemberIdAndIdAndDeleteStatusFalse(memberId, cartItemId)
                 .ifPresentOrElse(BaseEntity::delete,
                         () -> {
                             throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);
