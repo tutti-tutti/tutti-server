@@ -29,10 +29,13 @@ public record CartItemCreateRequest(
                 .productItem(productItem)
                 .productName(productItem.getProduct().getName())
                 .productImgUrl(productItem.getProduct().getTitleUrl())
-//                .productOptionName(productItem.getOptionName())
-//                .productOptionValue(productItem.getOptionValue())
+                .productOptionName_1(productItem.getFirstOptionName())
+                .productOptionValue_1(productItem.getFirstOptionValue())
+                .productOptionName_2(productItem.getSecondOptionName())
+                .productOptionValue_2(productItem.getSecondOptionValue())
                 .quantity(quantity)
-                .price(productItem.getSellingPrice())
+                .originalPrice(productItem.getProduct().getOriginalPrice())
+                .sellingPrice(productItem.getSellingPrice())
                 .soldOut(productItem.isSoldOut())
                 .build();
     }
