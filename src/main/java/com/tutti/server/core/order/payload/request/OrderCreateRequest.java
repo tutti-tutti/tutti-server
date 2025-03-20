@@ -36,8 +36,8 @@ public record OrderCreateRequest(
                     .productItem(productItem)
                     .productName(productItem.getProduct().getName())
                     .productImgUrl(productItem.getProduct().getTitleUrl())
-                    .productOptionName(productItem.getOptionName())
-                    .productOptionValue(productItem.getOptionValue())
+//                    .productOptionName(productItem.getOptionName())
+//                    .productOptionValue(productItem.getOptionValue())
                     .quantity(quantity)
                     .price(productItem.getSellingPrice())
                     .build();

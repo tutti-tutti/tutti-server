@@ -11,7 +11,7 @@ import lombok.Builder;
 public record CartItemCreateRequest(
 
         Long memberId,
-        
+
         @NotNull(message = "필수 옵션을 선택해주세요.")
         Long productItemId,
 
@@ -27,8 +27,8 @@ public record CartItemCreateRequest(
                 .productItem(productItem)
                 .productName(productItem.getProduct().getName())
                 .productImgUrl(productItem.getProduct().getTitleUrl())
-                .productOptionName(productItem.getOptionName())
-                .productOptionValue(productItem.getOptionValue())
+//                .productOptionName(productItem.getOptionName())
+//                .productOptionValue(productItem.getOptionValue())
                 .quantity(quantity)
                 .price(productItem.getSellingPrice())
                 .soldOut(productItem.isSoldOut())
