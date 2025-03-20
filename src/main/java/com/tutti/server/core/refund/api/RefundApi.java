@@ -6,7 +6,6 @@ import com.tutti.server.core.refund.application.RefundService;
 import com.tutti.server.core.refund.payload.RefundViewResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +31,10 @@ public class RefundApi implements RefundApiSpec {
 
 
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<RefundViewResponse> getRefundViewByOrderId(@PathVariable Long orderId,
+    public RefundViewResponse getRefundViewByOrderId(@PathVariable Long orderId,
             @AuthenticationPrincipal
             CustomUserDetails userDetails) {
         long memberId = userDetails.getMemberId();
-        return ResponseEntity.ok(refundService.getRefundView(orderId, memberId));
+        return refundService.getRefundView(orderId, memberId);
     }
 }

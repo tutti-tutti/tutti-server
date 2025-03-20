@@ -43,7 +43,7 @@ public class RefundServiceImpl implements RefundService {
     public RefundViewResponse getRefundView(Long orderId, Long memberId) {
 
         Refund refund = refundRepository.findByOrderIdAndMemberId(orderId, memberId)
-                .orElseThrow(() -> new DomainException(ExceptionType.REFUND_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ExceptionType.REFUND_OR_MEMBER_NOT_FOUND));
 
         return RefundViewResponse.fromEntity(refund);
     }

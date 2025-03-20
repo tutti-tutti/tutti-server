@@ -83,6 +83,9 @@ public enum ExceptionType {
     REFUND_REQUEST_EXPIRED(HttpStatus.BAD_REQUEST, ExceptionCode.R02, "환불 기간이 지났습니다.", ERROR),
     REFUND_ALREADY_COMPLETED(HttpStatus.CONFLICT, ExceptionCode.R03, "이미 환불이 완료된 결제입니다.", ERROR),
     REFUND_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.R07, "조회 가능한 환불정보가 없습니다.", ERROR),
+    REFUND_OR_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.R08,
+            "권한이 없거나 조회 가능한 환불 정보가 없습니다.", ERROR),
+
 
     // - 반품 -
     RETURNS_ALREADY_COMPLETED(HttpStatus.CONFLICT, ExceptionCode.R04, "이미 반품이 완료된 주문입니다.", ERROR),
