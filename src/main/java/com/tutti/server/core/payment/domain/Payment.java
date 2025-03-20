@@ -86,11 +86,9 @@ public class Payment extends BaseEntity {
     }
 
     // Toss 결제 승인 후 상태 업데이트
-    public void afterConfirmUpdatePayment(PaymentMethod paymentMethod, String tossPaymentKey,
+    public void afterConfirmUpdatePayment(String tossPaymentKey,
             String status,
             LocalDateTime completedAt, int amount) {
-        this.paymentMethod = paymentMethod;
-        // paymentKey, paymentStatus, approvedAt, amount 등도 함께 업데이트
         this.tossPaymentKey = tossPaymentKey;
         this.paymentStatus = status;
         this.completedAt = completedAt;

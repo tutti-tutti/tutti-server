@@ -94,9 +94,9 @@ public class PaymentServiceImpl implements PaymentService {
     // 2-4. 결제 테이블 업데이트
     private void updatePayment(Payment payment, ParsedTossApiResponse parsedResponse) {
 
-        PaymentMethod paymentMethod = findPaymentMethod(parsedResponse.method());
+//        PaymentMethod paymentMethod = findPaymentMethod(parsedResponse.method());
 
-        confirmPaymentDomain(payment, paymentMethod, parsedResponse);
+        confirmPaymentDomain(payment, parsedResponse);
 
         paymentRepository.save(payment);
         paymentHistoryService.savePaymentHistory(payment);
@@ -110,11 +110,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     // 2-6. 결제 승인 후 테이블 업데이트
-    private void confirmPaymentDomain(Payment payment,
-            PaymentMethod method,
-            ParsedTossApiResponse parsedResponse) {
+    private void confirmPaymentDomain(Payment payment, ParsedTossApiResponse parsedResponse) {
         payment.afterConfirmUpdatePayment(
-                method,
                 parsedResponse.paymentKey(),
                 parsedResponse.status(),
                 parsedResponse.approvedAt(),
