@@ -72,7 +72,7 @@ public class PaymentServiceImpl implements PaymentService {
         paymentRepository.findByOrderId(orderId)
                 .ifPresent(payment -> {
                     // 1결제 상태가 IN_PROGRESS(결제 진행 중)인지 추가.
-                    if (payment.getPaymentStatus() == PaymentStatus.IN_PROGRESS) {
+                    if (payment.getPaymentStatus().equals(PaymentStatus.IN_PROGRESS.name())) {
                         throw new DomainException(ExceptionType.PAYMENT_ALREADY_PROCESSING);
                     }
                 });
@@ -116,7 +116,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.confirmPayment(
                 method,
                 parsedResponse.paymentKey(),
-                PaymentStatus.valueOf(parsedResponse.status()),
+                parsedResponse.status(),
                 parsedResponse.approvedAt(),
                 parsedResponse.amount()
         );

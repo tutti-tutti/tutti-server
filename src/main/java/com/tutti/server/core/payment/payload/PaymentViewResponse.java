@@ -21,7 +21,7 @@ public record PaymentViewResponse(
                 payment.getId(),
                 payment.getOrderName(),
                 payment.getAmount(),
-                payment.getPaymentStatus().name(),
+                payment.getPaymentStatus(),
                 payment.getCompletedAt(),
                 payment.getMember().getId(),
                 payment.getMember().getName(),
