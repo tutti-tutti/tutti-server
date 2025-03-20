@@ -2,8 +2,6 @@ package com.tutti.server.core.payment.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,9 +32,8 @@ public class PaymentHistory {
     @JoinColumn(name = "payment_id", nullable = false)
     private Payment payment; // 결제 id
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PaymentStatus paymentStatus; //결제 대기 중 -> 결제 완료
+    private String paymentStatus; //결제 대기 중 -> 결제 완료
 
     private boolean latestStatus;
 
