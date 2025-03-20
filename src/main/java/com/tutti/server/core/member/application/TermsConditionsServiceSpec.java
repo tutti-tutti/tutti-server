@@ -1,13 +1,12 @@
 package com.tutti.server.core.member.application;
 
-import com.tutti.server.core.member.domain.TermsConditions;
-import com.tutti.server.core.member.domain.TermsType;
+import com.tutti.server.core.member.payload.TermsConditionsResponse;
 import java.util.List;
 
 public interface TermsConditionsServiceSpec {
 
-    List<TermsConditions> getAllTerms();
+    List<TermsConditionsResponse> getAllTerms();
 
-    TermsConditions getTermByType(TermsType termsType);
+    TermsConditionsResponse getTermById(Long id);
 }
 

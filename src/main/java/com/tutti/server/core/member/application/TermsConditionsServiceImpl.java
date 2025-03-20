@@ -1,10 +1,7 @@
 package com.tutti.server.core.member.application;
 
-import com.tutti.server.core.member.domain.TermsConditions;
-import com.tutti.server.core.member.domain.TermsType;
 import com.tutti.server.core.member.infrastructure.TermsConditionsRepository;
-import com.tutti.server.core.support.exception.DomainException;
-import com.tutti.server.core.support.exception.ExceptionType;
+import com.tutti.server.core.member.payload.TermsConditionsResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,15 +16,16 @@ public class TermsConditionsServiceImpl implements TermsConditionsServiceSpec {
     //전체 약관
     @Override
     @Transactional(readOnly = true)
-    public List<TermsConditions> getAllTerms() {
-        return termsConditionsRepository.findAll();
+    public List<TermsConditionsResponse> getAllTerms() {
+        return termsConditionsRepository.findAll().stream()
+                .map(TermsConditionsResponse::fromEntity)
+                .toList();
     }
 
     //선택 약관
     @Override
     @Transactional(readOnly = true)
-    public TermsConditions getTermByType(TermsType termsType) {
-        return termsConditionsRepository.findByTermsType(termsType)
-                .orElseThrow(() -> new DomainException(ExceptionType.TERMS_NOT_FOUND));
+    public TermsConditionsResponse getTermById(Long id) {
+        return TermsConditionsResponse.fromEntity(termsConditionsRepository.findOne(id));
     }
 }
