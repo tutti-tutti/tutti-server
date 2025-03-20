@@ -21,8 +21,8 @@ public record ReviewResponse(
     @Schema(description = "리뷰 내용", example = "배송이 빠르고 좋아요!")
     String content,
 
-    @Schema(description = "평점", example = "5")
-    int rating,
+    @Schema(description = "평점", example = "4.5")
+    float rating,
 
     @Schema(description = "리뷰 이미지 URL 목록")
     List<String> reviewImageUrls,

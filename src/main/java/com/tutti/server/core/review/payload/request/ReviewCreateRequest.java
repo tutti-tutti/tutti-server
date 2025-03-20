@@ -22,7 +22,7 @@ public record ReviewCreateRequest(
     @NotNull(message = "상품 평점은 필수입니다.")
     @Min(value = 1, message = "평점은 1 이상이어야 합니다.")  // 평점 최소 1점
     @Max(value = 5, message = "평점은 5 이하이어야 합니다.")  // 평점 최대 5점
-    int rating,  // 평점 (1~5)
+    float rating,  // 평점 (1~5)
 
     @Schema(description = "리뷰 내용", example = "좋아요!")
     @NotNull(message = "리뷰 내용은 필수입니다.")

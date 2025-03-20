@@ -9,7 +9,7 @@ public record ReviewCreateResponse(
     @Schema(description = "유저 ID", example = "1") long memberId,
     @Schema(description = "상품 ID", example = "1") long productId,
     @Schema(description = "유저 닉네임", example = "tutti") String nickname,
-    @Schema(description = "평점", example = "5") int rating,
+    @Schema(description = "평점", example = "5") float rating,
     @Schema(description = "리뷰 내용", example = "너무 좋아요!") String content,
     @Schema(description = "리뷰 이미지 URL", example = "http://tutti.com") String reviewImageUrls,
     @Schema(description = "감성 분석 결과", example = "positive") String sentiment,

@@ -34,7 +34,7 @@ public class Review extends BaseEntity {
     private String nickname;
 
     @Column(nullable = false)
-    private int rating;
+    private float rating;
 
     @Column(nullable = false, length = 500)
     private String content;
