@@ -17,7 +17,7 @@ public class SentimentApi implements SentimentApiSpec {
 
     public SentimentApi() {
         this.restClient = RestClient.builder()
-            .baseUrl("http://localhost:8000")
+            .baseUrl("http://3.37.129.164:8000")  // EC2 퍼블릭 IP
             .build();
     }
 
