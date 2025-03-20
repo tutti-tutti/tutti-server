@@ -6,7 +6,7 @@ import java.util.List;
 @Schema(description = "리뷰 목록 응답")
 public record ReviewListResponse(
     @Schema(description = "리뷰 목록") List<ReviewResponse> reviews,
-    @Schema(description = "다음 페이지 조회를 위한 커서 값", example = "abc123") String nextCursor
+    @Schema(description = "커서 (다음 페이지 요청 시 사용할 마지막 리뷰 ID, 없으면 null)", nullable = true) Long cursor
 ) {
 
 }
