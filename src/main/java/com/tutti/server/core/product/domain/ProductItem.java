@@ -33,11 +33,10 @@ public class ProductItem extends BaseEntity {
     private Integer additionalPrice;
 
     @Column(name = "discount_price")
-    @NotNull
     private Integer discountPrice;
 
     @Column(name = "selling_price")
-    @NotNull
+//    @NotNull
     @Comment("고객 제공 판매가격")
     private Integer sellingPrice;
 

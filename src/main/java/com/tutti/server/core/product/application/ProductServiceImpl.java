@@ -5,6 +5,8 @@ import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
 import com.tutti.server.core.product.payload.response.ProductResponse;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +32,8 @@ public class ProductServiceImpl implements ProductService {
                     // 해당 상품의 ProductItem 중 가장 낮은 판매가격을 가진 항목 찾기
                     ProductItem lowestPriceItem = productItemRepository
                             .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
-                            .orElseThrow(); // 예외 처리는 글로벌 예외 핸들러에서 처리
+                            .orElseThrow(() -> new DomainException(
+                                    ExceptionType.PRODUCT_ITEM_NOT_FOUND));
 
                     return ProductResponse.fromEntity(
                             product,
@@ -49,7 +52,8 @@ public class ProductServiceImpl implements ProductService {
                 .map(product -> {
                     ProductItem lowestPriceItem = productItemRepository
                             .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
-                            .orElseThrow(); // 예외 처리는 글로벌 예외 핸들러에서 처리
+                            .orElseThrow(() -> new DomainException(
+                                    ExceptionType.PRODUCT_ITEM_NOT_FOUND));
 
                     return ProductResponse.fromEntity(
                             product,
