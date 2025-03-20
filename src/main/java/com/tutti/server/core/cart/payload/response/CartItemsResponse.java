@@ -27,6 +27,7 @@ public record CartItemsResponse(
         return CartItemsResponse.builder()
                 .cartItemId(cartItem.getId())
                 .storeName(cartItem.getProductItem().getProduct().getStoreId().getName())
+                .productId(cartItem.getProductItem().getProduct().getId())
                 .productItemName(cartItem.getProductName())
                 .productImgUrl(cartItem.getProductImgUrl())
                 .firstOptionName(cartItem.getFirstOptionName())
