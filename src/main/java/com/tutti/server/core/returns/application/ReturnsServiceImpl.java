@@ -48,11 +48,7 @@ public class ReturnsServiceImpl implements ReturnsService {
     @Override
     @Transactional(readOnly = true)
     public ReturnsResponse getReturnsByOrderId(Long orderId) {
-
-        if (orderId == null) {
-            throw new DomainException(ExceptionType.ORDER_NOT_FOUND);
-        }
-
+        
         Returns returns = returnsRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new DomainException(ExceptionType.RETURNS_NOT_FOUND));
 
