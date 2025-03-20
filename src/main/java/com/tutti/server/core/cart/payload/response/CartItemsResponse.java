@@ -11,10 +11,10 @@ public record CartItemsResponse(
         Long productId,
         String productItemName,
         String productImgUrl,
-        String productOptionName1,
-        String productOptionValue1,
-        String productOptionName2,
-        String productOptionValue2,
+        String firstOptionName,
+        String firstOptionValue,
+        String secondOptionName,
+        String secondOptionValue,
         int originalPrice,
         int sellingPrice,
         int quantity,
@@ -29,10 +29,10 @@ public record CartItemsResponse(
                 .storeName(cartItem.getProductItem().getProduct().getStoreId().getName())
                 .productItemName(cartItem.getProductName())
                 .productImgUrl(cartItem.getProductImgUrl())
-                .productOptionName1(cartItem.getProductOptionName_1())
-                .productOptionValue1(cartItem.getProductOptionValue_1())
-                .productOptionName2(cartItem.getProductOptionName_2())
-                .productOptionValue2(cartItem.getProductOptionValue_2())
+                .firstOptionName(cartItem.getFirstOptionName())
+                .firstOptionValue(cartItem.getFirstOptionValue())
+                .secondOptionName(cartItem.getSecondOptionName())
+                .secondOptionValue(cartItem.getSecondOptionValue())
                 .originalPrice(cartItem.getOriginalPrice())
                 .sellingPrice(cartItem.getSellingPrice())
                 .quantity(cartItem.getQuantity())
