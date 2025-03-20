@@ -1,7 +1,6 @@
 package com.tutti.server.core.payment.payload;
 
 import com.tutti.server.core.payment.domain.Payment;
-import com.tutti.server.core.payment.domain.PaymentStatus;
 import java.time.LocalDateTime;
 import lombok.Builder;
 
@@ -9,7 +8,7 @@ import lombok.Builder;
 public record PaymentResponse(
         Long paymentId,
 
-        PaymentStatus paymentStatus,
+        String paymentStatus,
 
         String orderName,
 
