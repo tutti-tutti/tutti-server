@@ -34,8 +34,10 @@ public record OrderResponse(
     public record OrderItemSummary(
             String productName,
             String productImgUrl,
-            String productOptionName,
-            String productOptionValue,
+            String firstOptionName,
+            String firstOptionValue,
+            String secondOptionName,
+            String secondOptionValue,
             int quantity,
             int price
     ) {
@@ -45,8 +47,10 @@ public record OrderResponse(
             return OrderItemSummary.builder()
                     .productName(orderItem.getProductName())
                     .productImgUrl(orderItem.getProductImgUrl())
-                    .productOptionName(orderItem.getProductOptionName())
-                    .productOptionValue(orderItem.getProductOptionValue())
+                    .firstOptionName(orderItem.getFirstOptionName())
+                    .firstOptionValue(orderItem.getFirstOptionValue())
+                    .secondOptionName(orderItem.getSecondOptionName())
+                    .secondOptionValue(orderItem.getSecondOptionValue())
                     .quantity(orderItem.getQuantity())
                     .price(orderItem.getPrice())
                     .build();

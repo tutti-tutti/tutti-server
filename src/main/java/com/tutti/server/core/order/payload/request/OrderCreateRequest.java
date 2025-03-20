@@ -36,8 +36,10 @@ public record OrderCreateRequest(
                     .productItem(productItem)
                     .productName(productItem.getProduct().getName())
                     .productImgUrl(productItem.getProduct().getTitleUrl())
-//                    .productOptionName(productItem.getOptionName())
-//                    .productOptionValue(productItem.getOptionValue())
+                    .firstOptionName(productItem.getFirstOptionName())
+                    .firstOptionValue(productItem.getFirstOptionValue())
+                    .secondOptionName(productItem.getSecondOptionName())
+                    .secondOptionValue(productItem.getSecondOptionValue())
                     .quantity(quantity)
                     .price(productItem.getSellingPrice())
                     .build();
@@ -49,10 +51,12 @@ public record OrderCreateRequest(
                     .productItem(cartItem.getProductItem())
                     .productName(cartItem.getProductName())
                     .productImgUrl(cartItem.getProductImgUrl())
-                    .productOptionName(cartItem.getProductOptionName())
-                    .productOptionValue(cartItem.getProductOptionValue())
+                    .firstOptionName(cartItem.getFirstOptionName())
+                    .firstOptionValue(cartItem.getFirstOptionValue())
+                    .secondOptionName(cartItem.getSecondOptionName())
+                    .secondOptionValue(cartItem.getSecondOptionValue())
                     .quantity(quantity)
-                    .price(cartItem.getPrice())
+                    .price(cartItem.getSellingPrice())
                     .build();
         }
     }

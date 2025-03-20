@@ -84,6 +84,8 @@ public enum ExceptionType {
     // - 반품 -
     RETURNS_ALREADY_COMPLETED(ExceptionCode.R04, "이미 반품이 완료된 주문입니다."),
     RETURNS_REQUEST_EXPIRED(ExceptionCode.R05, "반품 기간이 지났습니다."),
+    RETURNS_NOT_FOUND(ExceptionCode.R06, "해당 반품 내역을 찾을 수 없습니다."),
+
 
     // - FAQ -
     FAQ_NOT_FOUND(ExceptionCode.F01, "존재하지 않는 FAQ 입니다."),

@@ -4,5 +4,5 @@ import com.tutti.server.core.member.payload.PasswordChangeRequest;
 
 public interface PasswordChangeServiceSpec {
 
-    void changePassword(String email, PasswordChangeRequest request);
+    void changePassword(long memberId, PasswordChangeRequest request);
 }

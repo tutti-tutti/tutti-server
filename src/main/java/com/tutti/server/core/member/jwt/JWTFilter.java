@@ -1,5 +1,7 @@
 package com.tutti.server.core.member.jwt;
 
+import com.tutti.server.core.member.application.CustomUserDetails;
+import com.tutti.server.core.member.application.CustomUserDetailsService;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import jakarta.servlet.FilterChain;
@@ -9,16 +11,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
-    public JWTFilter(JWTUtil jwtUtil, UserDetailsService userDetailsService) {
+    public JWTFilter(JWTUtil jwtUtil, CustomUserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
     }
@@ -39,12 +39,13 @@ public class JWTFilter extends OncePerRequestFilter {
             throw new DomainException(ExceptionType.TOKEN_EXPIRED);
         }
 
-        String email = jwtUtil.getEmail(token);
-        if (email == null) {
+        Long memberId = jwtUtil.getMemberId(token);
+        if (memberId == null) {
             throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
         }
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserById(
+                memberId);
 
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(userDetails, null,
