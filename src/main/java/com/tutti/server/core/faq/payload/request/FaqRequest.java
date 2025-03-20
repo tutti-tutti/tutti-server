@@ -1,12 +1,10 @@
 package com.tutti.server.core.faq.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "FAQ 등록 요청")
-@Table(name = "notices")
 public record FaqRequest(
     @Schema(description = "카테고리 ID", example = "1")
     @NotNull(message = "카테고리 ID는 필수입니다.")
