@@ -50,12 +50,32 @@ public class AuthServiceImpl implements AuthServiceSpec {
                 member.getMemberStatus().name(),
                 JWTUtil.ACCESS_TOKEN_EXPIRATION);
         String refreshToken = jwtUtil.createRefreshToken(member.getId(), member.getEmail(),
-                JWTUtil.REFRESH_TOKEN_EXPIRATION);
+                member.getMemberStatus().name(), JWTUtil.REFRESH_TOKEN_EXPIRATION);
 
         return Map.of(
                 "access_token", accessToken,
                 "refresh_token", refreshToken
         );
+    }
+
+    @Override
+    public Map<String, String> updateAccessToken(String refreshToken) {
+
+        if (!jwtUtil.isRefreshToken(refreshToken) || !jwtUtil.validateRefreshToken(refreshToken)) {
+            throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
+        }
+
+        if (jwtUtil.isExpired(refreshToken)) {
+            throw new DomainException(ExceptionType.TOKEN_EXPIRED);
+        }
+
+        long memberId = jwtUtil.getMemberId(refreshToken);
+        String email = jwtUtil.getEmail(refreshToken);
+
+        String newAccessToken = jwtUtil.createJwt(memberId, email, "ACTIVE",
+                JWTUtil.ACCESS_TOKEN_EXPIRATION);
+
+        return Map.of("access_token", newAccessToken);
     }
 }
 

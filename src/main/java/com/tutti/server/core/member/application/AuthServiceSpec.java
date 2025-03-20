@@ -6,4 +6,6 @@ import java.util.Map;
 public interface AuthServiceSpec {
 
     Map<String, String> login(LoginRequest request);
+
+    Map<String, String> updateAccessToken(String refreshToken);
 }

@@ -94,11 +94,13 @@ public class JWTUtil {
         }
     }
 
-    public String createRefreshToken(Long memberId, String email, Long expiredMs) {
+    public String createRefreshToken(Long memberId, String email, String memberStatus,
+            Long expiredMs) {
         try {
             return Jwts.builder()
                     .claim("memberId", memberId) // memberId 추가
                     .claim("email", email)
+                    .claim("memberStatus", memberStatus)
                     .issuedAt(new Date(System.currentTimeMillis()))
                     .expiration(new Date(System.currentTimeMillis() + expiredMs))
                     .signWith(secretKey)
@@ -108,5 +110,33 @@ public class JWTUtil {
         }
     }
 
+    public boolean isRefreshToken(String token) {
+        try {
+            String tokenType = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .get("tokenType", String.class);
 
+            return "refresh".equals(tokenType);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean validateRefreshToken(String refreshToken) {
+        try {
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(refreshToken);
+            return true;
+        } catch (ExpiredJwtException e) {
+            throw new DomainException(ExceptionType.TOKEN_EXPIRED);
+        } catch (MalformedJwtException | SignatureException | UnsupportedJwtException |
+                 IllegalArgumentException e) {
+            throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
+        }
+    }
 }
