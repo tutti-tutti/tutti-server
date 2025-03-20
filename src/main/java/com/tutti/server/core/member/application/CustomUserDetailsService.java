@@ -3,7 +3,6 @@ package com.tutti.server.core.member.application;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
-import java.util.List;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,10 +20,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return memberRepository.findByEmail(email)
-                .map(member -> new org.springframework.security.core.userdetails.User(
+                .map(member -> new CustomUserDetails(
+                        member.getId(),
                         member.getEmail(),
-                        member.getPassword(),
-                        List.of() // 권한 없음
+                        member.getPassword()
+                ))
+                .orElseThrow(() -> new DomainException(ExceptionType.MEMBER_NOT_FOUND));
+    }
+
+    public UserDetails loadUserById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .map(member -> new CustomUserDetails(
+                        member.getId(),
+                        member.getEmail(),
+                        member.getPassword()
                 ))
                 .orElseThrow(() -> new DomainException(ExceptionType.MEMBER_NOT_FOUND));
     }

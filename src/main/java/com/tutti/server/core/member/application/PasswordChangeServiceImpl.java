@@ -19,9 +19,8 @@ public class PasswordChangeServiceImpl implements PasswordChangeServiceSpec {
 
     @Override
     @Transactional
-    public void changePassword(String email, PasswordChangeRequest request) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new DomainException(ExceptionType.MEMBER_NOT_FOUND));
+    public void changePassword(long memberId, PasswordChangeRequest request) {
+        Member member = memberRepository.findOne(memberId);
 
         // 현재 비밀번호 확인
         if (!passwordEncoder.matches(request.currentPassword(), member.getPassword())) {
