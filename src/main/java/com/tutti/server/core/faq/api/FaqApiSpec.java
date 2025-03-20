@@ -14,8 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "FAQ", description = "FAQ 관련 API")
 public interface FaqApiSpec {
@@ -36,11 +34,11 @@ public interface FaqApiSpec {
         @ApiResponse(responseCode = "404", description = "FAQ를 찾을 수 없음", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    ResponseEntity<FaqResponse> getFaqById(@PathVariable Long faqId);
+    ResponseEntity<FaqResponse> getFaqById(Long faqId);
 
     @Operation(summary = "FAQ 검색", description = "특정 키워드를 포함하는 FAQ를 검색합니다.")
     ResponseEntity<FaqListResponse> searchFaqs(FaqSearchRequest request);
 
     @Operation(summary = "FAQ 피드백(긍정, 부정)", description = "FAQ에 대한 피드백을 등록합니다.")
-    void faqFeedback(@PathVariable Long faqId, @RequestBody FaqFeedbackRequest request);
+    void faqFeedback(Long faqId, FaqFeedbackRequest request);
 }
