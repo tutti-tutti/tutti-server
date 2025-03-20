@@ -51,17 +51,13 @@ public enum ExceptionType {
 
     // - 상품 -
     PRODUCT_NOT_FOUND(ExceptionCode.B01, "존재하지 않는 상품입니다."),
-    // conflict나서 정리
-//    PRODUCT_CATEGORY_MAP_NOT_FOUND(ExceptionCode.B02, "존재하지 않는 카테고리 상품입니다."),
-//    PRODUCT_QNA_NOT_FOUND(ExceptionCode.B03, "존재하지 않는 QnA 입니다."),
-//    PRODUCT_REVIEW_NOT_FOUND(ExceptionCode.B04, "존재하지 않는 리뷰 입니다."),
-//    CATEGORY_NOT_FOUND(ExceptionCode.B05, "존재하지 않는 카테고리입니다."),
-//    PRODUCT_ITEM_NOT_FOUND(ExceptionCode.B06, "상품의 옵션 정보를 찾을 수 없습니다."),
     PRODUCT_QNA_NOT_FOUND(ExceptionCode.B02, "존재하지 않는 QnA 입니다."),
     PRODUCT_REVIEW_NOT_FOUND(ExceptionCode.B03, "존재하지 않는 리뷰 입니다."),
     CATEGORY_NOT_FOUND(ExceptionCode.B04, "존재하지 않는 카테고리입니다."),
     NON_EXISTENT_PRODUCT_INCLUDE(ExceptionCode.B05, "존재하지 않는 상품이 포함되어 있습니다."),
     PRODUCT_MISMATCH(ExceptionCode.B06, "상품을 찾을 수 없습니다."),
+    PRODUCT_CATEGORY_MAP_NOT_FOUND(ExceptionCode.B07, "존재하지 않는 카테고리 상품입니다."),
+    PRODUCT_ITEM_NOT_FOUND(ExceptionCode.B08, "상품 옵션이 존재하지 않습니다"),
 
     // - 장바구니 -
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.C01, "존재하지 않는 상품입니다.", ERROR),

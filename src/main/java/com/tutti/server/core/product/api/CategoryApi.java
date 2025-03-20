@@ -2,7 +2,6 @@ package com.tutti.server.core.product.api;
 
 import com.tutti.server.core.product.application.ProductService;
 import com.tutti.server.core.product.payload.response.ProductResponse;
-import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,7 @@ public class CategoryApi implements CategoryApiSpec {
     @Override
     @GetMapping("/{categoryId}/products")
     public List<ProductResponse> getAllProductsByCategory(
-            @Parameter(description = "조회할 상품의 카테고리 id", example = "4") @PathVariable(name = "categoryId") long categoryId) {
+            @PathVariable(name = "categoryId") long categoryId) {
         return productService.getAllProductsByCategory(categoryId);
     }
 }

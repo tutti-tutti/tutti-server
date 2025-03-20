@@ -5,13 +5,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = "Category", description = "카테고리 API")
 public interface CategoryApiSpec {
 
     @Operation(summary = "상품 전체 조회 (카테고리 선택)")
     public List<ProductResponse> getAllProductsByCategory(
-            @Parameter(description = "조회할 상품의 카테고리 id", example = "4") @PathVariable(name = "categoryId") long categoryId);
+            @Parameter(description = "조회할 상품의 카테고리 id", example = "4") long categoryId);
 
 }

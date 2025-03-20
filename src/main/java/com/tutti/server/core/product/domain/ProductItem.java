@@ -1,10 +1,6 @@
 package com.tutti.server.core.product.domain;
 
-import org.hibernate.annotations.Comment;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import com.tutti.server.core.support.entity.BaseEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -17,6 +13,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "product_items")
@@ -30,20 +28,34 @@ public class ProductItem extends BaseEntity {
     @NotNull
     private Product product;
 
-    @Column(name = "original_price")
-    private Integer originalPrice;
+    @Column(name = "additional_price")
+    @NotNull
+    private Integer additionalPrice;
+
+    @Column(name = "discount_price")
+    @NotNull
+    private Integer discountPrice;
 
     @Column(name = "selling_price")
     @NotNull
+    @Comment("고객 제공 판매가격")
     private Integer sellingPrice;
 
-    @Column(name = "option_name", columnDefinition = "TEXT")
+    @Column(name = "first_option_name", columnDefinition = "TEXT")
     @Comment("색상, 사이즈")
-    private String optionName;
+    private String firstOptionName;
 
-    @Column(name = "option_value", columnDefinition = "TEXT")
+    @Column(name = "first_option_value", columnDefinition = "TEXT")
     @Comment("Red, S")
-    private String optionValue;
+    private String firstOptionValue;
+
+    @Column(name = "second_option_name", columnDefinition = "TEXT")
+    @Comment("색상, 사이즈")
+    private String secondOptionName;
+
+    @Column(name = "second_option_value", columnDefinition = "TEXT")
+    @Comment("Red, S")
+    private String secondOptionValue;
 
     @Column(name = "sold_out")
     @NotNull
@@ -51,13 +63,18 @@ public class ProductItem extends BaseEntity {
 
     // 필수 필드만 포함한 빌더 패턴
     @Builder
-    public ProductItem(Product product, Integer originalPrice, Integer sellingPrice,
-            String optionName, String optionValue, boolean soldOut) {
+    public ProductItem(Product product, Integer additionalPrice, Integer discountPrice,
+            Integer sellingPrice,
+            String firstOptionName, String firstOptionValue, String secondOptionName,
+            String secondOptionValue, boolean soldOut) {
         this.product = product;
-        this.originalPrice = originalPrice;
+        this.additionalPrice = additionalPrice;
+        this.discountPrice = discountPrice;
         this.sellingPrice = sellingPrice;
-        this.optionName = optionName;
-        this.optionValue = optionValue;
+        this.firstOptionName = firstOptionName;
+        this.firstOptionValue = firstOptionValue;
+        this.secondOptionName = secondOptionName;
+        this.secondOptionValue = secondOptionValue;
         this.soldOut = soldOut;
     }
 }

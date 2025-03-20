@@ -25,6 +25,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends BaseEntity {
 
+    @Column(name = "original_price")
+    private Integer originalPrice;
+
     @Column(name = "bot_id")
     @NotNull
     @Comment("botId")
@@ -78,9 +81,12 @@ public class Product extends BaseEntity {
 
     // 필수로 설정하는 빌더
     @Builder
-    public Product(String botId, Store storeId, String name, String titleUrl, String productCode,
+    public Product(int original_price, String botId, Store storeId, String name, String titleUrl,
+            String productCode,
             String detailUrl, String description, boolean onSales, boolean adultOnly,
+            int maxQuantity,
             int likeCount) {
+        this.originalPrice = original_price;
         this.botId = botId;
         this.storeId = storeId;
         this.name = name;
@@ -90,6 +96,7 @@ public class Product extends BaseEntity {
         this.description = description;
         this.onSales = onSales;
         this.adultOnly = adultOnly;
+        this.maxQuantity = maxQuantity;
         this.likeCount = likeCount;
     }
 }
