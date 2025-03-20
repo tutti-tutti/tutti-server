@@ -7,5 +7,5 @@ public interface RefundService {
 
     void requestRefund(PaymentCancelRequest request);
 
-    RefundViewResponse getRefundView(Long orderId);
+    RefundViewResponse getRefundView(Long orderId, Long memberId);
 }

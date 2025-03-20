@@ -40,10 +40,14 @@ public class RefundServiceImpl implements RefundService {
 
     @Override
     @Transactional(readOnly = true)
-    public RefundViewResponse getRefundView(Long orderId) {
+    public RefundViewResponse getRefundView(Long orderId, Long memberId) {
 
         Refund refund = refundRepository.findByPaymentOrderId(orderId)
                 .orElseThrow(() -> new DomainException(ExceptionType.REFUND_NOT_FOUND));
+
+        if (!refund.getMember().getId().equals(memberId)) {
+            throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);
+        }
 
         return RefundViewResponse.fromEntity(refund);
     }
