@@ -113,7 +113,7 @@ public class PaymentServiceImpl implements PaymentService {
     private void confirmPaymentDomain(Payment payment,
             PaymentMethod method,
             ParsedTossApiResponse parsedResponse) {
-        payment.confirmPayment(
+        payment.afterConfirmUpdatePayment(
                 method,
                 parsedResponse.paymentKey(),
                 parsedResponse.status(),
