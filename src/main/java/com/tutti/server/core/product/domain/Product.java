@@ -6,7 +6,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -23,70 +24,78 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends BaseEntity {
 
-  @Column(name = "bot_id")
-  @NotNull
-  @Comment("botId")
-  private String botId;
+    @Column(name = "original_price")
+    private Integer originalPrice;
 
-  @OneToOne
-  @JoinColumn(name = "store_id")
-  @NotNull
-  @Comment("storeId")
-  private Store storeId;
+    @Column(name = "bot_id")
+    @NotNull
+    @Comment("botId")
+    private String botId;
 
-  @Column(name = "name")
-  @NotNull
-  @Comment("productName")
-  private String name;
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    @NotNull
+    @Comment("storeId")
+    private Store storeId;
 
-  @Column(name = "title_url", length = 2083)
-  @NotNull
-  @Comment("productImgUrl")
-  private String titleUrl;
+    @Column(name = "name")
+    @NotNull
+    @Comment("productName")
+    private String name;
 
-  @Column(name = "product_code")
-  @NotNull
-  @Comment("productCode")
-  private String productCode;
+    @Column(name = "title_url", length = 2083, columnDefinition = "TEXT")
+    @Lob
+    @NotNull
+    @Comment("productImgUrl")
+    private String titleUrl;
 
-  @Column(name = "detail_url", length = 2083)
-  @Comment("이후추가")
-  private String detailUrl;
+    @Column(name = "product_code")
+    @NotNull
+    @Comment("productCode")
+    private String productCode;
 
-  @Column(name = "description")
-  @NotNull
-  private String description;
+    @Column(name = "detail_url", length = 2083, columnDefinition = "TEXT")
+    @Lob
+    @Comment("이후추가")
+    private String detailUrl;
 
-  @Column(name = "on_sales")
-  @NotNull
-  private boolean onSales;
+    @Column(name = "description")
+    private String description;
 
-  @Column(name = "adult_only")
-  @NotNull
-  private boolean adultOnly;
+    @Column(name = "on_sales")
+    @NotNull
+    private boolean onSales;
 
-  @Column(name = "max_quantity")
-  @NotNull
-  private int maxQuantity;
+    @Column(name = "adult_only")
+    @NotNull
+    private boolean adultOnly;
 
-  @Column(name = "like_count")
-  @NotNull
-  private int likeCount;
+    @Column(name = "max_quantity")
+    @NotNull
+    private int maxQuantity;
 
-  // 필수로 설정하는 빌더
-  @Builder
-  public Product(String botId, Store storeId, String name, String titleUrl, String productCode,
-      String detailUrl, String description, boolean onSales, boolean adultOnly,
-      int likeCount) {
-    this.botId = botId;
-    this.storeId = storeId;
-    this.name = name;
-    this.titleUrl = titleUrl;
-    this.productCode = productCode;
-    this.detailUrl = detailUrl;
-    this.description = description;
-    this.onSales = onSales;
-    this.adultOnly = adultOnly;
-    this.likeCount = likeCount;
-  }
+    @Column(name = "like_count")
+    @NotNull
+    private int likeCount;
+
+    // 필수로 설정하는 빌더
+    @Builder
+    public Product(int original_price, String botId, Store storeId, String name, String titleUrl,
+            String productCode,
+            String detailUrl, String description, boolean onSales, boolean adultOnly,
+            int maxQuantity,
+            int likeCount) {
+        this.originalPrice = original_price;
+        this.botId = botId;
+        this.storeId = storeId;
+        this.name = name;
+        this.titleUrl = titleUrl;
+        this.productCode = productCode;
+        this.detailUrl = detailUrl;
+        this.description = description;
+        this.onSales = onSales;
+        this.adultOnly = adultOnly;
+        this.maxQuantity = maxQuantity;
+        this.likeCount = likeCount;
+    }
 }

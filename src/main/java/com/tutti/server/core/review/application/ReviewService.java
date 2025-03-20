@@ -1,7 +1,6 @@
 package com.tutti.server.core.review.application;
 
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
-import com.tutti.server.core.review.payload.request.ReviewListRequest;
 import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
 import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
@@ -22,8 +21,8 @@ public class ReviewService {
         return reviewCreateService.createReview(request);
     }
 
-    public ReviewListResponse getReviews(ReviewListRequest request) {
-        return reviewListService.getReviews(request);
+    public ReviewListResponse getReviews(Long productId, Long cursor, int size, String sort) {
+        return reviewListService.getReviewsByProductId(productId, cursor, size, sort);
     }
 
     public ReviewDetailResponse getReviewDetail(long reviewId) {

@@ -25,7 +25,7 @@ public record PaymentRequest(
         return Payment.builder()
                 .orderName(orderName)
                 .amount(amount)
-                .paymentStatus(PaymentStatus.IN_PROGRESS)
+                .paymentStatus(PaymentStatus.IN_PROGRESS.name())
                 .tossPaymentKey(null)
                 .member(member)
                 .order(order)

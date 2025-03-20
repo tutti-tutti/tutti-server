@@ -13,6 +13,7 @@ public class FaqAdminServiceImpl implements FaqAdminService {
 
     private final FaqAdminCreateService faqAdminCreateService;
     private final FaqAdminUpdateService faqAdminUpdateService;
+    private final FaqAdminDeleteService faqAdminDeleteService;
 
     @Override
     public FaqCreateResponse createFaq(FaqCreateRequest faqCreateRequest) {
@@ -22,5 +23,10 @@ public class FaqAdminServiceImpl implements FaqAdminService {
     @Override
     public FaqUpdateResponse updateFaq(Long faqId, FaqUpdateRequest faqUpdateRequest) {
         return faqAdminUpdateService.updateFaq(faqId, faqUpdateRequest);
+    }
+
+    @Override
+    public void deleteFaq(Long faqId) {
+        faqAdminDeleteService.deleteFaq(faqId);
     }
 }
