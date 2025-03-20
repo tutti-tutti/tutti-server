@@ -12,4 +12,4 @@ spring:
       local-dev: local-dev
       azure: azure
 
-    active: local-dev
+    active: azure
