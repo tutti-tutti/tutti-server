@@ -67,7 +67,7 @@ public class ReturnsServiceImpl implements ReturnsService {
     }
 
     private void validatePaymentStatus(Payment payment) {
-        if (payment.getPaymentStatus() != PaymentStatus.DONE) {
+        if (!payment.getPaymentStatus().equals(PaymentStatus.DONE.name())) {
             throw new DomainException(ExceptionType.REFUND_REQUEST_NOT_ALLOWED);
         }
     }

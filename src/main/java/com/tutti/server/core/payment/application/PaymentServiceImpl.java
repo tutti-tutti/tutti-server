@@ -94,7 +94,7 @@ public class PaymentServiceImpl implements PaymentService {
     // 2-4. 결제 테이블 업데이트
     private void updatePayment(Payment payment, ParsedTossApiResponse parsedResponse) {
 
-        PaymentMethod paymentMethod = findPaymentMethod(parsedResponse.method());
+//        PaymentMethod paymentMethod = findPaymentMethod(parsedResponse.method());
 
         confirmPaymentDomain(payment, parsedResponse);
 
