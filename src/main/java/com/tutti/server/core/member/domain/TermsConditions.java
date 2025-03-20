@@ -7,13 +7,14 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "terms_conditions")
 public class TermsConditions extends BaseEntity {
 
@@ -22,13 +23,10 @@ public class TermsConditions extends BaseEntity {
     private TermsType termsType;
 
     @Column(columnDefinition = "TEXT", nullable = false)
-    private String content; // 약관 내용
+    private String content;
 
-
-    @Builder
-    public TermsConditions(TermsType termsType, String content) {
-        this.termsType = termsType;
-        this.content = content;
+    public String getDisplayName() {
+        return this.termsType.getDisplayName();
     }
 
     public boolean isRequired() {
