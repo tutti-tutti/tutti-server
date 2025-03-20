@@ -3,6 +3,7 @@ package com.tutti.server.core.cart.payload.request;
 import com.tutti.server.core.cart.domain.CartItem;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.product.domain.ProductItem;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -16,6 +17,7 @@ public record CartItemCreateRequest(
         Long productItemId,
 
         @Min(value = 1, message = "수량은 1 이상이어야 합니다.")
+        @Max(value = 10, message = "최대 10개까지 주문 가능합니다.")
         int quantity
 
 ) {
@@ -27,10 +29,13 @@ public record CartItemCreateRequest(
                 .productItem(productItem)
                 .productName(productItem.getProduct().getName())
                 .productImgUrl(productItem.getProduct().getTitleUrl())
-//                .productOptionName(productItem.getOptionName())
-//                .productOptionValue(productItem.getOptionValue())
+                .productOptionName_1(productItem.getFirstOptionName())
+                .productOptionValue_1(productItem.getFirstOptionValue())
+                .productOptionName_2(productItem.getSecondOptionName())
+                .productOptionValue_2(productItem.getSecondOptionValue())
                 .quantity(quantity)
-                .price(productItem.getSellingPrice())
+                .originalPrice(productItem.getProduct().getOriginalPrice())
+                .sellingPrice(productItem.getSellingPrice())
                 .soldOut(productItem.isSoldOut())
                 .build();
     }

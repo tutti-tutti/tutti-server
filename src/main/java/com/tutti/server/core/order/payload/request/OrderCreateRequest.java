@@ -49,10 +49,10 @@ public record OrderCreateRequest(
                     .productItem(cartItem.getProductItem())
                     .productName(cartItem.getProductName())
                     .productImgUrl(cartItem.getProductImgUrl())
-                    .productOptionName(cartItem.getProductOptionName())
-                    .productOptionValue(cartItem.getProductOptionValue())
+                    .productOptionName(cartItem.getProductOptionName_1())
+                    .productOptionValue(cartItem.getProductOptionValue_1())
                     .quantity(quantity)
-                    .price(cartItem.getPrice())
+                    .price(cartItem.getOriginalPrice())
                     .build();
         }
     }
