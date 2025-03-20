@@ -25,10 +25,9 @@ public class RefundApi implements RefundApiSpec {
     private final RefundService refundService;
 
     @PostMapping("/request")
-    public ResponseEntity<Void> requestRefund(
+    public void requestRefund(
             @Valid @RequestBody PaymentCancelRequest request) {
         refundService.requestRefund(request);
-        return ResponseEntity.ok().build();
     }
 
 
