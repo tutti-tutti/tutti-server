@@ -6,8 +6,10 @@ import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.domain.PaymentStatus;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.returns.domain.ReturnStatus;
+import com.tutti.server.core.returns.domain.Returns;
 import com.tutti.server.core.returns.infrastructure.ReturnsRepository;
 import com.tutti.server.core.returns.payload.ReturnsRequest;
+import com.tutti.server.core.returns.payload.ReturnsResponse;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.time.LocalDateTime;
@@ -41,6 +43,16 @@ public class ReturnsServiceImpl implements ReturnsService {
 
         // 반품을 신청하고 반품 엔티티에 값을 저장한다.
         returnsRepository.save(request.toEntity(order));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ReturnsResponse getReturnsByOrderId(Long orderId) {
+        
+        Returns returns = returnsRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new DomainException(ExceptionType.RETURNS_NOT_FOUND));
+
+        return ReturnsResponse.fromEntity(returns);
     }
 
     private void validateOrderEligibility(Order order) {

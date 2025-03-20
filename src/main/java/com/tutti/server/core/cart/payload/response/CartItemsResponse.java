@@ -7,12 +7,18 @@ import lombok.Builder;
 public record CartItemsResponse(
 
         Long cartItemId,
+        String storeName,
+        Long productId,
         String productItemName,
         String productImgUrl,
-        String productOptionName,
-        String productOptionValue,
+        String firstOptionName,
+        String firstOptionValue,
+        String secondOptionName,
+        String secondOptionValue,
+        int originalPrice,
+        int sellingPrice,
         int quantity,
-        int price,
+        int maxQuantity,
         boolean soldOut
 ) {
 
@@ -20,12 +26,17 @@ public record CartItemsResponse(
         // 이 빌더는 CartItemsResponse 의 빌더
         return CartItemsResponse.builder()
                 .cartItemId(cartItem.getId())
+                .storeName(cartItem.getProductItem().getProduct().getStoreId().getName())
                 .productItemName(cartItem.getProductName())
                 .productImgUrl(cartItem.getProductImgUrl())
-                .productOptionName(cartItem.getProductOptionName())
-                .productOptionValue(cartItem.getProductOptionValue())
+                .firstOptionName(cartItem.getFirstOptionName())
+                .firstOptionValue(cartItem.getFirstOptionValue())
+                .secondOptionName(cartItem.getSecondOptionName())
+                .secondOptionValue(cartItem.getSecondOptionValue())
+                .originalPrice(cartItem.getOriginalPrice())
+                .sellingPrice(cartItem.getSellingPrice())
                 .quantity(cartItem.getQuantity())
-                .price(cartItem.getPrice())
+                .maxQuantity(10)
                 .soldOut(cartItem.isSoldOut())
                 .build();
     }

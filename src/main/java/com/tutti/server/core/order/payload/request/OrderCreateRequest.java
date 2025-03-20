@@ -36,12 +36,12 @@ public record OrderCreateRequest(
                     .productItem(productItem)
                     .productName(productItem.getProduct().getName())
                     .productImgUrl(productItem.getProduct().getTitleUrl())
-                    .productOptionName_1(productItem.getFirstOptionName())
-                    .productOptionValue_1(productItem.getFirstOptionValue())
-                    .productOptionName_2(productItem.getSecondOptionName())
-                    .productOptionValue_2(productItem.getSecondOptionValue())
+                    .firstOptionName(productItem.getFirstOptionName())
+                    .firstOptionValue(productItem.getFirstOptionValue())
+                    .secondOptionName(productItem.getSecondOptionName())
+                    .secondOptionValue(productItem.getSecondOptionValue())
                     .quantity(quantity)
-                    .sellingPrice(productItem.getSellingPrice())
+                    .price(productItem.getSellingPrice())
                     .build();
         }
 
@@ -51,12 +51,12 @@ public record OrderCreateRequest(
                     .productItem(cartItem.getProductItem())
                     .productName(cartItem.getProductName())
                     .productImgUrl(cartItem.getProductImgUrl())
-//                    .productOptionName_1(cartItem.getProductOptionName_1())
-//                    .productOptionValue_1(cartItem.getFirstOptionValue())
-//                    .productOptionName_2(cartItem.getProductOptionName_1())
-//                    .productOptionValue_2(cartItem.getProductOptionName_1())
-//                    .quantity(quantity)
-//                    .sellingPrice(cartItem.getSellingPrice())
+                    .firstOptionName(cartItem.getFirstOptionName())
+                    .firstOptionValue(cartItem.getFirstOptionValue())
+                    .secondOptionName(cartItem.getSecondOptionName())
+                    .secondOptionValue(cartItem.getSecondOptionValue())
+                    .quantity(quantity)
+                    .price(cartItem.getSellingPrice())
                     .build();
         }
     }
