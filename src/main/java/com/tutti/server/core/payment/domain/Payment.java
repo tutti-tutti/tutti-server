@@ -47,7 +47,7 @@ public class Payment extends BaseEntity {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order; // 주문 id
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_method_id") // 결제 요청이 왔을 때는 몰라도 됨.
     private PaymentMethod paymentMethod; // 결제 수단 id
 
