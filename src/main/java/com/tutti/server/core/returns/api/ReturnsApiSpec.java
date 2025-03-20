@@ -13,5 +13,5 @@ public interface ReturnsApiSpec {
     ResponseEntity<String> requestReturns(ReturnsRequest request);
 
     @Operation(summary = "주문 ID로 반품 조회 API", description = "특정 주문에 대한 반품 정보를 조회합니다.")
-    ResponseEntity<ReturnsResponse> getReturnsByOrderId(Long orderId);
+    ReturnsResponse getReturnsByOrderId(Long orderId);
 }

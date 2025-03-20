@@ -27,7 +27,7 @@ public class ReturnsApi implements ReturnsApiSpec {
     }
 
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<ReturnsResponse> getReturnsByOrderId(@PathVariable Long orderId) {
-        return ResponseEntity.ok(returnsService.getReturnsByOrderId(orderId));
+    public ReturnsResponse getReturnsByOrderId(@PathVariable Long orderId) {
+        return returnsService.getReturnsByOrderId(orderId);
     }
 }
