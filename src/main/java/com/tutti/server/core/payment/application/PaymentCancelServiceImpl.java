@@ -50,7 +50,7 @@ public class PaymentCancelServiceImpl implements PaymentCancelService {
 
     // 결제 취소 시 확인(결제 상태(DONE), 환불상태(RefundNotCompleted), 주문상태(구매확정이면 불가)
     private void checkPaymentCancelEligibility(Payment payment) {
-        if (payment.getPaymentStatus() != PaymentStatus.DONE) {
+        if (!payment.getPaymentStatus().equals(PaymentStatus.DONE.name())) {
             throw new DomainException(ExceptionType.REFUND_REQUEST_NOT_ALLOWED);
         }
         validateRefundPeriod(payment);
