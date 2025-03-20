@@ -31,9 +31,8 @@ public class Payment extends BaseEntity {
     @Column(nullable = false)
     private int amount;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PaymentStatus paymentStatus;
+    private String paymentStatus;
 
     private LocalDateTime completedAt;
 
@@ -60,7 +59,7 @@ public class Payment extends BaseEntity {
     private PaymentMethodType paymentMethodType; // 결제 수단 타입
 
     @Builder
-    public Payment(String orderName, int amount, PaymentStatus paymentStatus,
+    public Payment(String orderName, int amount, String paymentStatus,
             String tossPaymentKey, Member member,
             Order order, PaymentMethod paymentMethod, String orderNumber,
             PaymentMethodType paymentMethodType) {
@@ -78,17 +77,17 @@ public class Payment extends BaseEntity {
 
     // 결제 승인 후 PaymentKey 저장하는 방식으로 변경.
     public void completePayment(String tossPaymentKey) {
-        if (this.paymentStatus == PaymentStatus.DONE) {
+        if (this.paymentStatus.equals(PaymentStatus.DONE.name())) {
             throw new IllegalStateException("이미 결제가 완료된 주문입니다.");
         }
-        this.paymentStatus = PaymentStatus.DONE;
+        this.paymentStatus = PaymentStatus.DONE.name();
         this.tossPaymentKey = tossPaymentKey;
         this.completedAt = LocalDateTime.now();
     }
 
     // Toss 결제 승인 후 상태 업데이트
-    public void confirmPayment(PaymentMethod paymentMethod, String tossPaymentKey,
-            PaymentStatus status,
+    public void afterConfirmUpdatePayment(PaymentMethod paymentMethod, String tossPaymentKey,
+            String status,
             LocalDateTime completedAt, int amount) {
         this.paymentMethod = paymentMethod;
         // paymentKey, paymentStatus, approvedAt, amount 등도 함께 업데이트
@@ -99,7 +98,7 @@ public class Payment extends BaseEntity {
     }
 
     public void cancelPayment(LocalDateTime canceledAt) {
-        this.paymentStatus = PaymentStatus.CANCELED;
+        this.paymentStatus = PaymentStatus.CANCELED.name();
         this.completedAt = canceledAt;
     }
 }
