@@ -30,10 +30,10 @@ public class CartItem extends BaseEntity {
 
     private String productName;
     private String productImgUrl;
-    private String productOptionName_1;
-    private String productOptionValue_1;
-    private String productOptionName_2;
-    private String productOptionValue_2;
+    private String firstOptionName;
+    private String firstOptionValue;
+    private String secondOptionName;
+    private String secondOptionValue;
 
     @Column(columnDefinition = "integer default 1")
     private int quantity;
@@ -44,17 +44,17 @@ public class CartItem extends BaseEntity {
 
     @Builder
     public CartItem(Member member, ProductItem productItem, String productName,
-            String productImgUrl, String productOptionName_1, String productOptionValue_1,
-            String productOptionName_2, String productOptionValue_2, int quantity,
-            int originalPrice, int sellingPrice, boolean soldOut) {
+            String productImgUrl, String firstOptionName, String firstOptionValue,
+            String secondOptionName, String secondOptionValue, int quantity, int originalPrice,
+            int sellingPrice, boolean soldOut) {
         this.member = member;
         this.productItem = productItem;
         this.productName = productName;
         this.productImgUrl = productImgUrl;
-        this.productOptionName_1 = productOptionName_1;
-        this.productOptionValue_1 = productOptionValue_1;
-        this.productOptionName_2 = productOptionName_2;
-        this.productOptionValue_2 = productOptionValue_2;
+        this.firstOptionName = firstOptionName;
+        this.firstOptionValue = firstOptionValue;
+        this.secondOptionName = secondOptionName;
+        this.secondOptionValue = secondOptionValue;
         this.quantity = quantity;
         this.originalPrice = originalPrice;
         this.sellingPrice = sellingPrice;
