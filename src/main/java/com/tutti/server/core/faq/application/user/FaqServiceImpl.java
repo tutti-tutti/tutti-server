@@ -1,5 +1,6 @@
 package com.tutti.server.core.faq.application.user;
 
+import com.tutti.server.core.faq.domain.FaqMainCategory;
 import com.tutti.server.core.faq.payload.request.FaqFeedbackRequest;
 import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
@@ -13,15 +14,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FaqServiceImpl implements FaqService {
 
-    private final FaqCategoryListService faqCategoryListService;
+    private final FaqMainCategoryListService faqMainCategoryListService;
     private final FaqListViewService faqListViewService;
     private final FaqSearchListService faqSearchListService;
     private final FaqTopViewedListService faqTopViewedListService;
     private final FaqViewDetailService faqViewDetailService;
     private final FaqFeedbackService faqFeedbackService;
+    private final FaqSubCategoryListService faqSubCategoryListService;
 
     public List<String> getCategories() {
-        return faqCategoryListService.getCategories();
+        return faqMainCategoryListService.getMainCategories();
+    }
+
+    public List<String> getSubCategories(FaqMainCategory category) {
+        return faqSubCategoryListService.getSubCategories(category);
     }
 
     public FaqListResponse getFaqs(FaqListRequest request) {

@@ -1,5 +1,6 @@
 package com.tutti.server.core.faq.api;
 
+import com.tutti.server.core.faq.domain.FaqMainCategory;
 import com.tutti.server.core.faq.payload.request.FaqFeedbackRequest;
 import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
@@ -18,8 +19,11 @@ import org.springframework.web.ErrorResponse;
 @Tag(name = "FAQ", description = "FAQ 관련 API")
 public interface FaqApiSpec {
 
-    @Operation(summary = "FAQ 카테고리 목록 조회", description = "FAQ에서 사용되는 카테고리 목록을 반환합니다.")
+    @Operation(summary = "FAQ 메인 카테고리 목록 조회", description = "FAQ에서 사용되는 카테고리 목록을 반환합니다.")
     ResponseEntity<List<String>> getCategories();
+
+    @Operation(summary = "FAQ 서브 카테고리 목록 조회", description = "FAQ에서 사용되는 서브 카테고리 목록을 반환합니다.")
+    ResponseEntity<List<String>> getSubcategories(FaqMainCategory category);
 
     @Operation(summary = "FAQ 인기 질문 목록 조회", description = "조회수가 가장 높은 상위 10개의 FAQ를 반환합니다.")
     ResponseEntity<List<FaqResponse>> getTopFaqs();

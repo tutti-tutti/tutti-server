@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class FaqCategoryListServiceImpl implements FaqCategoryListService {
+public class FaqMainCategoryListServiceImpl implements FaqMainCategoryListService {
 
     private final FaqCategoryRepository faqCategoryRepository;
 
     @Transactional(readOnly = true)
-    public List<String> getCategories() {
+    public List<String> getMainCategories() {
         try {
             List<String> categories = faqCategoryRepository.findDistinctMainCategories();
             if (categories.isEmpty()) {
