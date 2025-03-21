@@ -9,7 +9,7 @@ public record ReviewDetailResponse(
     @NotNull @Schema(description = "리뷰 ID", example = "1") long reviewId,
     @NotNull @Schema(description = "상품 ID", example = "1") long productId,
     @NotNull @Schema(description = "유저 닉네임", example = "tutti") String nickname,
-    @Schema(description = "평점", example = "5") int rating,
+    @Schema(description = "평점", example = "5") float rating,
     @NotNull @Schema(description = "리뷰 내용", example = "너무 좋아요!") String content,
     @Schema(description = "감성 분석 결과", example = "positive") String sentiment,
     @Schema(description = "감성 분석 정확도", example = "88.24") double sentimentProbability,

@@ -32,11 +32,11 @@ public class ReviewLike extends BaseEntity {
     public ReviewLike(Review review, Long memberId) {
         this.review = review;
         this.memberId = memberId;
-        review.increaseLikeCount(); // 좋아요 추가 시 증가
+        review.increaseLikeCount();
     }
 
     @PreRemove
     public void preRemove() {
-        review.decreaseLikeCount(); // 삭제 시 감소
+        review.decreaseLikeCount();
     }
 }

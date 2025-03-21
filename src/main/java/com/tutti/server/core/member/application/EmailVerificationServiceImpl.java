@@ -28,12 +28,6 @@ public class EmailVerificationServiceImpl implements EmailVerificationServiceSpe
     public void sendVerificationEmail(String email) {
         validateEmailFormat(email); // 이메일 형식 검증
 
-        verificationCodeRepository.findByEmail(email).ifPresent(existingCode -> {
-            if (existingCode.isVerified()) {
-                throw new DomainException(ExceptionType.EMAIL_ALREADY_VERIFIED);
-            }
-        });
-
         verificationCodeRepository.deleteByEmail(email); // 기존 인증번호 삭제 후 새로 발송
 
         String verificationCode = generateVerificationCode();
