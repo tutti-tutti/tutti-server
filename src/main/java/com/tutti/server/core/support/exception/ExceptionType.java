@@ -70,22 +70,30 @@ public enum ExceptionType {
     ORDER_ALREADY_COMPLETED(HttpStatus.BAD_REQUEST, ExceptionCode.D04, "구매 확정된 주문입니다.", ERROR),
 
     // - 결제 -
-    PAYMENT_NOT_FOUND(ExceptionCode.P01, "해당 결제 내역을 찾을 수 없습니다."),
-    PAYMENT_AMOUNT_MISMATCH(ExceptionCode.P02, "결제 금액과 주문 금액이 일치하지 않습니다."),
-    PAYMENT_ALREADY_COMPLETED(ExceptionCode.P03, "이미 결제가 완료된 주문입니다."),
-    PAYMENT_ALREADY_PROCESSING(ExceptionCode.P04, "이미 결제가 진행 중인 주문입니다."),
-    INVALID_METHOD(ExceptionCode.P05, "유효하지 않은 결제 수단입니다."),
-    MISSING_METHOD_NOT_FOUND(ExceptionCode.P06, "결제 수단이 선택되지 않았습니다."),
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.P01, "해당 결제 내역을 찾을 수 없습니다.", ERROR),
+    PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, ExceptionCode.P02, "결제 금액과 주문 금액이 일치하지 않습니다.",
+            ERROR),
+    PAYMENT_ALREADY_COMPLETED(HttpStatus.CONFLICT, ExceptionCode.P03, "이미 결제가 완료된 주문입니다.", ERROR),
+    PAYMENT_ALREADY_PROCESSING(HttpStatus.CONFLICT, ExceptionCode.P04, "이미 결제가 진행 중인 주문입니다.",
+            ERROR),
+    INVALID_METHOD(HttpStatus.BAD_REQUEST, ExceptionCode.P05, "유효하지 않은 결제 수단입니다.", ERROR),
+    MISSING_METHOD_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.P06, "결제 수단이 선택되지 않았습니다.",
+            ERROR),
 
     // - 환불 -
-    REFUND_REQUEST_NOT_ALLOWED(ExceptionCode.R01, "환불 및 결제취소 대상이 아닙니다."),
-    REFUND_REQUEST_EXPIRED(ExceptionCode.R02, "환불 기간이 지났습니다."),
-    REFUND_ALREADY_COMPLETED(ExceptionCode.R03, "이미 환불이 완료된 결제입니다."),
+    REFUND_REQUEST_NOT_ALLOWED(HttpStatus.CONFLICT, ExceptionCode.R01, "환불 및 결제취소 대상이 아닙니다.",
+            ERROR),
+    REFUND_REQUEST_EXPIRED(HttpStatus.BAD_REQUEST, ExceptionCode.R02, "환불 기간이 지났습니다.", ERROR),
+    REFUND_ALREADY_COMPLETED(HttpStatus.CONFLICT, ExceptionCode.R03, "이미 환불이 완료된 결제입니다.", ERROR),
+    REFUND_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.R07, "조회 가능한 환불정보가 없습니다.", ERROR),
+    REFUND_OR_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.R08,
+            "권한이 없거나 조회 가능한 환불 정보가 없습니다.", ERROR),
+
 
     // - 반품 -
-    RETURNS_ALREADY_COMPLETED(ExceptionCode.R04, "이미 반품이 완료된 주문입니다."),
-    RETURNS_REQUEST_EXPIRED(ExceptionCode.R05, "반품 기간이 지났습니다."),
-    RETURNS_NOT_FOUND(ExceptionCode.R06, "해당 반품 내역을 찾을 수 없습니다."),
+    RETURNS_ALREADY_COMPLETED(HttpStatus.CONFLICT, ExceptionCode.R04, "이미 반품이 완료된 주문입니다.", ERROR),
+    RETURNS_REQUEST_EXPIRED(HttpStatus.BAD_REQUEST, ExceptionCode.R05, "반품 기간이 지났습니다.", ERROR),
+    RETURNS_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.R06, "해당 반품 내역을 찾을 수 없습니다.", ERROR),
 
 
     // - FAQ -

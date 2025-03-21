@@ -7,6 +7,9 @@ import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.payload.PaymentCancelRequest;
 import com.tutti.server.core.refund.domain.Refund;
 import com.tutti.server.core.refund.infrastructure.RefundRepository;
+import com.tutti.server.core.refund.payload.RefundViewResponse;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,4 +38,17 @@ public class RefundServiceImpl implements RefundService {
         refundRepository.save(refund);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public RefundViewResponse getRefundView(Long orderId, Long memberId) {
+
+        Refund refund = refundRepository.findByPaymentOrderId(orderId)
+                .orElseThrow(() -> new DomainException(ExceptionType.REFUND_NOT_FOUND));
+
+        if (!refund.getMember().getId().equals(memberId)) {
+            throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);
+        }
+
+        return RefundViewResponse.fromEntity(refund);
+    }
 }
