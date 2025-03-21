@@ -1,12 +1,16 @@
 package com.tutti.server.core.order.api;
 
+import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.order.application.OrderService;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
+import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,10 +29,16 @@ public class OrderApi implements OrderApiSpec {
         orderService.createOrder(request);
     }
 
-    // 주문 전체 조회
     @Override
     @GetMapping
     public List<OrderResponse> getOrders(@RequestBody Long memberId) {
         return orderService.getOrders(memberId);
+    }
+
+    @Override
+    @GetMapping("/{orderId}")
+    public OrderDetailResponse getOrderDetail(@AuthenticationPrincipal CustomUserDetails user,
+            @PathVariable Long orderId) {
+        return orderService.getOrderDetail(orderId);
     }
 }
