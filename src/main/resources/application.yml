@@ -10,6 +10,7 @@ spring:
     group:
       local: local
       local-dev: local-dev
-      azure: local-dev
+      azure: azure
 
     active: azure
+  촏
