@@ -1,6 +1,5 @@
 package com.tutti.server.core.faq.application.user;
 
-import com.tutti.server.core.faq.domain.FaqMainCategory;
 import com.tutti.server.core.faq.payload.request.FaqFeedbackRequest;
 import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
@@ -27,7 +26,7 @@ public class FaqServiceImpl implements FaqService {
     }
 
     public List<String> getSubCategories(FaqMainCategory category) {
-        return faqSubCategoryListService.getSubCategories(category);
+        return faqSubCategoryListService.getSubCategories(category.getDisplayName());
     }
 
     public FaqListResponse getFaqs(FaqListRequest request) {
