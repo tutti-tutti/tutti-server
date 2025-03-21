@@ -9,8 +9,6 @@ public record PaymentViewResponse(
         int amount,
         String paymentStatus,
         LocalDateTime completedAt,
-        Long memberId,
-        String memberName,
         Long orderId,
         String paymentMethodName
 ) {
@@ -23,8 +21,6 @@ public record PaymentViewResponse(
                 payment.getAmount(),
                 payment.getPaymentStatus(),
                 payment.getCompletedAt(),
-                payment.getMember().getId(),
-                payment.getMember().getName(),
                 payment.getOrder().getId(),
                 payment.getPaymentMethodType().name()
         );
