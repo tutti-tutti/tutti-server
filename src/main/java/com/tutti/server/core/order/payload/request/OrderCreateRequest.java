@@ -17,7 +17,10 @@ import lombok.Builder;
 public record OrderCreateRequest(
 
         Long memberId,
+
+        @NotNull
         List<OrderItemRequest> orderItems,
+        
         PaymentMethodType paymentType
 ) {
 
@@ -61,13 +64,15 @@ public record OrderCreateRequest(
         }
     }
 
-    public Order toEntity(Member member, String orderNumber, int orderCount, int totalAmount,
+    public Order toEntity(Member member, String orderNumber, String orderName, int orderCount,
+            int totalAmount,
             String orderStatus) {
         return Order.builder()
                 .member(member)
                 .paymentType(paymentType)
                 .orderStatus(orderStatus)
                 .orderNumber(orderNumber)
+                .orderName(orderName)
                 .orderCount(orderCount)
                 .totalAmount(totalAmount)
                 .build();
