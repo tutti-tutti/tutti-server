@@ -24,4 +24,7 @@ public interface ReviewApiSpec {
 
     @Operation(summary = "개인 리뷰 목록 조회 API")
     ResponseEntity<ReviewMyListResponse> getMyReviewList(String nickname, Long cursor, int size);
+
+    @Operation(summary = "리뷰 삭제 API")
+    ResponseEntity<ReviewDeleteResponse> deleteReview(Long reviewId);
 }
