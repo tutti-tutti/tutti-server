@@ -4,6 +4,7 @@ import com.tutti.server.core.review.application.ReviewCreateServiceImpl;
 import com.tutti.server.core.review.application.ReviewService;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
 import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
+import com.tutti.server.core.review.payload.response.ReviewDeleteResponse;
 import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
@@ -73,6 +74,15 @@ public class ReviewApi implements ReviewApiSpec {
         @RequestParam(defaultValue = "20") int size
     ) {
         ReviewMyListResponse response = reviewService.getMyReviewList(nickname, cursor, size);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/myReviews/{reviewId}")
+    public ResponseEntity<ReviewDeleteResponse> deleteMyReview(
+        @RequestParam Long reviewId
+    ) {
+        ReviewDeleteResponse response = reviewService.deleteReview(reviewId);
         return ResponseEntity.ok(response);
     }
 }

@@ -1,6 +1,7 @@
 package com.tutti.server.core.review.api;
 
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
+import com.tutti.server.core.review.payload.response.ReviewDeleteResponse;
 import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
@@ -26,5 +27,5 @@ public interface ReviewApiSpec {
     ResponseEntity<ReviewMyListResponse> getMyReviewList(String nickname, Long cursor, int size);
 
     @Operation(summary = "리뷰 삭제 API")
-    ResponseEntity<ReviewDeleteResponse> deleteReview(Long reviewId);
+    ResponseEntity<ReviewDeleteResponse> deleteMyReview(Long reviewId);
 }
