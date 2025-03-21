@@ -51,11 +51,11 @@ public class FaqListViewServiceImpl implements FaqListViewService {
                 query.trim(), pageRequest);
 
         } else if (category != null && subcategory != null && !subcategory.trim().isEmpty()) {
-            return faqRepository.findByFaqCategory_MainCategoryAndFaqCategory_SubCategoryAndDeleteStatusFalseAndIsViewTrue(
+            return faqRepository.findByFaqCategoryMainCategoryAndFaqCategorySubCategoryAndDeleteStatusFalseAndIsViewTrue(
                 category, subcategory.trim(), pageRequest);
 
         } else if (category != null && !category.trim().isEmpty()) {
-            return faqRepository.findByFaqCategory_MainCategoryAndDeleteStatusFalseAndIsViewTrue(
+            return faqRepository.findByFaqCategoryMainCategoryAndDeleteStatusFalseAndIsViewTrue(
                 category.trim(), pageRequest);
 
         } else {

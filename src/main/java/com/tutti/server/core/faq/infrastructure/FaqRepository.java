@@ -20,13 +20,13 @@ public interface FaqRepository extends JpaRepository<Faq, Long> {
             .orElseThrow(() -> new DomainException(ExceptionType.FAQ_NOT_FOUND));
     }
 
-    Page<Faq> findByFaqCategory_MainCategoryAndFaqCategory_SubCategoryAndDeleteStatusFalseAndIsViewTrue(
+    Page<Faq> findByFaqCategoryMainCategoryAndFaqCategorySubCategoryAndDeleteStatusFalseAndIsViewTrue(
         String mainCategory, String subCategory, Pageable pageable);
 
     Page<Faq> findByQuestionContainingIgnoreCaseAndDeleteStatusFalseAndIsViewTrue(
         String query, Pageable pageable);
 
-    Page<Faq> findByFaqCategory_MainCategoryAndDeleteStatusFalseAndIsViewTrue(
+    Page<Faq> findByFaqCategoryMainCategoryAndDeleteStatusFalseAndIsViewTrue(
         String mainCategory, Pageable pageable);
 
 
