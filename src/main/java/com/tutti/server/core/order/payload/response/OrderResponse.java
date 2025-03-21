@@ -9,6 +9,7 @@ import lombok.Builder;
 @Builder
 public record OrderResponse(
         String orderNumber,
+        String orderName,
         LocalDateTime orderDate,
         int totalAmount,
         String orderStatus,
@@ -23,6 +24,7 @@ public record OrderResponse(
 
         return OrderResponse.builder()
                 .orderNumber(order.getOrderNumber())
+                .orderName(order.getOrderName())
                 .orderDate(order.getCompletedAt())
                 .totalAmount(order.getTotalAmount())
                 .orderStatus(order.getOrderStatus())
