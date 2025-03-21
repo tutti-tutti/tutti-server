@@ -54,7 +54,7 @@ public class FaqSearchListServiceImpl implements FaqSearchListService {
             faqs = faqRepository.findByQuestionContainingIgnoreCaseAndDeleteStatusFalseAndIsViewTrue(
                 request.query(), pageRequest);
         } else if (request.category() != null && request.subcategory() != null) {
-            faqs = faqRepository.findByFaqCategory_MainCategoryAndFaqCategory_SubCategoryAndDeleteStatusFalseAndIsViewTrue(
+            faqs = faqRepository.findByFaqCategoryMainCategoryAndFaqCategorySubCategoryAndDeleteStatusFalseAndIsViewTrue(
                 request.category(), request.subcategory(), pageRequest);
         } else {
             faqs = faqRepository.findByDeleteStatusFalseAndIsViewTrue(pageRequest);
