@@ -85,6 +85,7 @@ public class JWTUtil {
                     .claim("memberId", memberId) // memberId 추가
                     .claim("email", email)
                     .claim("memberStatus", memberStatus)
+                    .claim("tokenType", "access")
                     .issuedAt(new Date(System.currentTimeMillis()))
                     .expiration(new Date(System.currentTimeMillis() + expiredMs))
                     .signWith(secretKey)
@@ -101,6 +102,7 @@ public class JWTUtil {
                     .claim("memberId", memberId) // memberId 추가
                     .claim("email", email)
                     .claim("memberStatus", memberStatus)
+                    .claim("tokenType", "refresh")
                     .issuedAt(new Date(System.currentTimeMillis()))
                     .expiration(new Date(System.currentTimeMillis() + expiredMs))
                     .signWith(secretKey)
