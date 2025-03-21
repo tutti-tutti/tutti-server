@@ -1,6 +1,7 @@
 package com.tutti.server.core.faq.infrastructure;
 
 import com.tutti.server.core.faq.domain.FaqCategory;
+import com.tutti.server.core.faq.payload.model.FaqCategoryRow;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
@@ -24,6 +25,10 @@ public interface FaqCategoryRepository extends JpaRepository<FaqCategory, Long> 
     List<String> findDistinctSubCategoriesByMainCategory(
         @Param("mainCategory") String mainCategory);
 
-    @Query("SELECT f.mainCategory, f.subCategory FROM FaqCategory f")
-    List<Object[]> findAllMainAndSubCategories();
+    @Query(
+        "SELECT new com.tutti.server.core.faq.payload.model.FaqCategoryRow(fc.mainCategory, fc.subCategory) "
+            +
+            "FROM FaqCategory fc " +
+            "ORDER BY fc.mainCategory, fc.subCategory")
+    List<FaqCategoryRow> findAllCategories();
 }
