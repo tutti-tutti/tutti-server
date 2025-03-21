@@ -3,6 +3,7 @@ package com.tutti.server.core.member.api;
 import com.tutti.server.core.member.payload.LoginRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 
@@ -11,4 +12,8 @@ public interface AuthApiSpec {
 
     @Operation(summary = "이메일 로그인", description = "이메일과 비밀번호를 이용해 로그인을 진행합니다.")
     ResponseEntity<Map<String, String>> login(LoginRequest request);
+
+    @Operation(summary = "AccessToken 갱신", description = "RefreshToken을 이용하여 AccessToken을 갱신합니다.")
+    ResponseEntity<Map<String, String>> updateAccessToken(HttpServletRequest request);
+
 }
