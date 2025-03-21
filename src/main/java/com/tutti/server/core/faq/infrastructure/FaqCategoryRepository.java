@@ -24,4 +24,6 @@ public interface FaqCategoryRepository extends JpaRepository<FaqCategory, Long> 
     List<String> findDistinctSubCategoriesByMainCategory(
         @Param("mainCategory") String mainCategory);
 
+    @Query("SELECT f.mainCategory, f.subCategory FROM FaqCategory f")
+    List<Object[]> findAllMainAndSubCategories();
 }
