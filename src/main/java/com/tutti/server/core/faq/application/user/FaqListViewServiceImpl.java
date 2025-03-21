@@ -42,12 +42,22 @@ public class FaqListViewServiceImpl implements FaqListViewService {
     }
 
     private Page<Faq> findFaqsByCriteria(FaqListRequest request, PageRequest pageRequest) {
-        if (request.query() != null && !request.query().isEmpty()) {
+        String query = request.query();
+        String category = request.category();
+        String subcategory = request.subcategory();
+
+        if (query != null && !query.trim().isEmpty()) {
             return faqRepository.findByQuestionContainingIgnoreCaseAndDeleteStatusFalseAndIsViewTrue(
-                request.query(), pageRequest);
-        } else if (request.category() != null && request.subcategory() != null) {
+                query.trim(), pageRequest);
+
+        } else if (category != null && subcategory != null && !subcategory.trim().isEmpty()) {
             return faqRepository.findByFaqCategory_MainCategoryAndFaqCategory_SubCategoryAndDeleteStatusFalseAndIsViewTrue(
-                request.category(), request.subcategory(), pageRequest);
+                category, subcategory.trim(), pageRequest);
+
+        } else if (category != null && !category.trim().isEmpty()) {
+            return faqRepository.findByFaqCategory_MainCategoryAndDeleteStatusFalseAndIsViewTrue(
+                category.trim(), pageRequest);
+
         } else {
             Page<Faq> faqs = faqRepository.findByDeleteStatusFalseAndIsViewTrue(pageRequest);
             if (faqs.getTotalElements() == 0) {

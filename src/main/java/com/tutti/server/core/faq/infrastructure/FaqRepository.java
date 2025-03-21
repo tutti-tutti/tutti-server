@@ -26,6 +26,10 @@ public interface FaqRepository extends JpaRepository<Faq, Long> {
     Page<Faq> findByQuestionContainingIgnoreCaseAndDeleteStatusFalseAndIsViewTrue(
         String query, Pageable pageable);
 
+    Page<Faq> findByFaqCategory_MainCategoryAndDeleteStatusFalseAndIsViewTrue(
+        String mainCategory, Pageable pageable);
+
+
     Page<Faq> findByDeleteStatusFalseAndIsViewTrue(Pageable pageable);
 
     @Query("SELECT f FROM Faq f WHERE f.deleteStatus = false AND f.isView = true ORDER BY f.viewCnt DESC")
