@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "리뷰 문서")
+@Tag(name = "리뷰 API")
 public interface ReviewApiSpec {
 
     @Operation(summary = "리뷰 작성 API")

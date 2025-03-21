@@ -4,5 +4,5 @@ import com.tutti.server.core.review.payload.response.ReviewDeleteResponse;
 
 public interface ReviewDeleteService {
 
-    ReviewDeleteResponse deleteReview(Long reviewId);
+    ReviewDeleteResponse deleteMyReview(Long reviewId);
 }
