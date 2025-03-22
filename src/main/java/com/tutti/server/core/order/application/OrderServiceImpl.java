@@ -103,9 +103,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void createOrder(OrderCreateRequest request) {
+    public void createOrder(Long memberId, OrderCreateRequest request) {
         // 1. 회원 조회
-        Member member = memberRepository.findOne(request.memberId());
+        Member member = memberRepository.findOne(memberId);
 
         // 2. 주문번호 생성
         String orderNumber = generateOrderNumber();
@@ -281,9 +281,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public OrderDetailResponse getOrderDetail(Long orderId) {
+    public OrderDetailResponse getOrderDetail(Long memberId, Long orderId) {
         // 주문 조회
-        Order order = orderRepository.findOne(orderId);
+        var order = orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(memberId, orderId)
+                .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
 
         // 주문 상품 조회
         List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
