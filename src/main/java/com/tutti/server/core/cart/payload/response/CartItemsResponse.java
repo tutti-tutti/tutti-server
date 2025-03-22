@@ -8,7 +8,7 @@ public record CartItemsResponse(
 
         Long cartItemId,
         String storeName,
-        Long productId,
+        Long productItemId,
         String productItemName,
         String productImgUrl,
         String firstOptionName,
@@ -27,7 +27,7 @@ public record CartItemsResponse(
         return CartItemsResponse.builder()
                 .cartItemId(cartItem.getId())
                 .storeName(cartItem.getProductItem().getProduct().getStoreId().getName())
-                .productId(cartItem.getProductItem().getProduct().getId())
+                .productItemId(cartItem.getProductItem().getId())
                 .productItemName(cartItem.getProductName())
                 .productImgUrl(cartItem.getProductImgUrl())
                 .firstOptionName(cartItem.getFirstOptionName())
