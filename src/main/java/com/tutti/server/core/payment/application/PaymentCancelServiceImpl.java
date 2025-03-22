@@ -29,10 +29,11 @@ public class PaymentCancelServiceImpl implements PaymentCancelService {
     @Override
     @Transactional
     public Payment paymentCancel(PaymentCancelRequest request, Long authMemberId) {
-        // 결제 정보 조회 및 검증
+
         Order order = orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(authMemberId,
                         request.orderId())
                 .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
+        // 결제 정보 조회 및 검증
         Payment payment = paymentRepository.findPaymentByOrderId(order.getId());
         checkPaymentCancelEligibility(payment);
 

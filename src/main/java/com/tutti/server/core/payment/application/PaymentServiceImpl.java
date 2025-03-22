@@ -33,9 +33,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentResponse requestPayment(PaymentRequest request, Long authMemberId) {
 
-        Order order = validateOrderRequest(request);
-        orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(authMemberId, order.getId())
-                .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
+        Order order = getValidOrder(request.orderId(), authMemberId);
+        validateOrderAmountAndName(order, request);
         Payment payment = validateOrReusePayment(order, request);
         return PaymentResponse.fromEntity(payment);
     }
@@ -45,26 +44,21 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public Map<String, Object> confirmPayment(PaymentConfirmRequest request, Long authMemberId) {
 
-        Payment payment = checkPayment(request.orderId());
+        getValidOrder(request.orderId(), authMemberId);
+        Payment payment = getValidPayment(request.orderId(), authMemberId);
         Map<String, Object> response = tossPaymentService.confirmPayment(request);
         ParsedTossApiResponse parsedResponse = ParsedTossApiResponse.fromResponse(response);
         updatePayment(payment, parsedResponse);
         return response;
     }
 
-    // 1-1. 주문 및 결제 금액 검증
-    private Order validateOrderRequest(PaymentRequest request) {
-        return orderRepository.findByOrderNumber(request.orderId())
-                .map(order -> {
-                    if (order.getTotalAmount() != request.amount()) {
-                        throw new DomainException(ExceptionType.PAYMENT_AMOUNT_MISMATCH);
-                    }
-                    if (!order.getOrderName().equals(request.orderName())) {
-                        throw new DomainException(ExceptionType.ORDER_NAME_MISMATCH);
-                    }
-                    return order;
-                })
-                .orElseThrow(() -> new DomainException(ExceptionType.ORDER_NOT_FOUND));
+    private void validateOrderAmountAndName(Order order, PaymentRequest request) {
+        if (order.getTotalAmount() != request.amount()) {
+            throw new DomainException(ExceptionType.PAYMENT_AMOUNT_MISMATCH);
+        }
+        if (!order.getOrderName().equals(request.orderName())) {
+            throw new DomainException(ExceptionType.ORDER_NAME_MISMATCH);
+        }
     }
 
     // 1-2. 기존 결제 여부 검증 메서드
@@ -99,13 +93,7 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentRepository.save(payment);
     }
 
-    // 2-1. 결제 테이블에 주문이 결제 중인지 확인.
-    private Payment checkPayment(String orderId) {
-        return paymentRepository.findByOrderNumber(orderId)
-                .orElseThrow(() -> new DomainException(ExceptionType.ORDER_NOT_FOUND));
-    }
-
-    // 2-4. 결제 테이블 업데이트
+    // 결제 테이블 업데이트
     private void updatePayment(Payment payment, ParsedTossApiResponse parsedResponse) {
 
         confirmPaymentDomain(payment, parsedResponse);
@@ -113,7 +101,7 @@ public class PaymentServiceImpl implements PaymentService {
         paymentHistoryService.savePaymentHistory(payment);
     }
 
-    // 2-6. 결제 승인 후 테이블 업데이트
+    // 결제 승인 후 테이블 업데이트
     private void confirmPaymentDomain(Payment payment, ParsedTossApiResponse parsedResponse) {
         payment.afterConfirmUpdatePayment(
                 parsedResponse.paymentKey(),
@@ -121,5 +109,15 @@ public class PaymentServiceImpl implements PaymentService {
                 parsedResponse.approvedAt(),
                 parsedResponse.amount()
         );
+    }
+
+    private Payment getValidPayment(String orderNumber, Long memberId) {
+        return paymentRepository.findByOrderNumberAndMemberId(orderNumber, memberId)
+                .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
+    }
+
+    private Order getValidOrder(String orderNumber, Long memberId) {
+        return orderRepository.findByOrderNumberAndMemberId(orderNumber, memberId)
+                .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
     }
 }
