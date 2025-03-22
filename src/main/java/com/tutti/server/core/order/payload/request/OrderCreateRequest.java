@@ -1,6 +1,5 @@
 package com.tutti.server.core.order.payload.request;
 
-import com.tutti.server.core.cart.domain.CartItem;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.order.domain.CreatedByType;
 import com.tutti.server.core.order.domain.Order;
@@ -45,21 +44,6 @@ public record OrderCreateRequest(
                     .secondOptionValue(productItem.getSecondOptionValue())
                     .quantity(quantity)
                     .price(productItem.getSellingPrice())
-                    .build();
-        }
-
-        public OrderItem toEntity(Order order, CartItem cartItem) {
-            return OrderItem.builder()
-                    .order(order)
-                    .productItem(cartItem.getProductItem())
-                    .productName(cartItem.getProductName())
-                    .productImgUrl(cartItem.getProductImgUrl())
-                    .firstOptionName(cartItem.getFirstOptionName())
-                    .firstOptionValue(cartItem.getFirstOptionValue())
-                    .secondOptionName(cartItem.getSecondOptionName())
-                    .secondOptionValue(cartItem.getSecondOptionValue())
-                    .quantity(quantity)
-                    .price(cartItem.getSellingPrice())
                     .build();
         }
     }
