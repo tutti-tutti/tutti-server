@@ -35,6 +35,7 @@ public class Order extends BaseEntity {
     private String orderStatus;
 
     private String orderNumber;
+    private String orderName;
     private int orderCount;
     private int deliveryFee;
     private int totalAmount;
@@ -44,14 +45,14 @@ public class Order extends BaseEntity {
 
     @Builder
     public Order(Member member, PaymentMethodType paymentType, String orderStatus,
-            String orderNumber, int orderCount, int totalAmount, LocalDateTime completedAt) {
+            String orderNumber, String orderName, int orderCount, int totalAmount) {
         this.member = member;
         this.paymentType = paymentType;
         this.orderStatus = orderStatus;
         this.orderNumber = orderNumber;
+        this.orderName = orderName;
         this.orderCount = orderCount;
         this.deliveryFee = 0;
         this.totalAmount = totalAmount;
-        this.completedAt = completedAt;
     }
 }

@@ -10,10 +10,12 @@ import java.util.List;
 
 public interface OrderService {
 
-    void createOrder(OrderCreateRequest orderCreateRequest);
+    void createOrder(OrderCreateRequest request);
 
     String generateOrderNumber();
 
+    String generateOrderName(OrderCreateRequest request);
+    
     List<ProductItem> getProductItems(List<OrderCreateRequest.OrderItemRequest> orderItemRequests);
 
     int calculateTotalProductAmount(

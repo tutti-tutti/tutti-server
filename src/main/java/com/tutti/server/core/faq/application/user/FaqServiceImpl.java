@@ -1,8 +1,10 @@
 package com.tutti.server.core.faq.application.user;
 
+import com.tutti.server.core.faq.domain.FaqMainCategory;
 import com.tutti.server.core.faq.payload.request.FaqFeedbackRequest;
 import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
+import com.tutti.server.core.faq.payload.response.FaqCategoryResponse;
 import com.tutti.server.core.faq.payload.response.FaqListResponse;
 import com.tutti.server.core.faq.payload.response.FaqResponse;
 import java.util.List;
@@ -14,14 +16,24 @@ import org.springframework.stereotype.Service;
 public class FaqServiceImpl implements FaqService {
 
     private final FaqCategoryListService faqCategoryListService;
+    private final FaqMainCategoryListService faqMainCategoryListService;
+    private final FaqSubCategoryListService faqSubCategoryListService;
     private final FaqListViewService faqListViewService;
     private final FaqSearchListService faqSearchListService;
     private final FaqTopViewedListService faqTopViewedListService;
     private final FaqViewDetailService faqViewDetailService;
     private final FaqFeedbackService faqFeedbackService;
 
-    public List<String> getCategories() {
-        return faqCategoryListService.getCategories();
+    public List<FaqCategoryResponse> getCategories() {
+        return faqCategoryListService.getCategoryList();
+    }
+
+    public List<String> getMainCategories() {
+        return faqMainCategoryListService.getMainCategories();
+    }
+
+    public List<String> getSubCategories(FaqMainCategory category) {
+        return faqSubCategoryListService.getSubCategories(category);
     }
 
     public FaqListResponse getFaqs(FaqListRequest request) {

@@ -1,9 +1,11 @@
 package com.tutti.server.core.faq.api;
 
 import com.tutti.server.core.faq.application.user.FaqServiceImpl;
+import com.tutti.server.core.faq.domain.FaqMainCategory;
 import com.tutti.server.core.faq.payload.request.FaqFeedbackRequest;
 import com.tutti.server.core.faq.payload.request.FaqListRequest;
 import com.tutti.server.core.faq.payload.request.FaqSearchRequest;
+import com.tutti.server.core.faq.payload.response.FaqCategoryResponse;
 import com.tutti.server.core.faq.payload.response.FaqListResponse;
 import com.tutti.server.core.faq.payload.response.FaqResponse;
 import java.util.List;
@@ -24,8 +26,20 @@ public class FaqApi implements FaqApiSpec {
     private final FaqServiceImpl faqServiceImpl;
 
     @Override
+    @GetMapping("/categories/mainCategories")
+    public ResponseEntity<List<String>> getMainCategories() {
+        return ResponseEntity.ok(faqServiceImpl.getMainCategories());
+    }
+
+    @Override
+    @GetMapping("/categories/{category}/subcategories")
+    public ResponseEntity<List<String>> getSubcategories(@PathVariable FaqMainCategory category) {
+        return ResponseEntity.ok(faqServiceImpl.getSubCategories(category));
+    }
+
+    @Override
     @GetMapping("/categories")
-    public ResponseEntity<List<String>> getCategories() {
+    public ResponseEntity<List<FaqCategoryResponse>> getCategories() {
         return ResponseEntity.ok(faqServiceImpl.getCategories());
     }
 
