@@ -1,6 +1,7 @@
 package com.tutti.server.core.payment.application;
 
 
+import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
@@ -42,8 +43,10 @@ public class PaymentViewServiceImpl implements PaymentViewService {
     @Transactional(readOnly = true)
     public PaymentViewResponse viewPaymentByOrderId(Long orderId, Long authMemberId) {
 
-        orderRepository.findAllByMemberIdAndDeleteStatusFalse(authMemberId);
-        Payment payment = findPaymentByOrderId(orderId);
+        Order order = orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(authMemberId, orderId)
+                .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
+
+        Payment payment = findPaymentByOrderId(order.getId());
         return PaymentViewResponse.fromEntity(payment);
     }
 

@@ -31,10 +31,11 @@ public class PaymentServiceImpl implements PaymentService {
     //1. 결제 요청
     @Override
     @Transactional
-    public PaymentResponse requestPayment(PaymentRequest request, Long AuthMemberId) {
+    public PaymentResponse requestPayment(PaymentRequest request, Long authMemberId) {
 
-        orderRepository.findAllByMemberIdAndDeleteStatusFalse(AuthMemberId);
         Order order = validateOrderRequest(request);
+        orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(authMemberId, order.getId())
+                .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
         Payment payment = validateOrReusePayment(order, request);
         return PaymentResponse.fromEntity(payment);
     }
@@ -44,7 +45,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public Map<String, Object> confirmPayment(PaymentConfirmRequest request, Long authMemberId) {
 
-        orderRepository.findAllByMemberIdAndDeleteStatusFalse(authMemberId);
         Payment payment = checkPayment(request.orderId());
         Map<String, Object> response = tossPaymentService.confirmPayment(request);
         ParsedTossApiResponse parsedResponse = ParsedTossApiResponse.fromResponse(response);

@@ -1,5 +1,6 @@
 package com.tutti.server.core.payment.application;
 
+import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.domain.PaymentStatus;
@@ -29,13 +30,19 @@ public class PaymentCancelServiceImpl implements PaymentCancelService {
     @Transactional
     public Payment paymentCancel(PaymentCancelRequest request, Long authMemberId) {
         // 결제 정보 조회 및 검증
-        orderRepository.findAllByMemberIdAndDeleteStatusFalse(authMemberId);
-        Payment payment = paymentRepository.findPaymentByOrderId(request.orderId());
+        Order order = orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(authMemberId,
+                        request.orderId())
+                .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
+        Payment payment = paymentRepository.findPaymentByOrderId(order.getId());
         checkPaymentCancelEligibility(payment);
 
         // TossPayments API 호출 및 응답 처리
-        TossPaymentsCancelResponse parsedResponse = tossPaymentService.cancelPayment(
-                payment, request.cancelReason());
+        TossPaymentsCancelResponse cancelResponse = tossPaymentService.cancelPayment(payment,
+                request.cancelReason());
+
+        if (!"CANCELED".equals(cancelResponse.status())) {
+            throw new DomainException(ExceptionType.TOSS_CANCEL_FAIL);
+        }
 
         // 결제 상태 업데이트 및 결제 이력 저장
         updatePaymentStatus(payment);

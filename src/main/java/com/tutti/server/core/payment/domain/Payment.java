@@ -4,8 +4,6 @@ package com.tutti.server.core.payment.domain;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.support.entity.BaseEntity;
-import com.tutti.server.core.support.exception.DomainException;
-import com.tutti.server.core.support.exception.ExceptionType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -89,11 +87,5 @@ public class Payment extends BaseEntity {
 
     public void cancelPayment() {
         this.paymentStatus = PaymentStatus.CANCELED.name();
-    }
-
-    public void validateOwner(Long memberId) {
-        if (!this.member.getId().equals(memberId)) {
-            throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);
-        }
     }
 }
