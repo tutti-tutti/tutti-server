@@ -7,6 +7,7 @@ import com.tutti.server.core.order.payload.request.OrderPageRequest;
 import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderPageResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orders")
+@SecurityRequirement(name = "Bearer Authentication")
 public class OrderApi implements OrderApiSpec {
 
     private final OrderService orderService;
@@ -34,27 +36,28 @@ public class OrderApi implements OrderApiSpec {
 
     @Override
     @PostMapping
-    public void createOrder(@Valid @RequestBody OrderCreateRequest request) {
-        orderService.createOrder(request);
+    public void createOrder(@AuthenticationPrincipal CustomUserDetails user,
+            @Valid @RequestBody OrderCreateRequest request) {
+        orderService.createOrder(user.getMemberId(), request);
     }
 
     @Override
     @GetMapping
-    public List<OrderResponse> getOrders(@RequestBody Long memberId) {
-        return orderService.getOrders(memberId);
+    public List<OrderResponse> getOrders(@AuthenticationPrincipal CustomUserDetails user) {
+        return orderService.getOrders(user.getMemberId());
     }
 
     @Override
     @GetMapping("/{orderId}")
     public OrderDetailResponse getOrderDetail(@AuthenticationPrincipal CustomUserDetails user,
-            @PathVariable Long orderId) {
-        return orderService.getOrderDetail(orderId);
+            @PathVariable("orderId") Long orderId) {
+        return orderService.getOrderDetail(user.getMemberId(), orderId);
     }
 
     @Override
     @PatchMapping("/{orderId}")
     public void deleteOrder(@AuthenticationPrincipal CustomUserDetails user,
-            @PathVariable Long orderId) {
+            @PathVariable("orderId") Long orderId) {
         orderService.deleteOrder(user.getMemberId(), orderId);
     }
 }

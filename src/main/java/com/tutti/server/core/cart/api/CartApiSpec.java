@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
-@Tag(name = "장바구니 API")
+@Tag(name = "Cart", description = "장바구니 관련 API")
 @SecurityRequirement(name = "Bearer Authentication")
 public interface CartApiSpec {
 
