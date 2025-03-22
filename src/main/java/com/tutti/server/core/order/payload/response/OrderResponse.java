@@ -13,13 +13,13 @@ public record OrderResponse(
         LocalDateTime orderDate,
         int totalAmount,
         String orderStatus,
-        List<OrderItemSummary> orderItems
+        List<OrderItemResponse> orderItems
 ) {
 
     // 주문 정보를 추출하는 메서드
     public static OrderResponse fromEntity(Order order, List<OrderItem> orderItems) {
-        List<OrderItemSummary> itemSummaries = orderItems.stream()
-                .map(OrderItemSummary::fromEntity)
+        List<OrderItemResponse> itemSummaries = orderItems.stream()
+                .map(OrderItemResponse::fromEntity)
                 .toList();
 
         return OrderResponse.builder()
@@ -30,32 +30,5 @@ public record OrderResponse(
                 .orderStatus(order.getOrderStatus())
                 .orderItems(itemSummaries)
                 .build();
-    }
-
-    @Builder
-    public record OrderItemSummary(
-            String productName,
-            String productImgUrl,
-            String firstOptionName,
-            String firstOptionValue,
-            String secondOptionName,
-            String secondOptionValue,
-            int quantity,
-            int price
-    ) {
-
-        // 상품 정보를 추출하는 메서드
-        public static OrderItemSummary fromEntity(OrderItem orderItem) {
-            return OrderItemSummary.builder()
-                    .productName(orderItem.getProductName())
-                    .productImgUrl(orderItem.getProductImgUrl())
-                    .firstOptionName(orderItem.getFirstOptionName())
-                    .firstOptionValue(orderItem.getFirstOptionValue())
-                    .secondOptionName(orderItem.getSecondOptionName())
-                    .secondOptionValue(orderItem.getSecondOptionValue())
-                    .quantity(orderItem.getQuantity())
-                    .price(orderItem.getPrice())
-                    .build();
-        }
     }
 }

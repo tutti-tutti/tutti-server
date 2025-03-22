@@ -10,6 +10,7 @@ import com.tutti.server.core.order.infrastructure.OrderHistoryRepository;
 import com.tutti.server.core.order.infrastructure.OrderItemRepository;
 import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
+import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
@@ -80,12 +81,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String generateOrderName(OrderCreateRequest request) {
+        // OrderCreateRequest 는 orderItem 이 생성되기 전이라는 것을 명심하자.
         // 첫 번째 상품의 ID 가져오기
         Long firstProductItemId = request.orderItems().get(0).productItemId();
 
         // 첫 번째 상품의 정보 조회
-        ProductItem firstProductItem = productItemRepository.findOne(firstProductItemId);
-        String firstProductName = firstProductItem.getProduct().getName();
+        String firstProductName = productItemRepository.findOne(firstProductItemId)
+                .getProduct().getName();
 
         // 주문 아이템 개수
         int orderItemCount = request.orderItems().size();
@@ -162,5 +164,17 @@ public class OrderServiceImpl implements OrderService {
                 .map(order -> OrderResponse.fromEntity(order,
                         orderItemRepository.findAllByOrderId(order.getId())))
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public OrderDetailResponse getOrderDetail(Long orderId) {
+        // 주문 조회
+        Order order = orderRepository.findOne(orderId);
+
+        // 주문 상품 조회
+        List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
+
+        return OrderDetailResponse.fromEntity(order, orderItems);
     }
 }

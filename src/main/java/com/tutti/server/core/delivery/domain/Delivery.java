@@ -41,7 +41,6 @@ public class Delivery extends BaseEntity {
 
     @Column(length = 50)
     private String destinationName;
-    private String recipientAddress;
 
     @Column(length = 50)
     private String recipientName;
@@ -49,19 +48,18 @@ public class Delivery extends BaseEntity {
     @Column(length = 20)
     private String recipientPhone;
 
+    private String recipientAddress;
+
     @Column(length = 20)
     private String zipcode;
 
-    private String address;
-    private String addressDetail;
     private String note;
 
     @Builder
     public Delivery(Order order, Carrier carrier, String trackingNumber,
             DeliveryStatus deliveryStatus, LocalDate expectedAt, LocalDateTime departedAt,
-            LocalDateTime deliveredAt, String destinationName, String recipientAddress,
-            String recipientName, String recipientPhone, String zipcode, String address,
-            String addressDetail, String note) {
+            LocalDateTime deliveredAt, String destinationName, String recipientName,
+            String recipientPhone, String recipientAddress, String zipcode, String note) {
         this.order = order;
         this.carrier = carrier;
         this.trackingNumber = trackingNumber;
@@ -70,12 +68,10 @@ public class Delivery extends BaseEntity {
         this.departedAt = departedAt;
         this.deliveredAt = deliveredAt;
         this.destinationName = destinationName;
-        this.recipientAddress = recipientAddress;
         this.recipientName = recipientName;
         this.recipientPhone = recipientPhone;
+        this.recipientAddress = recipientAddress;
         this.zipcode = zipcode;
-        this.address = address;
-        this.addressDetail = addressDetail;
         this.note = note;
     }
 }
