@@ -1,17 +1,20 @@
 package com.tutti.server.core.review.api;
 
+import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.review.application.ReviewCreateServiceImpl;
 import com.tutti.server.core.review.application.ReviewService;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
 import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
 import com.tutti.server.core.review.payload.response.ReviewDeleteResponse;
 import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
+import com.tutti.server.core.review.payload.response.ReviewLikeResponse;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -84,6 +87,17 @@ public class ReviewApi implements ReviewApiSpec {
         @PathVariable Long reviewId
     ) {
         ReviewDeleteResponse response = reviewService.deleteReview(reviewId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @PostMapping("/{reviewId}/reviewLike")
+    public ResponseEntity<ReviewLikeResponse> likeReview(
+        @PathVariable Long reviewId,
+        @AuthenticationPrincipal CustomUserDetails user
+    ) {
+        Long memberId = user.getMemberId();
+        ReviewLikeResponse response = reviewService.likeReview(reviewId, memberId);
         return ResponseEntity.ok(response);
     }
 }

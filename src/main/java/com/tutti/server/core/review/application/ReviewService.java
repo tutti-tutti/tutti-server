@@ -4,6 +4,7 @@ import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
 import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
 import com.tutti.server.core.review.payload.response.ReviewDeleteResponse;
 import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
+import com.tutti.server.core.review.payload.response.ReviewLikeResponse;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class ReviewService {
     private final ReviewDetailService reviewDetailService;
     private final ReviewMyListService reviewMyListService;
     private final ReviewDeleteService reviewDeleteService;
+    private final ReviewLikeService reviewLikeService;
 
     public ReviewCreateResponse createReview(ReviewCreateRequest request) {
         return reviewCreateService.createReview(request);
@@ -37,5 +39,9 @@ public class ReviewService {
 
     public ReviewDeleteResponse deleteReview(Long reviewId) {
         return reviewDeleteService.deleteMyReview(reviewId);
+    }
+
+    public ReviewLikeResponse likeReview(Long reviewId, Long memberId) {
+        return reviewLikeService.likeReview(reviewId, memberId);
     }
 }
