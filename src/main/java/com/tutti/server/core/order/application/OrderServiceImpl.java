@@ -10,9 +10,11 @@ import com.tutti.server.core.order.infrastructure.OrderHistoryRepository;
 import com.tutti.server.core.order.infrastructure.OrderItemRepository;
 import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
+import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
+import com.tutti.server.core.product.infrastructure.ProductRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.time.LocalDateTime;
@@ -79,12 +81,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String generateOrderName(OrderCreateRequest request) {
+        // OrderCreateRequest 는 orderItem 이 생성되기 전이라는 것을 명심하자.
         // 첫 번째 상품의 ID 가져오기
         Long firstProductItemId = request.orderItems().get(0).productItemId();
 
         // 첫 번째 상품의 정보 조회
-        ProductItem firstProductItem = productItemRepository.findOne(firstProductItemId);
-        String firstProductName = firstProductItem.getProduct().getName();
+        String firstProductName = productItemRepository.findOne(firstProductItemId)
+                .getProduct().getName();
 
         // 주문 아이템 개수
         int orderItemCount = request.orderItems().size();
@@ -172,44 +175,6 @@ public class OrderServiceImpl implements OrderService {
         // 주문 상품 조회
         List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
 
-        // 첫 번째 상품의 스토어 정보 조회 (모든 상품이 같은 스토어라고 가정)
-        Store store = null;
-        if (!orderItems.isEmpty()) {
-            ProductItem firstProductItem = orderItems.get(0).getProductItem();
-            store = firstProductItem.getProduct().getStoreId();
-        }
-
-        // 결제 정보 (실제 구현에서는 결제 서비스에서 가져와야 할 수 있음)
-        int totalProductAmount = order.getTotalAmount();
-        int discountAmount = 0; // 할인 금액 (실제 구현에서는 계산 필요)
-        int deliveryFee = order.getDeliveryFee();
-
-        // 주문 상태에 따른 날짜 정보 설정
-        LocalDateTime paidAt = null;
-        LocalDateTime completedAt = order.getCompletedAt();
-
-        if (OrderStatus.valueOf(order.getOrderStatus()) == OrderStatus.ORDER_RECEIVED
-                || OrderStatus.valueOf(order.getOrderStatus()) == OrderStatus.ORDER_COMPLETED) {
-            paidAt = order.getCreatedAt().plusMinutes(5); // 예시: 생성 후 5분 뒤 결제 완료
-        }
-
-        // 응답 객체 생성
-        return OrderDetailResponse.builder()
-                .orderNumber(order.getOrderNumber())
-                .orderStatus(order.getOrderStatus())
-                .totalProductAmount(totalProductAmount)
-                .discountAmount(discountAmount)
-                .deliveryFee(deliveryFee)
-                .totalAmount(totalProductAmount - discountAmount + deliveryFee)
-                .paymentType(order.getPaymentType())
-                .orderedAt(order.getCreatedAt())
-                .paidAt(paidAt)
-                .deliveredAt(null)
-                .completedAt(completedAt)
-                .orderItems(orderItems.stream()
-                        .map(OrderItemResponse::fromEntity)
-                        .toList())
-                .storeName(store != null ? store.getName() : "")
-                .build();
+        return OrderDetailResponse.fromEntity(order, orderItems);
     }
 }

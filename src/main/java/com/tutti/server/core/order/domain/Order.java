@@ -16,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -37,22 +38,36 @@ public class Order extends BaseEntity {
     private String orderNumber;
     private String orderName;
     private int orderCount;
+    private int totalProductAmount;
+    private int discountAmount;
     private int deliveryFee;
     private int totalAmount;
-    // 주문 완료 일시. 결제 완료 일시 ㄴㄴ
+
+    @Comment("결제 완료 일시")
+    private LocalDateTime paidAt;
+    @Comment("배송 완료 일시")
+    private LocalDateTime deliveredAt;
+    @Comment("주문 완료 일시")
     private LocalDateTime completedAt;
 
 
     @Builder
     public Order(Member member, PaymentMethodType paymentType, String orderStatus,
-            String orderNumber, String orderName, int orderCount, int totalAmount) {
+            String orderNumber, String orderName, int orderCount, int totalProductAmount,
+            int discountAmount, int totalAmount, LocalDateTime paidAt, LocalDateTime deliveredAt,
+            LocalDateTime completedAt) {
         this.member = member;
         this.paymentType = paymentType;
         this.orderStatus = orderStatus;
         this.orderNumber = orderNumber;
         this.orderName = orderName;
         this.orderCount = orderCount;
+        this.totalProductAmount = totalProductAmount;
+        this.discountAmount = discountAmount;
         this.deliveryFee = 0;
         this.totalAmount = totalAmount;
+        this.paidAt = paidAt;
+        this.deliveredAt = deliveredAt;
+        this.completedAt = completedAt;
     }
 }
