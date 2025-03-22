@@ -20,7 +20,11 @@ public class PaymentViewServiceImpl implements PaymentViewService {
     // memberId로 결제 조회
     @Override
     @Transactional(readOnly = true)
-    public List<PaymentViewResponse> viewPaymentByMemberId(Long memberId) {
+    public List<PaymentViewResponse> viewPaymentByMemberId(Long memberId, Long authMemberId) {
+
+        if (!memberId.equals(authMemberId)) {
+            throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);
+        }
 
         List<Payment> payments = paymentRepository.findByMemberId(memberId);
 
@@ -34,9 +38,11 @@ public class PaymentViewServiceImpl implements PaymentViewService {
     // orderId로 결제 조회
     @Override
     @Transactional(readOnly = true)
-    public PaymentViewResponse viewPaymentByOrderId(Long orderId) {
+    public PaymentViewResponse viewPaymentByOrderId(Long orderId, Long authMemberId) {
 
         Payment payment = findPaymentByOrderId(orderId);
+        payment.validateOwner(authMemberId);
+
         return PaymentViewResponse.fromEntity(payment);
     }
 

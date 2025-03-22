@@ -31,19 +31,21 @@ public class PaymentServiceImpl implements PaymentService {
     //1. 결제 요청
     @Override
     @Transactional
-    public PaymentResponse requestPayment(PaymentRequest request) {
+    public PaymentResponse requestPayment(PaymentRequest request, Long AuthMemberId) {
 
         Order order = validateOrderRequest(request);
         Payment payment = validateOrReusePayment(order, request);
+        payment.validateOwner(AuthMemberId);
         return PaymentResponse.fromEntity(payment);
     }
 
     //2. 결제 승인
     @Override
     @Transactional
-    public Map<String, Object> confirmPayment(PaymentConfirmRequest request) {
+    public Map<String, Object> confirmPayment(PaymentConfirmRequest request, Long AuthMemberId) {
 
         Payment payment = checkPayment(request.orderId());
+        payment.validateOwner(AuthMemberId);
         Map<String, Object> response = tossPaymentService.confirmPayment(request);
         ParsedTossApiResponse parsedResponse = ParsedTossApiResponse.fromResponse(response);
         updatePayment(payment, parsedResponse);
@@ -68,22 +70,33 @@ public class PaymentServiceImpl implements PaymentService {
     // 1-2. 기존 결제 여부 검증 메서드
     private Payment validateOrReusePayment(Order order, PaymentRequest request) {
         return paymentRepository.findByOrderId(order.getId())
-                .map(existingPayment -> {
-                    PaymentStatus status = PaymentStatus.valueOf(
-                            existingPayment.getPaymentStatus());
+                .map(existingPayment -> validateExistingPayment(existingPayment, request))
+                .orElseGet(() -> createNewPayment(order, request));
+    }
 
-                    // 재시도 허용할 수 있도록 추가(결제 요청 하고 x눌르고 다시 요청할 수 있도록)
-                    if (status == PaymentStatus.READY || status == PaymentStatus.IN_PROGRESS) {
-                        return existingPayment;
-                    }
-                    throw new DomainException(ExceptionType.PAYMENT_ALREADY_EXISTS);
-                })
-                .orElseGet(() -> {
-                    Payment payment = PaymentRequest.toEntity(order, order.getMember(),
-                            request.amount(),
-                            request.orderName(), order.getOrderNumber());
-                    return paymentRepository.save(payment);
-                });
+    private Payment validateExistingPayment(Payment existingPayment, PaymentRequest request) {
+        // 주문명이 다른 경우 예외
+        if (!existingPayment.getOrderName().equals(request.orderName())) {
+            throw new DomainException(ExceptionType.ORDER_NAME_MISMATCH);
+        }
+        PaymentStatus status = PaymentStatus.valueOf(existingPayment.getPaymentStatus());
+        // 재시도 허용 가능한 상태
+        if (status == PaymentStatus.READY || status == PaymentStatus.IN_PROGRESS) {
+            return existingPayment;
+        }
+        // 그 외 상태는 이미 결제된 것으로 간주
+        throw new DomainException(ExceptionType.PAYMENT_ALREADY_EXISTS);
+    }
+
+    private Payment createNewPayment(Order order, PaymentRequest request) {
+        Payment payment = PaymentRequest.toEntity(
+                order,
+                order.getMember(),
+                request.amount(),
+                request.orderName(),
+                order.getOrderNumber());
+
+        return paymentRepository.save(payment);
     }
 
     // 2-1. 결제 테이블에 주문이 결제 중인지 확인.

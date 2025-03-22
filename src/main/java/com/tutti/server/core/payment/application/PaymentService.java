@@ -7,8 +7,8 @@ import java.util.Map;
 
 public interface PaymentService {
 
-    PaymentResponse requestPayment(PaymentRequest request);
+    PaymentResponse requestPayment(PaymentRequest request, Long memberId);
 
-    Map<String, Object> confirmPayment(PaymentConfirmRequest request);
+    Map<String, Object> confirmPayment(PaymentConfirmRequest request, Long AuthMemberId);
 
 }
