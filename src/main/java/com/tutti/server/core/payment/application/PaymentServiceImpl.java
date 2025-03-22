@@ -33,19 +33,19 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentResponse requestPayment(PaymentRequest request, Long AuthMemberId) {
 
+        orderRepository.findAllByMemberIdAndDeleteStatusFalse(AuthMemberId);
         Order order = validateOrderRequest(request);
         Payment payment = validateOrReusePayment(order, request);
-        payment.validateOwner(AuthMemberId);
         return PaymentResponse.fromEntity(payment);
     }
 
     //2. 결제 승인
     @Override
     @Transactional
-    public Map<String, Object> confirmPayment(PaymentConfirmRequest request, Long AuthMemberId) {
+    public Map<String, Object> confirmPayment(PaymentConfirmRequest request, Long authMemberId) {
 
+        orderRepository.findAllByMemberIdAndDeleteStatusFalse(authMemberId);
         Payment payment = checkPayment(request.orderId());
-        payment.validateOwner(AuthMemberId);
         Map<String, Object> response = tossPaymentService.confirmPayment(request);
         ParsedTossApiResponse parsedResponse = ParsedTossApiResponse.fromResponse(response);
         updatePayment(payment, parsedResponse);

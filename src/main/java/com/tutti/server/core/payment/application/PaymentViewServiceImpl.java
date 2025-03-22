@@ -1,6 +1,7 @@
 package com.tutti.server.core.payment.application;
 
 
+import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.payment.payload.PaymentViewResponse;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentViewServiceImpl implements PaymentViewService {
 
     private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
 
     // memberId로 결제 조회
     @Override
@@ -40,9 +42,8 @@ public class PaymentViewServiceImpl implements PaymentViewService {
     @Transactional(readOnly = true)
     public PaymentViewResponse viewPaymentByOrderId(Long orderId, Long authMemberId) {
 
+        orderRepository.findAllByMemberIdAndDeleteStatusFalse(authMemberId);
         Payment payment = findPaymentByOrderId(orderId);
-        payment.validateOwner(authMemberId);
-
         return PaymentViewResponse.fromEntity(payment);
     }
 

@@ -1,5 +1,6 @@
 package com.tutti.server.core.payment.application;
 
+import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.domain.PaymentStatus;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
@@ -22,13 +23,14 @@ public class PaymentCancelServiceImpl implements PaymentCancelService {
     private final PaymentHistoryService paymentHistoryService;
     private final TossPaymentService tossPaymentService;
     private final RefundRepository refundRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     @Transactional
     public Payment paymentCancel(PaymentCancelRequest request, Long authMemberId) {
         // 결제 정보 조회 및 검증
+        orderRepository.findAllByMemberIdAndDeleteStatusFalse(authMemberId);
         Payment payment = paymentRepository.findPaymentByOrderId(request.orderId());
-        payment.validateOwner(authMemberId);
         checkPaymentCancelEligibility(payment);
 
         // TossPayments API 호출 및 응답 처리

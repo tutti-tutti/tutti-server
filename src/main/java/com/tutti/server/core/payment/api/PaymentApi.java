@@ -40,46 +40,41 @@ public class PaymentApi implements PaymentApiSpec {
     @PostMapping("/request")
     public PaymentResponse requestPayment(
             @Valid @RequestBody PaymentRequest request,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Long AuthMemberId = userDetails.getMemberId();
+            @AuthenticationPrincipal CustomUserDetails user) {
 
-        return paymentService.requestPayment(request, AuthMemberId);
+        return paymentService.requestPayment(request, user.getMemberId());
     }
 
     @PostMapping("/confirm/success")
     public void confirmPayment(
             @Valid @RequestBody PaymentConfirmRequest request,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Long AuthMemberId = userDetails.getMemberId();
+            @AuthenticationPrincipal CustomUserDetails user) {
 
-        paymentService.confirmPayment(request, AuthMemberId);
+        paymentService.confirmPayment(request, user.getMemberId());
     }
 
     @PostMapping("/cancel")
     public void cancelPayment(
             @Valid @RequestBody PaymentCancelRequest request,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Long AuthMemberId = userDetails.getMemberId();
+            @AuthenticationPrincipal CustomUserDetails user) {
 
-        paymentCancelService.paymentCancel(request, AuthMemberId);
+        paymentCancelService.paymentCancel(request, user.getMemberId());
     }
 
     // 회원ID로 결제 조회
     @GetMapping("/memberId/{memberId}")
     public List<PaymentViewResponse> getMemberPayments(@PathVariable Long memberId,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Long AuthMemberId = userDetails.getMemberId();
+            @AuthenticationPrincipal CustomUserDetails user) {
 
-        return paymentViewService.viewPaymentByMemberId(memberId, AuthMemberId);
+        return paymentViewService.viewPaymentByMemberId(memberId, user.getMemberId());
     }
 
     // 주문ID로 결제 조회
     @GetMapping("/orderId/{orderId}")
     public PaymentViewResponse getPaymentsViewOrderId(@PathVariable Long orderId,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Long AuthMemberId = userDetails.getMemberId();
+            @AuthenticationPrincipal CustomUserDetails user) {
 
-        return paymentViewService.viewPaymentByOrderId(orderId, AuthMemberId);
+        return paymentViewService.viewPaymentByOrderId(orderId, user.getMemberId());
     }
 
 }
