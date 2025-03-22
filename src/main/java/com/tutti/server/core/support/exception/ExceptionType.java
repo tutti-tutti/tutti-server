@@ -79,6 +79,8 @@ public enum ExceptionType {
     INVALID_METHOD(HttpStatus.BAD_REQUEST, ExceptionCode.P05, "유효하지 않은 결제 수단입니다.", ERROR),
     MISSING_METHOD_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.P06, "결제 수단이 선택되지 않았습니다.",
             ERROR),
+    PAYMENT_ALREADY_EXISTS(HttpStatus.CONFLICT, ExceptionCode.P07, "결제 요청이 불가능한 상태입니다.", ERROR),
+    ORDER_NAME_MISMATCH(HttpStatus.BAD_REQUEST, ExceptionCode.P08, "주문명이 일치하지 않습니다.", ERROR),
 
     // - 환불 -
     REFUND_REQUEST_NOT_ALLOWED(HttpStatus.CONFLICT, ExceptionCode.R01, "환불 및 결제취소 대상이 아닙니다.",
