@@ -5,5 +5,5 @@ import com.tutti.server.core.payment.payload.PaymentCancelRequest;
 
 public interface PaymentCancelService {
 
-    Payment paymentCancel(PaymentCancelRequest request);
+    Payment paymentCancel(PaymentCancelRequest request, Long AuthMemberId);
 }

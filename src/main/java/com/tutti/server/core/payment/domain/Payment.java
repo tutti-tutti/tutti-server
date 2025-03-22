@@ -75,16 +75,6 @@ public class Payment extends BaseEntity {
         this.paymentMethodType = paymentMethodType;
     }
 
-    // 결제 승인 후 PaymentKey 저장하는 방식으로 변경.
-    public void completePayment(String tossPaymentKey) {
-        if (this.paymentStatus.equals(PaymentStatus.DONE.name())) {
-            throw new IllegalStateException("이미 결제가 완료된 주문입니다.");
-        }
-        this.paymentStatus = PaymentStatus.DONE.name();
-        this.tossPaymentKey = tossPaymentKey;
-        this.completedAt = LocalDateTime.now();
-    }
-
     // Toss 결제 승인 후 상태 업데이트
     public void afterConfirmUpdatePayment(String tossPaymentKey,
             String status,
@@ -95,8 +85,7 @@ public class Payment extends BaseEntity {
         this.amount = amount;
     }
 
-    public void cancelPayment(LocalDateTime canceledAt) {
+    public void cancelPayment() {
         this.paymentStatus = PaymentStatus.CANCELED.name();
-        this.completedAt = canceledAt;
     }
 }

@@ -1,6 +1,7 @@
 package com.tutti.server.core.payment.application;
 
 
+import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.payment.payload.PaymentViewResponse;
@@ -16,11 +17,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentViewServiceImpl implements PaymentViewService {
 
     private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
 
     // memberId로 결제 조회
     @Override
     @Transactional(readOnly = true)
-    public List<PaymentViewResponse> viewPaymentByMemberId(Long memberId) {
+    public List<PaymentViewResponse> viewPaymentByMemberId(Long memberId, Long authMemberId) {
+
+        if (!memberId.equals(authMemberId)) {
+            throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);
+        }
 
         List<Payment> payments = paymentRepository.findByMemberId(memberId);
 
@@ -34,7 +40,10 @@ public class PaymentViewServiceImpl implements PaymentViewService {
     // orderId로 결제 조회
     @Override
     @Transactional(readOnly = true)
-    public PaymentViewResponse viewPaymentByOrderId(Long orderId) {
+    public PaymentViewResponse viewPaymentByOrderId(Long orderId, Long authMemberId) {
+
+        orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(authMemberId, orderId)
+                .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
 
         Payment payment = findPaymentByOrderId(orderId);
         return PaymentViewResponse.fromEntity(payment);

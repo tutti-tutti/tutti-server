@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface PaymentViewService {
 
-    List<PaymentViewResponse> viewPaymentByMemberId(Long memberId);
+    List<PaymentViewResponse> viewPaymentByMemberId(Long memberId, Long AuthMemberId);
 
-    PaymentViewResponse viewPaymentByOrderId(Long orderId);
+    PaymentViewResponse viewPaymentByOrderId(Long orderId, Long AuthMemberId);
 }
