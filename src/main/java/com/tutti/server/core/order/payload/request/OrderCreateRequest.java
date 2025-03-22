@@ -20,7 +20,7 @@ public record OrderCreateRequest(
 
         @NotNull
         List<OrderItemRequest> orderItems,
-        
+
         PaymentMethodType paymentType
 ) {
 
@@ -64,9 +64,10 @@ public record OrderCreateRequest(
         }
     }
 
-    public Order toEntity(Member member, String orderNumber, String orderName, int orderCount,
-            int totalAmount,
-            String orderStatus) {
+    public Order toEntity(Member member, String orderStatus, String orderNumber, String orderName,
+            int orderCount, int totalProductAmount, int totalDiscountAmount, int deliveryFee,
+            int totalAmount
+    ) {
         return Order.builder()
                 .member(member)
                 .paymentType(paymentType)
@@ -74,12 +75,16 @@ public record OrderCreateRequest(
                 .orderNumber(orderNumber)
                 .orderName(orderName)
                 .orderCount(orderCount)
+                .totalProductAmount(totalProductAmount)
+                .totalDiscountAmount(totalDiscountAmount)
+                .deliveryFee(deliveryFee)
                 .totalAmount(totalAmount)
                 .build();
     }
 
-    public OrderHistory toEntity(Order order, CreatedByType createdByType, long createdById,
-            String orderStatus) {
+    public OrderHistory toEntity(Order order, String orderStatus, CreatedByType createdByType,
+            long createdById
+    ) {
         return OrderHistory.builder()
                 .order(order)
                 .orderStatus(orderStatus)

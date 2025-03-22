@@ -44,7 +44,7 @@ public record OrderDetailResponse(
         List<OrderItemResponse> itemSummaries = orderItems.stream()
                 .map(OrderItemResponse::fromEntity)
                 .toList();
-        
+
         String productStoreName = orderItems.get(0)
                 .getProductItem()
                 .getProduct()
@@ -55,7 +55,7 @@ public record OrderDetailResponse(
                 .orderNumber(order.getOrderNumber())
                 .orderStatus(order.getOrderStatus())
                 .totalProductAmount(order.getTotalProductAmount())
-                .discountAmount(order.getDiscountAmount())
+                .discountAmount(order.getTotalDiscountAmount())
                 .deliveryFee(order.getDeliveryFee())
                 .totalAmount(order.getTotalAmount())
                 .paymentType(order.getPaymentType())
