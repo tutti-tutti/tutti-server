@@ -6,6 +6,7 @@ import lombok.Builder;
 @Builder
 public record OrderItemResponse(
 
+        Long productItemId,
         String productName,
         String productImgUrl,
         String firstOptionName,
@@ -19,6 +20,7 @@ public record OrderItemResponse(
 
     public static OrderItemResponse fromEntity(OrderItem orderItem) {
         return OrderItemResponse.builder()
+                .productItemId(orderItem.getProductItem().getId())
                 .productName(orderItem.getProductName())
                 .productImgUrl(orderItem.getProductImgUrl())
                 .firstOptionName(orderItem.getFirstOptionName())

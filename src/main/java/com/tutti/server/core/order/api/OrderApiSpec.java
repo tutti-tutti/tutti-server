@@ -2,7 +2,9 @@ package com.tutti.server.core.order.api;
 
 import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
+import com.tutti.server.core.order.payload.request.OrderPageRequest;
 import com.tutti.server.core.order.payload.response.OrderDetailResponse;
+import com.tutti.server.core.order.payload.response.OrderPageResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,6 +13,9 @@ import java.util.List;
 
 @Tag(name = "주문 API")
 public interface OrderApiSpec {
+
+    @Operation(summary = "주문서 작성 페이지에 데이터 전달")
+    OrderPageResponse getOrderPage(OrderPageRequest request);
 
     @Operation(summary = "주문 생성")
     void createOrder(OrderCreateRequest request);
