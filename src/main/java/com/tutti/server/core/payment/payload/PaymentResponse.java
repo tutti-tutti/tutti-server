@@ -10,7 +10,7 @@ public record PaymentResponse(
 
         int amount,
 
-        String orderId
+        String orderNumber
 
 ) {
 
@@ -18,7 +18,7 @@ public record PaymentResponse(
         return PaymentResponse.builder()
                 .orderName(payment.getOrderName())
                 .amount(payment.getAmount())
-                .orderId(payment.getOrder().getOrderNumber())
+                .orderNumber(payment.getOrder().getOrderNumber())
                 .build();
     }
 }
