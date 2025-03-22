@@ -7,6 +7,7 @@ import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
 import com.tutti.server.core.product.domain.ProductItem;
 import java.util.List;
+import java.util.function.BiFunction;
 
 public interface OrderService {
 
@@ -15,12 +16,21 @@ public interface OrderService {
     String generateOrderNumber();
 
     String generateOrderName(OrderCreateRequest request);
-    
+
     List<ProductItem> getProductItems(List<OrderCreateRequest.OrderItemRequest> orderItemRequests);
 
     int calculateTotalProductAmount(
             List<OrderCreateRequest.OrderItemRequest> orderItemRequests,
             List<ProductItem> productItems);
+
+    int calculateTotalDiscountAmount(
+            List<OrderCreateRequest.OrderItemRequest> orderItemRequests,
+            List<ProductItem> productItems);
+
+    int calculateOrderTotal(
+            List<OrderCreateRequest.OrderItemRequest> orderItemRequests,
+            List<ProductItem> productItems,
+            BiFunction<ProductItem, Integer, Integer> calculator);
 
     List<OrderItem> createOrderItems(Order order,
             List<OrderCreateRequest.OrderItemRequest> orderItemRequests,

@@ -10,7 +10,7 @@ import lombok.Builder;
 public record OrderResponse(
         String orderNumber,
         String orderName,
-        LocalDateTime orderDate,
+        LocalDateTime completedAt,
         int totalAmount,
         String orderStatus,
         List<OrderItemResponse> orderItems
@@ -25,7 +25,7 @@ public record OrderResponse(
         return OrderResponse.builder()
                 .orderNumber(order.getOrderNumber())
                 .orderName(order.getOrderName())
-                .orderDate(order.getCompletedAt())
+                .completedAt(order.getCompletedAt())
                 .totalAmount(order.getTotalAmount())
                 .orderStatus(order.getOrderStatus())
                 .orderItems(itemSummaries)

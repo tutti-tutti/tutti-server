@@ -35,27 +35,40 @@ public class Order extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String orderStatus;
 
+    @Comment("고객 확인용 주문 번호")
     private String orderNumber;
     private String orderName;
+
+    @Comment("orderItem 별 건수 (수량 아님)")
     private int orderCount;
+
+    @Comment("총 상품 금액")
     private int totalProductAmount;
-    private int discountAmount;
+
+    @Comment("할인 금액")
+    private int totalDiscountAmount;
+
+    @Comment("배송비")
     private int deliveryFee;
+
+    @Comment("총 결제 금액")
     private int totalAmount;
+
+    @Comment("주문 완료 일시")
+    private LocalDateTime completedAt;
 
     @Comment("결제 완료 일시")
     private LocalDateTime paidAt;
+
     @Comment("배송 완료 일시")
     private LocalDateTime deliveredAt;
-    @Comment("주문 완료 일시")
-    private LocalDateTime completedAt;
 
 
     @Builder
     public Order(Member member, PaymentMethodType paymentType, String orderStatus,
             String orderNumber, String orderName, int orderCount, int totalProductAmount,
-            int discountAmount, int totalAmount, LocalDateTime paidAt, LocalDateTime deliveredAt,
-            LocalDateTime completedAt) {
+            int totalDiscountAmount, int deliveryFee, int totalAmount, LocalDateTime completedAt,
+            LocalDateTime deliveredAt, LocalDateTime paidAt) {
         this.member = member;
         this.paymentType = paymentType;
         this.orderStatus = orderStatus;
@@ -63,11 +76,24 @@ public class Order extends BaseEntity {
         this.orderName = orderName;
         this.orderCount = orderCount;
         this.totalProductAmount = totalProductAmount;
-        this.discountAmount = discountAmount;
-        this.deliveryFee = 0;
+        this.totalDiscountAmount = totalDiscountAmount;
+        this.deliveryFee = deliveryFee;
         this.totalAmount = totalAmount;
+        this.completedAt = completedAt;
         this.paidAt = paidAt;
         this.deliveredAt = deliveredAt;
-        this.completedAt = completedAt;
+    }
+
+    public void updateCompletedAt(LocalDateTime completed) {
+        this.paidAt = completed;
+    }
+
+
+    public void updatePaidAt(LocalDateTime paid) {
+        this.paidAt = paid;
+    }
+
+    public void updateDeliveredAt(LocalDateTime delivered) {
+        this.deliveredAt = delivered;
     }
 }

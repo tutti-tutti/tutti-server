@@ -14,14 +14,13 @@ import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
-import com.tutti.server.core.product.infrastructure.ProductRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,44 +30,53 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderItemRepository orderItemRepository;
-    private final OrderHistoryRepository orderHistoryRepository;
     private final MemberRepository memberRepository;
+    private final OrderItemRepository orderItemRepository;
     private final ProductItemRepository productItemRepository;
-    private final ProductRepository productRepository;
+    private final OrderHistoryRepository orderHistoryRepository;
 
     @Override
     @Transactional
     public void createOrder(OrderCreateRequest request) {
-        // 1. 주문번호 생성
+        // 1. 회원 조회
+        Member member = memberRepository.findOne(request.memberId());
+
+        // 2. 주문번호 생성
         String orderNumber = generateOrderNumber();
 
-        // 2. 주문명 생성
+        // 3. 주문명 생성
         String orderName = generateOrderName(request);
-
-        // 3. 회원 조회
-        Member member = memberRepository.findOne(request.memberId());
 
         // 4. 주문 상품 정보 조회 및 검증
         List<ProductItem> productItems = getProductItems(request.orderItems());
 
-        // 5. 총 금액 계산
-        int totalAmount = calculateTotalProductAmount(request.orderItems(),
+        // 5. 총 상품 금액 계산
+        int totalProductAmount = calculateTotalProductAmount(request.orderItems(),
                 productItems);
 
-        // 6. 주문 생성
-        Order order = orderRepository.save(request.toEntity(member, orderNumber, orderName,
-                request.orderItems().size(), totalAmount,
-                OrderStatus.WAITING_FOR_PAYMENT.name()));
+        // 6. 총 할인 금액 계산
+        int totalDiscountAmount = calculateTotalDiscountAmount(request.orderItems(), productItems);
 
-        // 6. 주문 아이템 생성
-        List<OrderItem> orderItems = orderItemRepository.saveAll(
-                createOrderItems(order, request.orderItems(), productItems));
+        // 7 .배송비 (추후 배송비 측정 로직 추가 해야 됨)
+        int deliveryFee = 0;
 
-        // 7. 주문 이력 생성
+        // 8. 총 결제 금액 = 총 상품 금액 + 배송비 (할인 금액은 이미 totalProductAmount(sellingPrice)에 반영이 되어 있음)
+        int totalAmount = totalProductAmount + deliveryFee;
+
+        // 9. 주문 생성
+        Order order = orderRepository.save(
+                request.toEntity(member, OrderStatus.WAITING_FOR_PAYMENT.name(), orderNumber,
+                        orderName, request.orderItems().size(), totalProductAmount,
+                        totalDiscountAmount, deliveryFee, totalAmount
+                ));
+
+        // 10. 주문 아이템 생성
+        orderItemRepository.saveAll(createOrderItems(order, request.orderItems(), productItems));
+
+        // 11. 주문 이력 생성
         orderHistoryRepository.save(
-                request.toEntity(order, CreatedByType.MEMBER, member.getId(),
-                        OrderStatus.WAITING_FOR_PAYMENT.name()));
+                request.toEntity(order, OrderStatus.WAITING_FOR_PAYMENT.name(),
+                        CreatedByType.MEMBER, member.getId()));
     }
 
     @Override
@@ -121,14 +129,39 @@ public class OrderServiceImpl implements OrderService {
     public int calculateTotalProductAmount(
             List<OrderCreateRequest.OrderItemRequest> orderItemRequests,
             List<ProductItem> productItems) {
-        int totalProductAmount = 0;
+        return calculateOrderTotal(orderItemRequests, productItems,
+                (productItem, quantity) -> productItem.getSellingPrice() * quantity);
+    }
+
+    @Override
+    public int calculateTotalDiscountAmount(
+            List<OrderCreateRequest.OrderItemRequest> orderItemRequests,
+            List<ProductItem> productItems) {
+        return calculateOrderTotal(orderItemRequests, productItems,
+                (productItem, quantity) -> productItem.getDiscountPrice());
+    }
+
+    /**
+     * 주문 항목에 대한 계산을 수행하는 공통 메서드
+     *
+     * @param orderItemRequests 주문 상품 요청 DTO 목록
+     * @param productItems      판매 상품 목록
+     * @param calculator        계산 로직을 담당하는 함수형 인터페이스
+     * @return 계산된 총액
+     */
+    public int calculateOrderTotal(
+            List<OrderCreateRequest.OrderItemRequest> orderItemRequests,
+            List<ProductItem> productItems,
+            BiFunction<ProductItem, Integer, Integer> calculator) {
+        int total = 0;
 
         for (OrderCreateRequest.OrderItemRequest orderItemRequest : orderItemRequests) {
             ProductItem productItem = findProductItemById(productItems,
                     orderItemRequest.productItemId());
-            totalProductAmount += productItem.getSellingPrice() * orderItemRequest.quantity();
+            total += calculator.apply(productItem, orderItemRequest.quantity());
         }
-        return totalProductAmount;
+
+        return total;
     }
 
     @Override
@@ -136,16 +169,13 @@ public class OrderServiceImpl implements OrderService {
             Order order,
             List<OrderCreateRequest.OrderItemRequest> orderItemRequests,
             List<ProductItem> productItems) {
-        List<OrderItem> orderItems = new ArrayList<>();
-
-        for (OrderCreateRequest.OrderItemRequest orderItemRequest : orderItemRequests) {
-            ProductItem productItem = findProductItemById(productItems,
-                    orderItemRequest.productItemId());
-
-            orderItems.add(orderItemRequest.toEntity(order, productItem));
-        }
-
-        return orderItems;
+        return orderItemRequests.stream()
+                .map(orderItemRequest -> {
+                    ProductItem productItem = findProductItemById(productItems,
+                            orderItemRequest.productItemId());
+                    return orderItemRequest.toEntity(order, productItem);
+                })
+                .toList();
     }
 
     @Override
@@ -162,7 +192,9 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAllByMemberIdAndDeleteStatusFalse(memberId)
                 .stream()
                 .map(order -> OrderResponse.fromEntity(order,
-                        orderItemRepository.findAllByOrderId(order.getId())))
+                                orderItemRepository.findAllByOrderId(order.getId())
+                        )
+                )
                 .toList();
     }
 
