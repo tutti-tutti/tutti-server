@@ -44,6 +44,7 @@ public record OrderDetailResponse(
         List<OrderItemResponse> itemSummaries = orderItems.stream()
                 .map(OrderItemResponse::fromEntity)
                 .toList();
+        
         String productStoreName = orderItems.get(0)
                 .getProductItem()
                 .getProduct()
