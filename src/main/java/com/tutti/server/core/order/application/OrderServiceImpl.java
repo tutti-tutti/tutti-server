@@ -14,6 +14,7 @@ import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
+import com.tutti.server.core.support.entity.BaseEntity;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.time.LocalDateTime;
@@ -208,5 +209,15 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
 
         return OrderDetailResponse.fromEntity(order, orderItems);
+    }
+
+    @Override
+    @Transactional
+    public void deleteOrder(Long memberId, Long orderId) {
+        orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(memberId, orderId)
+                .ifPresentOrElse(BaseEntity::delete,
+                        () -> {
+                            throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);
+                        });
     }
 }
