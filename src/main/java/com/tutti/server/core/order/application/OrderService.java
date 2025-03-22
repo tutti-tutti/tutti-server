@@ -41,4 +41,6 @@ public interface OrderService {
     List<OrderResponse> getOrders(Long memberId);
 
     OrderDetailResponse getOrderDetail(Long orderId);
+
+    void deleteOrder(Long memberId, Long orderId);
 }
