@@ -1,5 +1,6 @@
 package com.tutti.server.core.cart.application;
 
+import com.tutti.server.core.cart.domain.CartItem;
 import com.tutti.server.core.cart.infrastructure.CartItemRepository;
 import com.tutti.server.core.cart.payload.request.CartItemCreateRequest;
 import com.tutti.server.core.cart.payload.request.CartItemCreateRequest.CartItemRequest;
@@ -7,7 +8,6 @@ import com.tutti.server.core.cart.payload.response.CartItemsResponse;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
-import com.tutti.server.core.support.entity.BaseEntity;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.HashSet;
@@ -30,6 +30,7 @@ public class CartServiceImpl implements CartService {
     @Transactional
     // 기존 장바구니 상품이 있는지 확인하고, 없으면 새로 생성하는 메서드
     public void addCartItems(CartItemCreateRequest request, Long memberId) {
+        // 상품 조회 및 중복 검증
         validateProductItems(request.cartItems());
 
         for (CartItemCreateRequest.CartItemRequest item : request.cartItems()) {
@@ -95,10 +96,21 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public void removeCartItem(Long cartItemId, Long memberId) {
-        cartItemRepository.findByIdAndMemberIdAndDeleteStatusFalse(cartItemId, memberId)
-                .ifPresentOrElse(BaseEntity::delete,
-                        () -> {
-                            throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);
-                        });
+        var cartItem = getCartItem(cartItemId, memberId);
+        cartItem.delete();
+    }
+
+    @Override
+    @Transactional
+    public CartItem getCartItem(Long cartItemId, Long memberId) {
+        // 1. 장바구니 상품 존재 여부 확인
+        boolean exists = cartItemRepository.existsByIdAndDeleteStatusFalse(cartItemId);
+        if (!exists) {
+            throw new DomainException(ExceptionType.CART_ITEM_NOT_FOUND);
+        }
+
+        // 2. 권한 확인과 함께 조회
+        return cartItemRepository.findByIdAndMemberIdAndDeleteStatusFalse(cartItemId, memberId)
+                .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
     }
 }
