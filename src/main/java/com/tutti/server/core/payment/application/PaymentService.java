@@ -1,8 +1,8 @@
 package com.tutti.server.core.payment.application;
 
-import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
-import com.tutti.server.core.payment.payload.PaymentRequest;
-import com.tutti.server.core.payment.payload.PaymentResponse;
+import com.tutti.server.core.payment.payload.request.PaymentConfirmRequest;
+import com.tutti.server.core.payment.payload.request.PaymentRequest;
+import com.tutti.server.core.payment.payload.response.PaymentResponse;
 import java.util.Map;
 
 public interface PaymentService {

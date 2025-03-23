@@ -5,8 +5,8 @@ import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.domain.PaymentStatus;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
-import com.tutti.server.core.payment.payload.PaymentCancelRequest;
-import com.tutti.server.core.payment.payload.TossPaymentsCancelResponse;
+import com.tutti.server.core.payment.payload.request.PaymentCancelRequest;
+import com.tutti.server.core.payment.payload.response.TossPaymentsCancelResponse;
 import com.tutti.server.core.refund.domain.RefundStatus;
 import com.tutti.server.core.refund.infrastructure.RefundRepository;
 import com.tutti.server.core.support.exception.DomainException;
@@ -30,9 +30,10 @@ public class PaymentCancelServiceImpl implements PaymentCancelService {
     @Transactional
     public Payment paymentCancel(PaymentCancelRequest request, Long authMemberId) {
 
-        Order order = orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(authMemberId,
-                        request.orderId())
+        Order order = orderRepository.findByOrderNumberAndMemberId(request.orderNumber(),
+                        authMemberId)
                 .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
+
         // 결제 정보 조회 및 검증
         Payment payment = paymentRepository.findPaymentByOrderId(order.getId());
         checkPaymentCancelEligibility(payment);

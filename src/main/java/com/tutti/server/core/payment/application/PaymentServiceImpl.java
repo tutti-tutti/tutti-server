@@ -6,10 +6,10 @@ import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.domain.PaymentStatus;
 import com.tutti.server.core.payment.infrastructure.PaymentRepository;
-import com.tutti.server.core.payment.payload.ParsedTossApiResponse;
-import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
-import com.tutti.server.core.payment.payload.PaymentRequest;
-import com.tutti.server.core.payment.payload.PaymentResponse;
+import com.tutti.server.core.payment.payload.request.PaymentConfirmRequest;
+import com.tutti.server.core.payment.payload.request.PaymentRequest;
+import com.tutti.server.core.payment.payload.response.ParsedTossApiResponse;
+import com.tutti.server.core.payment.payload.response.PaymentResponse;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.Map;
@@ -44,7 +44,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public Map<String, Object> confirmPayment(PaymentConfirmRequest request, Long authMemberId) {
 
-        getValidOrder(request.orderId(), authMemberId);
         Payment payment = getValidPayment(request.orderId(), authMemberId);
         Map<String, Object> response = tossPaymentService.confirmPayment(request);
         ParsedTossApiResponse parsedResponse = ParsedTossApiResponse.fromResponse(response);

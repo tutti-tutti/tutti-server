@@ -1,4 +1,4 @@
-package com.tutti.server.core.payment.payload;
+package com.tutti.server.core.payment.payload.request;
 
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.order.domain.Order;

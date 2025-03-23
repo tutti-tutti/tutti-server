@@ -1,4 +1,4 @@
-package com.tutti.server.core.payment.payload;
+package com.tutti.server.core.payment.payload.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
