@@ -70,7 +70,7 @@ public class TossPaymentService {
     private Map<String, Object> buildRequestBody(PaymentConfirmRequest request) {
         return Map.of(
                 "paymentKey", request.paymentKey(),
-                "orderId", request.orderId(),
+                "orderNumber", request.orderId(),
                 "amount", request.amount()
         );
     }

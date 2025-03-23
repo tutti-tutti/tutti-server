@@ -16,8 +16,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     boolean existsByIdAndDeleteStatusFalse(Long orderId);
 
-    Optional<Order> findByOrderNumber(String orderNumber);
-
     List<Order> findAllByMemberIdAndDeleteStatusFalse(Long memberId);
 
     Optional<Order> findByIdAndMemberIdAndDeleteStatusFalse(Long orderId, Long memberId);
