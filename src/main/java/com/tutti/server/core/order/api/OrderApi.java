@@ -2,7 +2,6 @@ package com.tutti.server.core.order.api;
 
 import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.order.application.OrderService;
-import com.tutti.server.core.order.payload.request.OrderCreateRequest;
 import com.tutti.server.core.order.payload.request.OrderPageRequest;
 import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderPageResponse;
@@ -32,13 +31,6 @@ public class OrderApi implements OrderApiSpec {
     @PostMapping("/checkout")
     public OrderPageResponse getOrderPage(@Valid @RequestBody OrderPageRequest request) {
         return orderService.getOrderPage(request);
-    }
-
-    @Override
-    @PostMapping
-    public void createOrder(@Valid @RequestBody OrderCreateRequest request,
-            @AuthenticationPrincipal CustomUserDetails user) {
-        orderService.createOrder(request, user.getMemberId());
     }
 
     @Override

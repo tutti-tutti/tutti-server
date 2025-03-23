@@ -7,17 +7,20 @@ import com.tutti.server.core.payment.domain.PaymentStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
+@Builder
 public record PaymentRequest(
 
         @NotNull(message = "주문 ID는 필수입니다.")
-        String orderId, // 요청을 orderId로 보내서 dto는 id로
+        String orderNumber, // 요청을 orderId로 보내서 dto는 id로
 
         @Min(value = 1, message = "결제 금액은 최소 1원 이상이어야 합니다.")
         int amount,
 
         @NotBlank(message = "주문명은 필수입니다.")
-        String orderName) {
+        String orderName
+) {
 
     // 요청이 들어왔을때 첫 결제가 생성됨.
     public static Payment toEntity(Order order, Member member, int amount, String orderName,

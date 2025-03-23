@@ -1,9 +1,7 @@
 package com.tutti.server.core.order.payload.request;
 
 import com.tutti.server.core.member.domain.Member;
-import com.tutti.server.core.order.domain.CreatedByType;
 import com.tutti.server.core.order.domain.Order;
-import com.tutti.server.core.order.domain.OrderHistory;
 import com.tutti.server.core.payment.domain.PaymentMethodType;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -12,10 +10,14 @@ import lombok.Builder;
 @Builder
 public record OrderCreateRequest(
 
-        @NotNull(message = "주문할 상품을 선택해주세요.")
-        List<OrderItemRequest> orderItems,
+        int totalDiscountAmount,
+        int totalProductAmount,
+        int deliveryFee,
+        int totalAmount,
+        PaymentMethodType paymentType,
 
-        PaymentMethodType paymentType
+        @NotNull(message = "주문할 상품을 선택해주세요.")
+        List<OrderItemRequest> orderItems
 ) {
 
     public Order toEntity(Member member, String orderStatus, String orderNumber, String orderName,
@@ -33,18 +35,6 @@ public record OrderCreateRequest(
                 .totalProductAmount(totalProductAmount)
                 .deliveryFee(deliveryFee)
                 .totalAmount(totalAmount)
-                .build();
-    }
-
-    public OrderHistory toEntity(Order order, String orderStatus, CreatedByType createdByType,
-            long createdById
-    ) {
-        return OrderHistory.builder()
-                .order(order)
-                .orderStatus(orderStatus)
-                .createdByType(createdByType)
-                .createdById(createdById)
-                .latestVersion(true)
                 .build();
     }
 }

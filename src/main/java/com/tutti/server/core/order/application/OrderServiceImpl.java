@@ -4,8 +4,8 @@ import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.order.domain.CreatedByType;
 import com.tutti.server.core.order.domain.Order;
+import com.tutti.server.core.order.domain.OrderHistory;
 import com.tutti.server.core.order.domain.OrderItem;
-import com.tutti.server.core.order.domain.OrderStatus;
 import com.tutti.server.core.order.infrastructure.OrderHistoryRepository;
 import com.tutti.server.core.order.infrastructure.OrderItemRepository;
 import com.tutti.server.core.order.infrastructure.OrderRepository;
@@ -16,6 +16,8 @@ import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderItemResponse;
 import com.tutti.server.core.order.payload.response.OrderPageResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
+import com.tutti.server.core.payment.domain.PaymentStatus;
+import com.tutti.server.core.payment.payload.request.PaymentRequest;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
@@ -47,14 +49,14 @@ public class OrderServiceImpl implements OrderService {
     public OrderPageResponse getOrderPage(OrderPageRequest request) {
 
         // 1. 주문 상품 정보 조회 및 검증
-        List<ProductItem> productItems = getProductItems(request.orderItems());
+        validateProductItems(request.orderItems());
 
         // 2. 총 할인 금액 계산
-        int totalDiscountAmount = calculateTotalDiscountAmount(request.orderItems(), productItems);
+        int totalDiscountAmount = calculateTotalDiscountAmount(request.orderItems());
 
         // 3. 총 상품 금액 계산: 할인이 이미 적용된 결과값이어서
-        int totalProductAmount = calculateTotalProductAmount(request.orderItems(),
-                productItems) + totalDiscountAmount;
+        int totalProductAmount =
+                calculateTotalProductAmount(request.orderItems()) + totalDiscountAmount;
 
         // 4 .배송비 (추후 배송비 측정 로직 추가 해야 됨)
         int deliveryFee = 0;
@@ -64,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 6. 주문 아이템 응답 목록 생성
         List<OrderItemResponse> orderItems = createOrderItemResponses(
-                request.orderItems(), productItems);
+                request.orderItems());
 
         return OrderPageResponse.builder()
                 .totalDiscountAmount(totalDiscountAmount)
@@ -76,12 +78,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public List<OrderItemResponse> createOrderItemResponses(
-            List<OrderItemRequest> requests,
-            List<ProductItem> productItems) {
+            List<OrderItemRequest> requests) {
 
         return requests.stream()
                 .map(request -> {
-                    ProductItem productItem = findProductItemById(productItems,
+                    ProductItem productItem = productItemRepository.findOne(
                             request.productItemId());
                     Product product = productItem.getProduct();
 
@@ -101,8 +102,72 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void validateProductItems(
+            List<OrderItemRequest> requests) {
+        // 상품 ID 목록
+        List<Long> productItemIds = requests.stream()
+                .map(OrderItemRequest::productItemId)
+                .toList();
+
+        // 중복 상품 ID 검증
+        // add() 메서드는 Set에 요소를 추가하고, 그 요소가 이미 존재하면 false를 반환하고, 존재하지 않으면 true를 반환합니다.
+        Set<Long> uniqueIds = new HashSet<>();
+        List<Long> duplicateIds = productItemIds.stream()
+                .filter(id -> !uniqueIds.add(id))
+                .distinct()
+                .toList();
+
+        if (!duplicateIds.isEmpty()) {
+            throw new DomainException(ExceptionType.DUPLICATE_PRODUCT_ITEMS);
+        }
+
+        // DB 에서 상품 조회 및 존재 여부 검증
+        List<ProductItem> productItems = productItemRepository.findAllById(productItemIds);
+
+        // 중복을 제거한 ID 개수와 비교
+        if (productItems.size() != productItemIds.size()) {
+            throw new DomainException(ExceptionType.NON_EXISTENT_PRODUCT_INCLUDE);
+        }
+    }
+
+    @Override
+    public int calculateTotalProductAmount(
+            List<OrderItemRequest> requests) {
+        return calculateOrderTotal(requests,
+                (productItem, quantity) -> productItem.getSellingPrice() * quantity);
+    }
+
+    @Override
+    public int calculateTotalDiscountAmount(
+            List<OrderItemRequest> requests) {
+        return calculateOrderTotal(requests,
+                (productItem, quantity) -> productItem.getDiscountPrice());
+    }
+
+    /**
+     * 주문 항목에 대한 계산을 수행하는 공통 메서드
+     *
+     * @param requests   주문 상품 요청 DTO 목록
+     * @param calculator 계산 로직을 담당하는 함수형 인터페이스
+     * @return 계산된 총액
+     */
+    public int calculateOrderTotal(
+            List<OrderItemRequest> requests,
+            BiFunction<ProductItem, Integer, Integer> calculator) {
+        int total = 0;
+
+        for (OrderItemRequest orderItemRequest : requests) {
+            ProductItem productItem = productItemRepository.findOne(
+                    orderItemRequest.productItemId());
+            total += calculator.apply(productItem, orderItemRequest.quantity());
+        }
+
+        return total;
+    }
+
+    @Override
     @Transactional
-    public void createOrder(OrderCreateRequest request, Long memberId) {
+    public PaymentRequest createOrder(OrderCreateRequest request, Long memberId) {
         // 1. 회원 조회
         Member member = memberRepository.findOne(memberId);
 
@@ -112,36 +177,24 @@ public class OrderServiceImpl implements OrderService {
         // 3. 주문명 생성
         String orderName = generateOrderName(request);
 
-        // 4. 주문 상품 정보 조회 및 검증
-        List<ProductItem> productItems = getProductItems(request.orderItems());
-
-        // 5. 총 할인 금액 계산
-        int totalDiscountAmount = calculateTotalDiscountAmount(request.orderItems(), productItems);
-
-        // 6. 총 상품 금액 계산
-        int totalProductAmount = calculateTotalProductAmount(request.orderItems(),
-                productItems) + totalDiscountAmount;
-
-        // 7 .배송비 (추후 배송비 측정 로직 추가 해야 됨)
-        int deliveryFee = 0;
-
-        // 8. 총 결제 금액 = 총 상품 금액 - 할인 금액 + 배송비
-        int totalAmount = totalProductAmount - totalDiscountAmount + deliveryFee;
-
         // 9. 주문 생성
         Order order = orderRepository.save(
-                request.toEntity(member, OrderStatus.WAITING_FOR_PAYMENT.name(), orderNumber,
-                        orderName, request.orderItems().size(), totalDiscountAmount,
-                        totalProductAmount, deliveryFee, totalAmount
+                request.toEntity(member, PaymentStatus.READY.name(), orderNumber,
+                        orderName, request.orderItems().size(), request.totalDiscountAmount(),
+                        request.totalProductAmount(), request.deliveryFee(), request.totalAmount()
                 ));
 
         // 10. 주문 아이템 생성
-        orderItemRepository.saveAll(createOrderItems(order, request.orderItems(), productItems));
+        createOrderItems(order, request.orderItems());
 
         // 11. 주문 이력 생성
-        orderHistoryRepository.save(
-                request.toEntity(order, OrderStatus.WAITING_FOR_PAYMENT.name(),
-                        CreatedByType.MEMBER, member.getId()));
+        createOrderHistory(order, CreatedByType.MEMBER, member.getId());
+
+        return PaymentRequest.builder()
+                .orderNumber(order.getOrderNumber())
+                .amount(order.getTotalAmount())
+                .orderName(order.getOrderName())
+                .build();
     }
 
     @Override
@@ -175,95 +228,34 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<ProductItem> getProductItems(
-            List<OrderItemRequest> requests) {
-        // 상품 ID 목록
-        List<Long> productItemIds = requests.stream()
-                .map(OrderItemRequest::productItemId)
-                .toList();
-
-        // 중복 상품 ID 검증
-        // add() 메서드는 Set에 요소를 추가하고, 그 요소가 이미 존재하면 false를 반환하고, 존재하지 않으면 true를 반환합니다.
-        Set<Long> uniqueIds = new HashSet<>();
-        List<Long> duplicateIds = productItemIds.stream()
-                .filter(id -> !uniqueIds.add(id))
-                .distinct()
-                .toList();
-
-        if (!duplicateIds.isEmpty()) {
-            throw new DomainException(ExceptionType.DUPLICATE_PRODUCT_ITEMS);
-        }
-
-        // DB 에서 상품 조회 및 존재 여부 검증
-        List<ProductItem> productItems = productItemRepository.findAllById(productItemIds);
-
-        // 중복을 제거한 ID 개수와 비교
-        if (productItems.size() != productItemIds.size()) {
-            throw new DomainException(ExceptionType.NON_EXISTENT_PRODUCT_INCLUDE);
-        }
-
-        return productItems;
+    public void createOrderItems(Order order, List<OrderItemRequest> requests) {
+        orderItemRepository.saveAll(
+                requests.stream()
+                        .map(orderItemRequest -> {
+                            ProductItem productItem = productItemRepository.findOne(
+                                    orderItemRequest.productItemId());
+                            return orderItemRequest.toEntity(order, productItem);
+                        })
+                        .toList()
+        );
     }
 
     @Override
-    public int calculateTotalProductAmount(
-            List<OrderItemRequest> requests,
-            List<ProductItem> productItems) {
-        return calculateOrderTotal(requests, productItems,
-                (productItem, quantity) -> productItem.getSellingPrice() * quantity);
-    }
+    @Transactional
+    public void createOrderHistory(Order order, CreatedByType createdByType,
+            long createdById) {
+        // 1. 이전 버전들의 latestVersion을 모두 false로 변경
+        orderHistoryRepository.updatePreviousVersions(order.getId());
 
-    @Override
-    public int calculateTotalDiscountAmount(
-            List<OrderItemRequest> requests,
-            List<ProductItem> productItems) {
-        return calculateOrderTotal(requests, productItems,
-                (productItem, quantity) -> productItem.getDiscountPrice());
-    }
-
-    /**
-     * 주문 항목에 대한 계산을 수행하는 공통 메서드
-     *
-     * @param requests     주문 상품 요청 DTO 목록
-     * @param productItems 판매 상품 목록
-     * @param calculator   계산 로직을 담당하는 함수형 인터페이스
-     * @return 계산된 총액
-     */
-    public int calculateOrderTotal(
-            List<OrderItemRequest> requests,
-            List<ProductItem> productItems,
-            BiFunction<ProductItem, Integer, Integer> calculator) {
-        int total = 0;
-
-        for (OrderItemRequest orderItemRequest : requests) {
-            ProductItem productItem = findProductItemById(productItems,
-                    orderItemRequest.productItemId());
-            total += calculator.apply(productItem, orderItemRequest.quantity());
-        }
-
-        return total;
-    }
-
-    @Override
-    public List<OrderItem> createOrderItems(
-            Order order,
-            List<OrderItemRequest> requests,
-            List<ProductItem> productItems) {
-        return requests.stream()
-                .map(orderItemRequest -> {
-                    ProductItem productItem = findProductItemById(productItems,
-                            orderItemRequest.productItemId());
-                    return orderItemRequest.toEntity(order, productItem);
-                })
-                .toList();
-    }
-
-    @Override
-    public ProductItem findProductItemById(List<ProductItem> productItems, Long productItemId) {
-        return productItems.stream()
-                .filter(item -> item.getId().equals(productItemId))
-                .findFirst()
-                .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_MISMATCH));
+        // 변경된 주문 이력 생성
+        orderHistoryRepository.save(OrderHistory.builder()
+                .order(order)
+                .orderStatus(order.getOrderStatus())
+                .createdByType(createdByType)
+                .createdById(createdById)
+                .latestVersion(true)
+                .build()
+        );
     }
 
     @Override

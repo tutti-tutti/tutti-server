@@ -1,6 +1,9 @@
 package com.tutti.server.core.payment.application;
 
+import com.tutti.server.core.order.application.OrderService;
+import com.tutti.server.core.order.domain.CreatedByType;
 import com.tutti.server.core.order.domain.Order;
+import com.tutti.server.core.order.infrastructure.OrderHistoryRepository;
 import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.payment.domain.PaymentStatus;
@@ -25,6 +28,8 @@ public class PaymentCancelServiceImpl implements PaymentCancelService {
     private final TossPaymentService tossPaymentService;
     private final RefundRepository refundRepository;
     private final OrderRepository orderRepository;
+    private final OrderService orderService;
+    private final OrderHistoryRepository orderHistoryRepository;
 
     @Override
     @Transactional
@@ -49,6 +54,10 @@ public class PaymentCancelServiceImpl implements PaymentCancelService {
         // 결제 상태 업데이트 및 결제 이력 저장
         updatePaymentStatus(payment);
         paymentHistoryService.savePaymentHistory(payment);
+
+        // 주문 상태 업데이트 및 주문 이력 생성
+        order.updateOrderStatus(PaymentStatus.CANCELED.name());
+        orderService.createOrderHistory(order, CreatedByType.MEMBER, authMemberId);
 
         return payment;
     }

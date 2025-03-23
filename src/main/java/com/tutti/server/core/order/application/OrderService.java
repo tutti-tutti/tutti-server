@@ -1,7 +1,7 @@
 package com.tutti.server.core.order.application;
 
+import com.tutti.server.core.order.domain.CreatedByType;
 import com.tutti.server.core.order.domain.Order;
-import com.tutti.server.core.order.domain.OrderItem;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
 import com.tutti.server.core.order.payload.request.OrderItemRequest;
 import com.tutti.server.core.order.payload.request.OrderPageRequest;
@@ -9,6 +9,7 @@ import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderItemResponse;
 import com.tutti.server.core.order.payload.response.OrderPageResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
+import com.tutti.server.core.payment.payload.request.PaymentRequest;
 import com.tutti.server.core.product.domain.ProductItem;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -18,35 +19,30 @@ public interface OrderService {
     OrderPageResponse getOrderPage(OrderPageRequest request);
 
     List<OrderItemResponse> createOrderItemResponses(
-            List<OrderItemRequest> requests,
-            List<ProductItem> productItems);
+            List<OrderItemRequest> requests);
 
-    void createOrder(OrderCreateRequest request, Long memberId);
+    void validateProductItems(List<OrderItemRequest> requests);
+
+    int calculateTotalProductAmount(
+            List<OrderItemRequest> requests);
+
+    int calculateTotalDiscountAmount(
+            List<OrderItemRequest> requests);
+
+    int calculateOrderTotal(
+            List<OrderItemRequest> requests,
+            BiFunction<ProductItem, Integer, Integer> calculator);
+
+    PaymentRequest createOrder(OrderCreateRequest request, Long memberId);
 
     String generateOrderNumber();
 
     String generateOrderName(OrderCreateRequest request);
 
-    List<ProductItem> getProductItems(List<OrderItemRequest> requests);
+    void createOrderItems(Order order,
+            List<OrderItemRequest> requests);
 
-    int calculateTotalProductAmount(
-            List<OrderItemRequest> requests,
-            List<ProductItem> productItems);
-
-    int calculateTotalDiscountAmount(
-            List<OrderItemRequest> requests,
-            List<ProductItem> productItems);
-
-    int calculateOrderTotal(
-            List<OrderItemRequest> requests,
-            List<ProductItem> productItems,
-            BiFunction<ProductItem, Integer, Integer> calculator);
-
-    List<OrderItem> createOrderItems(Order order,
-            List<OrderItemRequest> requests,
-            List<ProductItem> productItems);
-
-    ProductItem findProductItemById(List<ProductItem> productItems, Long productItemId);
+    void createOrderHistory(Order order, CreatedByType createdByType, long createdById);
 
     List<OrderResponse> getOrders(Long memberId);
 

@@ -84,10 +84,13 @@ public class Order extends BaseEntity {
         this.deliveredAt = deliveredAt;
     }
 
+    public void updateOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     public void updateCompletedAt(LocalDateTime completed) {
         this.paidAt = completed;
     }
-
 
     public void updatePaidAt(LocalDateTime paid) {
         this.paidAt = paid;
