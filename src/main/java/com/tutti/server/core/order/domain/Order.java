@@ -42,11 +42,11 @@ public class Order extends BaseEntity {
     @Comment("orderItem 별 건수 (수량 아님)")
     private int orderCount;
 
-    @Comment("총 상품 금액")
-    private int totalProductAmount;
-
     @Comment("할인 금액")
     private int totalDiscountAmount;
+
+    @Comment("총 상품 금액")
+    private int totalProductAmount;
 
     @Comment("배송비")
     private int deliveryFee;
@@ -66,8 +66,8 @@ public class Order extends BaseEntity {
 
     @Builder
     public Order(Member member, PaymentMethodType paymentType, String orderStatus,
-            String orderNumber, String orderName, int orderCount, int totalProductAmount,
-            int totalDiscountAmount, int deliveryFee, int totalAmount, LocalDateTime completedAt,
+            String orderNumber, String orderName, int orderCount, int totalDiscountAmount,
+            int totalProductAmount, int deliveryFee, int totalAmount, LocalDateTime completedAt,
             LocalDateTime deliveredAt, LocalDateTime paidAt) {
         this.member = member;
         this.paymentType = paymentType;
@@ -75,8 +75,8 @@ public class Order extends BaseEntity {
         this.orderNumber = orderNumber;
         this.orderName = orderName;
         this.orderCount = orderCount;
-        this.totalProductAmount = totalProductAmount;
         this.totalDiscountAmount = totalDiscountAmount;
+        this.totalProductAmount = totalProductAmount;
         this.deliveryFee = deliveryFee;
         this.totalAmount = totalAmount;
         this.completedAt = completedAt;

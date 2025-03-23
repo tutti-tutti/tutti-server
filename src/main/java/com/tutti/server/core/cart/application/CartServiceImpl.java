@@ -25,19 +25,21 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     // 기존 장바구니 상품이 있는지 확인하고, 없으면 새로 생성하는 메서드
-    public void addCartItem(Long memberId, CartItemCreateRequest request) {
-        cartItemRepository.findByMemberIdAndProductItemIdAndDeleteStatusFalse(memberId,
-                        request.productItemId())
-                // 이미 장바구니에 해당 상품이 있다면 수량만 업데이트
-                .ifPresentOrElse(item -> item.changeQuantity(request.quantity()),
-                        // 없다면 장바구니에 상품을 새로 생성하여 저장
-                        () -> createCartItem(memberId, request));
+    public void addCartItem(CartItemCreateRequest request, Long memberId) {
+        for (CartItemCreateRequest.CartItemRequest item : request.cartItems()) {
+            cartItemRepository.findByMemberIdAndProductItemIdAndDeleteStatusFalse(memberId,
+                            item.productItemId())
+                    // 이미 장바구니에 해당 상품이 있다면 수량만 업데이트
+                    .ifPresentOrElse(cartItem -> cartItem.changeQuantity(item.quantity()),
+                            // 없다면 장바구니에 상품을 새로 생성하여 저장
+                            () -> createCartItem(item, memberId));
+        }
     }
 
     @Override
     @Transactional
     // 장바구니 상품을 엔티티로 저장하는 메서드
-    public void createCartItem(Long memberId, CartItemCreateRequest request) {
+    public void createCartItem(CartItemCreateRequest.CartItemRequest request, Long memberId) {
         var member = memberRepository.findOne(memberId);
         var productItem = productItemRepository.findOne(request.productItemId());
 
@@ -56,8 +58,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void removeCartItem(Long memberId, Long cartItemId) {
-        cartItemRepository.findByMemberIdAndIdAndDeleteStatusFalse(memberId, cartItemId)
+    public void removeCartItem(Long cartItemId, Long memberId) {
+        cartItemRepository.findByIdAndMemberIdAndDeleteStatusFalse(cartItemId, memberId)
                 .ifPresentOrElse(BaseEntity::delete,
                         () -> {
                             throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);

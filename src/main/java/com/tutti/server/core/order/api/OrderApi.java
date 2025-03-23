@@ -36,9 +36,9 @@ public class OrderApi implements OrderApiSpec {
 
     @Override
     @PostMapping
-    public void createOrder(@AuthenticationPrincipal CustomUserDetails user,
-            @Valid @RequestBody OrderCreateRequest request) {
-        orderService.createOrder(user.getMemberId(), request);
+    public void createOrder(@Valid @RequestBody OrderCreateRequest request,
+            @AuthenticationPrincipal CustomUserDetails user) {
+        orderService.createOrder(request, user.getMemberId());
     }
 
     @Override
@@ -49,15 +49,15 @@ public class OrderApi implements OrderApiSpec {
 
     @Override
     @GetMapping("/{orderId}")
-    public OrderDetailResponse getOrderDetail(@AuthenticationPrincipal CustomUserDetails user,
-            @PathVariable("orderId") Long orderId) {
-        return orderService.getOrderDetail(user.getMemberId(), orderId);
+    public OrderDetailResponse getOrderDetail(@PathVariable("orderId") Long orderId,
+            @AuthenticationPrincipal CustomUserDetails user) {
+        return orderService.getOrderDetail(orderId, user.getMemberId());
     }
 
     @Override
     @PatchMapping("/{orderId}")
-    public void deleteOrder(@AuthenticationPrincipal CustomUserDetails user,
-            @PathVariable("orderId") Long orderId) {
-        orderService.deleteOrder(user.getMemberId(), orderId);
+    public void deleteOrder(@PathVariable("orderId") Long orderId,
+            @AuthenticationPrincipal CustomUserDetails user) {
+        orderService.deleteOrder(orderId, user.getMemberId());
     }
 }

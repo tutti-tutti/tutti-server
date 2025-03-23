@@ -60,16 +60,16 @@ public class OrderServiceImpl implements OrderService {
         // 4 .배송비 (추후 배송비 측정 로직 추가 해야 됨)
         int deliveryFee = 0;
 
-        // 5. 총 결제 금액 = 총 상품 금액 + 배송비 (할인 금액은 이미 totalProductAmount(sellingPrice)에 반영이 되어 있음)
-        int totalAmount = totalProductAmount + deliveryFee;
+        // 5. 총 결제 금액 = 총 상품 금액 - 할인 금액 + 배송비
+        int totalAmount = totalProductAmount - totalDiscountAmount + deliveryFee;
 
         // 6. 주문 아이템 응답 목록 생성
         List<OrderItemResponse> orderItems = createOrderItemResponses(
                 request.orderItems(), productItems);
 
         return OrderPageResponse.builder()
-                .totalProductAmount(totalProductAmount)
                 .totalDiscountAmount(totalDiscountAmount)
+                .totalProductAmount(totalProductAmount)
                 .deliveryFee(deliveryFee)
                 .totalAmount(totalAmount)
                 .orderItems(orderItems)
@@ -103,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void createOrder(Long memberId, OrderCreateRequest request) {
+    public void createOrder(OrderCreateRequest request, Long memberId) {
         // 1. 회원 조회
         Member member = memberRepository.findOne(memberId);
 
@@ -121,19 +121,19 @@ public class OrderServiceImpl implements OrderService {
 
         // 6. 총 상품 금액 계산
         int totalProductAmount = calculateTotalProductAmount(request.orderItems(),
-                productItems);
+                productItems) + totalDiscountAmount;
 
         // 7 .배송비 (추후 배송비 측정 로직 추가 해야 됨)
         int deliveryFee = 0;
 
-        // 8. 총 결제 금액 = 총 상품 금액 + 배송비 (할인 금액은 이미 totalProductAmount(sellingPrice)에 반영이 되어 있음)
-        int totalAmount = totalProductAmount + deliveryFee;
+        // 8. 총 결제 금액 = 총 상품 금액 - 할인 금액 + 배송비
+        int totalAmount = totalProductAmount - totalDiscountAmount + deliveryFee;
 
         // 9. 주문 생성
         Order order = orderRepository.save(
                 request.toEntity(member, OrderStatus.WAITING_FOR_PAYMENT.name(), orderNumber,
-                        orderName, request.orderItems().size(), totalProductAmount,
-                        totalDiscountAmount, deliveryFee, totalAmount
+                        orderName, request.orderItems().size(), totalDiscountAmount,
+                        totalProductAmount, deliveryFee, totalAmount
                 ));
 
         // 10. 주문 아이템 생성
@@ -281,9 +281,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public OrderDetailResponse getOrderDetail(Long memberId, Long orderId) {
+    public OrderDetailResponse getOrderDetail(Long orderId, Long memberId) {
         // 주문 조회
-        var order = orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(memberId, orderId)
+        var order = orderRepository.findByIdAndMemberIdAndDeleteStatusFalse(orderId, memberId)
                 .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
 
         // 주문 상품 조회
@@ -294,8 +294,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void deleteOrder(Long memberId, Long orderId) {
-        orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(memberId, orderId)
+    public void deleteOrder(Long orderId, Long memberId) {
+        orderRepository.findByIdAndMemberIdAndDeleteStatusFalse(orderId, memberId)
                 .ifPresentOrElse(BaseEntity::delete,
                         () -> {
                             throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);

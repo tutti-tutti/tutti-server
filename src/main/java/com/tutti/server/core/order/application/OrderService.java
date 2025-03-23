@@ -21,7 +21,7 @@ public interface OrderService {
             List<OrderItemRequest> requests,
             List<ProductItem> productItems);
 
-    void createOrder(Long memberId, OrderCreateRequest request);
+    void createOrder(OrderCreateRequest request, Long memberId);
 
     String generateOrderNumber();
 
@@ -50,7 +50,7 @@ public interface OrderService {
 
     List<OrderResponse> getOrders(Long memberId);
 
-    OrderDetailResponse getOrderDetail(Long memberId, Long orderId);
+    OrderDetailResponse getOrderDetail(Long orderId, Long memberId);
 
-    void deleteOrder(Long memberId, Long orderId);
+    void deleteOrder(Long orderId, Long memberId);
 }
