@@ -2,13 +2,17 @@ package com.tutti.server.core.cart.application;
 
 import com.tutti.server.core.cart.infrastructure.CartItemRepository;
 import com.tutti.server.core.cart.payload.request.CartItemCreateRequest;
+import com.tutti.server.core.cart.payload.request.CartItemCreateRequest.CartItemRequest;
 import com.tutti.server.core.cart.payload.response.CartItemsResponse;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
+import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.support.entity.BaseEntity;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +29,9 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     // 기존 장바구니 상품이 있는지 확인하고, 없으면 새로 생성하는 메서드
-    public void addCartItem(CartItemCreateRequest request, Long memberId) {
+    public void addCartItems(CartItemCreateRequest request, Long memberId) {
+        validateProductItems(request.cartItems());
+
         for (CartItemCreateRequest.CartItemRequest item : request.cartItems()) {
             cartItemRepository.findByMemberIdAndProductItemIdAndDeleteStatusFalse(memberId,
                             item.productItemId())
@@ -33,6 +39,36 @@ public class CartServiceImpl implements CartService {
                     .ifPresentOrElse(cartItem -> cartItem.changeQuantity(item.quantity()),
                             // 없다면 장바구니에 상품을 새로 생성하여 저장
                             () -> createCartItem(item, memberId));
+        }
+    }
+
+    @Override
+    @Transactional
+    // 장바구니에 추가할 상품 아이템들을 검증하고 조회하는 메서드
+    public void validateProductItems(List<CartItemRequest> requests) {
+        // 상품 아이템 ID 목록
+        List<Long> productItemIds = requests.stream()
+                .map(CartItemCreateRequest.CartItemRequest::productItemId)
+                .toList();
+
+        // 중복 상품 ID 검증
+        Set<Long> uniqueIds = new HashSet<>();
+        List<Long> duplicateIds = productItemIds.stream()
+                .filter(id -> !uniqueIds.add(id))
+                .distinct()
+                .toList();
+
+        // 중복된 상품 ID가 있으면 예외 발생
+        if (!duplicateIds.isEmpty()) {
+            throw new DomainException(ExceptionType.DUPLICATE_PRODUCT_ITEMS);
+        }
+
+        // DB에서 상품 조회 및 존재 여부 검증
+        List<ProductItem> productItems = productItemRepository.findAllById(productItemIds);
+
+        // 요청한 상품 ID 개수와 조회된 상품 개수 비교
+        if (productItems.size() != uniqueIds.size()) {
+            throw new DomainException(ExceptionType.NON_EXISTENT_PRODUCT_INCLUDE);
         }
     }
 
