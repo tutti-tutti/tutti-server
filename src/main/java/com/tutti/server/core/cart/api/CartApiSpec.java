@@ -9,17 +9,17 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
-@Tag(name = "장바구니 API")
+@Tag(name = "Cart", description = "장바구니 관련 API")
 @SecurityRequirement(name = "Bearer Authentication")
 public interface CartApiSpec {
 
     @Operation(summary = "장바구니 상품 추가")
-    void addCartItem(CustomUserDetails user, CartItemCreateRequest request);
+    void addCartItem(CartItemCreateRequest request, CustomUserDetails user);
 
     @Operation(summary = "장바구니 상품 조회")
     List<CartItemsResponse> getCartItems(CustomUserDetails user);
 
     @Operation(summary = "장바구니 상품 삭제")
-    void removeCartItem(CustomUserDetails user,
-            @Parameter(description = "삭제할 장바구니 상품 id", example = "1") Long cartItemId);
+    void removeCartItem(@Parameter(description = "삭제할 장바구니 상품 id", example = "1") Long cartItemId,
+            CustomUserDetails user);
 }

@@ -8,6 +8,8 @@ import lombok.Builder;
 
 @Builder
 public record OrderResponse(
+
+        long orderId,
         String orderNumber,
         String orderName,
         LocalDateTime completedAt,
@@ -23,6 +25,7 @@ public record OrderResponse(
                 .toList();
 
         return OrderResponse.builder()
+                .orderId(order.getId())
                 .orderNumber(order.getOrderNumber())
                 .orderName(order.getOrderName())
                 .completedAt(order.getCompletedAt())

@@ -55,8 +55,6 @@ public enum ExceptionType {
     PRODUCT_QNA_NOT_FOUND(ExceptionCode.B02, "존재하지 않는 QnA 입니다."),
     PRODUCT_REVIEW_NOT_FOUND(ExceptionCode.B03, "존재하지 않는 리뷰 입니다."),
     CATEGORY_NOT_FOUND(ExceptionCode.B04, "존재하지 않는 카테고리입니다."),
-    NON_EXISTENT_PRODUCT_INCLUDE(ExceptionCode.B05, "존재하지 않는 상품이 포함되어 있습니다."),
-    PRODUCT_MISMATCH(ExceptionCode.B06, "상품을 찾을 수 없습니다."),
     PRODUCT_CATEGORY_MAP_NOT_FOUND(ExceptionCode.B07, "존재하지 않는 카테고리 상품입니다."),
     PRODUCT_ITEM_NOT_FOUND(ExceptionCode.B08, "상품 옵션이 존재하지 않습니다"),
 
@@ -68,6 +66,10 @@ public enum ExceptionType {
     ORDER_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.D02, "해당 주문 상품을 찾을 수 없습니다.", ERROR),
     ORDER_HISTORY_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.D03, "해당 주문 이력을 찾을 수 없습니다.", ERROR),
     ORDER_ALREADY_COMPLETED(HttpStatus.BAD_REQUEST, ExceptionCode.D04, "구매 확정된 주문입니다.", ERROR),
+    NON_EXISTENT_PRODUCT_INCLUDE(HttpStatus.BAD_REQUEST, ExceptionCode.D05,
+            "존재하지 않는 상품이 포함되어 있습니다.", ERROR),
+    PRODUCT_MISMATCH(HttpStatus.BAD_REQUEST, ExceptionCode.D06, "상품을 찾을 수 없습니다.", ERROR),
+    DUPLICATE_PRODUCT_ITEMS(HttpStatus.BAD_REQUEST, ExceptionCode.D07, "중복된 상품 ID가 존재합니다.", ERROR),
 
     // - 결제 -
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.P01, "해당 결제 내역을 찾을 수 없습니다.", ERROR),

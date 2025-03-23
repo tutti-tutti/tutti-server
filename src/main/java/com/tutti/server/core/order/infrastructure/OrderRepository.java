@@ -14,9 +14,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                 .orElseThrow(() -> new DomainException(ExceptionType.ORDER_NOT_FOUND));
     }
 
+    Optional<Order> findByOrderNumber(String orderNumber);
+
     List<Order> findAllByMemberIdAndDeleteStatusFalse(Long memberId);
 
-    Optional<Order> findByMemberIdAndIdAndDeleteStatusFalse(Long memberId, Long orderId);
+    Optional<Order> findByIdAndMemberIdAndDeleteStatusFalse(Long orderId, Long memberId);
 
     Optional<Order> findByOrderNumberAndMemberId(String orderNumber,
             Long memberId); //  orderNumber로 추가

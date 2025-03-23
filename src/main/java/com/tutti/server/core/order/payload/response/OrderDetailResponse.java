@@ -14,8 +14,8 @@ public record OrderDetailResponse(
         String orderStatus,
 
         // 결제 정보
+        int totalDiscountAmount,
         int totalProductAmount,
-        int discountAmount,
         int deliveryFee,
         int totalAmount,
         PaymentMethodType paymentType,
@@ -54,8 +54,8 @@ public record OrderDetailResponse(
         return OrderDetailResponse.builder()
                 .orderNumber(order.getOrderNumber())
                 .orderStatus(order.getOrderStatus())
+                .totalDiscountAmount(order.getTotalDiscountAmount())
                 .totalProductAmount(order.getTotalProductAmount())
-                .discountAmount(order.getTotalDiscountAmount())
                 .deliveryFee(order.getDeliveryFee())
                 .totalAmount(order.getTotalAmount())
                 .paymentType(order.getPaymentType())
