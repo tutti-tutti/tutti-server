@@ -7,7 +7,6 @@ public record OrderPageRequest(
 
         @NotNull
         List<OrderItemRequest> orderItems
-
 ) {
 
 }

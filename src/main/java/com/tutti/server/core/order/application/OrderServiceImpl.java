@@ -60,16 +60,16 @@ public class OrderServiceImpl implements OrderService {
         // 4 .배송비 (추후 배송비 측정 로직 추가 해야 됨)
         int deliveryFee = 0;
 
-        // 5. 총 결제 금액 = 총 상품 금액 + 배송비 (할인 금액은 이미 totalProductAmount(sellingPrice)에 반영이 되어 있음)
-        int totalAmount = totalProductAmount + deliveryFee;
+        // 5. 총 결제 금액 = 총 상품 금액 - 할인 금액 + 배송비
+        int totalAmount = totalProductAmount - totalDiscountAmount + deliveryFee;
 
         // 6. 주문 아이템 응답 목록 생성
         List<OrderItemResponse> orderItems = createOrderItemResponses(
                 request.orderItems(), productItems);
 
         return OrderPageResponse.builder()
-                .totalProductAmount(totalProductAmount)
                 .totalDiscountAmount(totalDiscountAmount)
+                .totalProductAmount(totalProductAmount)
                 .deliveryFee(deliveryFee)
                 .totalAmount(totalAmount)
                 .orderItems(orderItems)
@@ -103,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void createOrder(Long memberId, OrderCreateRequest request) {
+    public void createOrder(OrderCreateRequest request, Long memberId) {
         // 1. 회원 조회
         Member member = memberRepository.findOne(memberId);
 
@@ -121,19 +121,19 @@ public class OrderServiceImpl implements OrderService {
 
         // 6. 총 상품 금액 계산
         int totalProductAmount = calculateTotalProductAmount(request.orderItems(),
-                productItems);
+                productItems) + totalDiscountAmount;
 
         // 7 .배송비 (추후 배송비 측정 로직 추가 해야 됨)
         int deliveryFee = 0;
 
-        // 8. 총 결제 금액 = 총 상품 금액 + 배송비 (할인 금액은 이미 totalProductAmount(sellingPrice)에 반영이 되어 있음)
-        int totalAmount = totalProductAmount + deliveryFee;
+        // 8. 총 결제 금액 = 총 상품 금액 - 할인 금액 + 배송비
+        int totalAmount = totalProductAmount - totalDiscountAmount + deliveryFee;
 
         // 9. 주문 생성
         Order order = orderRepository.save(
                 request.toEntity(member, OrderStatus.WAITING_FOR_PAYMENT.name(), orderNumber,
-                        orderName, request.orderItems().size(), totalProductAmount,
-                        totalDiscountAmount, deliveryFee, totalAmount
+                        orderName, request.orderItems().size(), totalDiscountAmount,
+                        totalProductAmount, deliveryFee, totalAmount
                 ));
 
         // 10. 주문 아이템 생성
@@ -177,9 +177,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<ProductItem> getProductItems(
-            List<OrderItemRequest> orderItemRequests) {
+            List<OrderItemRequest> requests) {
         // 상품 ID 목록
-        List<Long> productItemIds = orderItemRequests.stream()
+        List<Long> productItemIds = requests.stream()
                 .map(OrderItemRequest::productItemId)
                 .toList();
 
@@ -208,35 +208,35 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int calculateTotalProductAmount(
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems) {
-        return calculateOrderTotal(orderItemRequests, productItems,
+        return calculateOrderTotal(requests, productItems,
                 (productItem, quantity) -> productItem.getSellingPrice() * quantity);
     }
 
     @Override
     public int calculateTotalDiscountAmount(
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems) {
-        return calculateOrderTotal(orderItemRequests, productItems,
+        return calculateOrderTotal(requests, productItems,
                 (productItem, quantity) -> productItem.getDiscountPrice());
     }
 
     /**
      * 주문 항목에 대한 계산을 수행하는 공통 메서드
      *
-     * @param orderItemRequests 주문 상품 요청 DTO 목록
-     * @param productItems      판매 상품 목록
-     * @param calculator        계산 로직을 담당하는 함수형 인터페이스
+     * @param requests     주문 상품 요청 DTO 목록
+     * @param productItems 판매 상품 목록
+     * @param calculator   계산 로직을 담당하는 함수형 인터페이스
      * @return 계산된 총액
      */
     public int calculateOrderTotal(
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems,
             BiFunction<ProductItem, Integer, Integer> calculator) {
         int total = 0;
 
-        for (OrderItemRequest orderItemRequest : orderItemRequests) {
+        for (OrderItemRequest orderItemRequest : requests) {
             ProductItem productItem = findProductItemById(productItems,
                     orderItemRequest.productItemId());
             total += calculator.apply(productItem, orderItemRequest.quantity());
@@ -248,9 +248,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderItem> createOrderItems(
             Order order,
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems) {
-        return orderItemRequests.stream()
+        return requests.stream()
                 .map(orderItemRequest -> {
                     ProductItem productItem = findProductItemById(productItems,
                             orderItemRequest.productItemId());
@@ -281,9 +281,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public OrderDetailResponse getOrderDetail(Long memberId, Long orderId) {
+    public OrderDetailResponse getOrderDetail(Long orderId, Long memberId) {
         // 주문 조회
-        var order = orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(memberId, orderId)
+        var order = orderRepository.findByIdAndMemberIdAndDeleteStatusFalse(orderId, memberId)
                 .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
 
         // 주문 상품 조회
@@ -294,8 +294,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void deleteOrder(Long memberId, Long orderId) {
-        orderRepository.findByMemberIdAndIdAndDeleteStatusFalse(memberId, orderId)
+    public void deleteOrder(Long orderId, Long memberId) {
+        orderRepository.findByIdAndMemberIdAndDeleteStatusFalse(orderId, memberId)
                 .ifPresentOrElse(BaseEntity::delete,
                         () -> {
                             throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);

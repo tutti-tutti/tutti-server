@@ -21,36 +21,36 @@ public interface OrderService {
             List<OrderItemRequest> requests,
             List<ProductItem> productItems);
 
-    void createOrder(Long memberId, OrderCreateRequest request);
+    void createOrder(OrderCreateRequest request, Long memberId);
 
     String generateOrderNumber();
 
     String generateOrderName(OrderCreateRequest request);
 
-    List<ProductItem> getProductItems(List<OrderItemRequest> orderItemRequests);
+    List<ProductItem> getProductItems(List<OrderItemRequest> requests);
 
     int calculateTotalProductAmount(
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems);
 
     int calculateTotalDiscountAmount(
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems);
 
     int calculateOrderTotal(
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems,
             BiFunction<ProductItem, Integer, Integer> calculator);
 
     List<OrderItem> createOrderItems(Order order,
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems);
 
     ProductItem findProductItemById(List<ProductItem> productItems, Long productItemId);
 
     List<OrderResponse> getOrders(Long memberId);
 
-    OrderDetailResponse getOrderDetail(Long memberId, Long orderId);
+    OrderDetailResponse getOrderDetail(Long orderId, Long memberId);
 
-    void deleteOrder(Long memberId, Long orderId);
+    void deleteOrder(Long orderId, Long memberId);
 }

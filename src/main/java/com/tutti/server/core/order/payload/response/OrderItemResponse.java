@@ -15,7 +15,6 @@ public record OrderItemResponse(
         String secondOptionValue,
         int quantity,
         int price
-
 ) {
 
     public static OrderItemResponse fromEntity(OrderItem orderItem) {

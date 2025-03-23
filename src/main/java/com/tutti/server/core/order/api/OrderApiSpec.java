@@ -18,16 +18,17 @@ public interface OrderApiSpec {
     OrderPageResponse getOrderPage(OrderPageRequest request);
 
     @Operation(summary = "주문 생성")
-    void createOrder(CustomUserDetails user, OrderCreateRequest request);
+    void createOrder(OrderCreateRequest request, CustomUserDetails user);
 
     @Operation(summary = "주문 내역 전체 조회")
     List<OrderResponse> getOrders(CustomUserDetails user);
 
     @Operation(summary = "주문 내역 상세 조회")
-    OrderDetailResponse getOrderDetail(CustomUserDetails user,
-            @Parameter(description = "조회할 주문 id", example = "1") Long orderId);
+    OrderDetailResponse getOrderDetail(
+            @Parameter(description = "조회할 주문 id", example = "1") Long orderId,
+            CustomUserDetails user);
 
     @Operation(summary = "주문 내역 삭제")
-    void deleteOrder(CustomUserDetails user,
-            @Parameter(description = "삭제할 주문 id", example = "1") Long orderId);
+    void deleteOrder(@Parameter(description = "삭제할 주문 id", example = "1") Long orderId,
+            CustomUserDetails user);
 }
