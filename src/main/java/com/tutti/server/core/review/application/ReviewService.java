@@ -29,8 +29,8 @@ public class ReviewService {
         return reviewListService.getReviewsByProductId(productId, cursor, size, sort);
     }
 
-    public ReviewDetailResponse getReviewDetail(long reviewId) {
-        return reviewDetailService.getReviewDetail(reviewId);
+    public ReviewDetailResponse getReviewDetail(long reviewId, Long memberId) {
+        return reviewDetailService.getReviewDetail(reviewId, memberId);
     }
 
     public ReviewMyListResponse getMyReviewList(String email, Long cursor, int size) {

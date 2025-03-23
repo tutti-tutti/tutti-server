@@ -82,8 +82,10 @@ public class ReviewApi implements ReviewApiSpec {
     @Override
     @GetMapping("/{reviewId}")
     public ResponseEntity<ReviewDetailResponse> getReviewDetail(
-        @PathVariable("reviewId") long reviewId) {
-        ReviewDetailResponse response = reviewService.getReviewDetail(reviewId);
+        @PathVariable("reviewId") long reviewId,
+        @AuthenticationPrincipal CustomUserDetails user) {
+        Long memberId = (user != null) ? user.getMemberId() : null;
+        ReviewDetailResponse response = reviewService.getReviewDetail(reviewId, memberId);
         return ResponseEntity.ok(response);
     }
 

@@ -15,10 +15,11 @@ public record ReviewDetailResponse(
     @Schema(description = "감성 분석 정확도", example = "88.24") double sentimentProbability,
     @Schema(description = "리뷰 이미지 URL", example = "http://tutti.com") String reviewImageUrls,
     @Schema(description = "리뷰 작성일", example = "2021-08-01") String createdAt,
-    @Schema(description = "좋아요 개수", example = "0") int likeCount
+    @Schema(description = "좋아요 개수", example = "0") int likeCount,
+    @Schema(description = "현재 로그인한 사용자의 좋아요 여부 ", example = "true") boolean liked
 ) {
 
-    public static ReviewDetailResponse from(Review review) {
+    public static ReviewDetailResponse from(Review review, boolean liked) {
         return new ReviewDetailResponse(
             review.getId(),
             review.getProductId(),
@@ -29,7 +30,8 @@ public record ReviewDetailResponse(
             review.getSentimentProbability(),
             review.getReviewImageUrls(),
             review.getCreatedAt().toString(),
-            review.getLikeCount()
+            review.getLikeCount(),
+            liked
         );
     }
 }
