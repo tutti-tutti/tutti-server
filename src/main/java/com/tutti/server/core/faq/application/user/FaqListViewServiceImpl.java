@@ -46,24 +46,48 @@ public class FaqListViewServiceImpl implements FaqListViewService {
         String category = request.category();
         String subcategory = request.subcategory();
 
-        if (query != null && !query.trim().isEmpty()) {
-            return faqRepository.findByQuestionContainingIgnoreCaseAndDeleteStatusFalseAndIsViewTrue(
+        boolean hasQuery = query != null && !query.trim().isEmpty();
+        boolean hasCategory = category != null && !category.trim().isEmpty();
+        boolean hasSubcategory = subcategory != null && !subcategory.trim().isEmpty();
+
+        Page<Faq> faqs;
+
+        if (hasQuery) {
+            faqs = faqRepository.findByQuestionContainingIgnoreCaseAndDeleteStatusFalseAndIsViewTrue(
                 query.trim(), pageRequest);
 
-        } else if (category != null && subcategory != null && !subcategory.trim().isEmpty()) {
-            return faqRepository.findByFaqCategoryMainCategoryAndFaqCategorySubCategoryAndDeleteStatusFalseAndIsViewTrue(
-                category, subcategory.trim(), pageRequest);
+        } else if (hasCategory && hasSubcategory) {
+            faqs = faqRepository.findByFaqCategoryMainCategoryAndFaqCategorySubCategoryAndDeleteStatusFalseAndIsViewTrue(
+                category.trim(), subcategory.trim(), pageRequest);
 
-        } else if (category != null && !category.trim().isEmpty()) {
-            return faqRepository.findByFaqCategoryMainCategoryAndDeleteStatusFalseAndIsViewTrue(
+            if (faqs.isEmpty()) {
+                throw new DomainException(ExceptionType.FAQ_CATEGORY_NOT_FOUND);
+            }
+
+        } else if (hasCategory) {
+            faqs = faqRepository.findByFaqCategoryMainCategoryAndDeleteStatusFalseAndIsViewTrue(
                 category.trim(), pageRequest);
 
+            if (faqs.isEmpty()) {
+                throw new DomainException(ExceptionType.FAQ_CATEGORY_NOT_FOUND);
+            }
+
+        } else if (hasSubcategory) {
+            faqs = faqRepository.findByFaqCategorySubCategoryAndDeleteStatusFalseAndIsViewTrue(
+                subcategory.trim(), pageRequest);
+
+            if (faqs.isEmpty()) {
+                throw new DomainException(ExceptionType.FAQ_CATEGORY_NOT_FOUND);
+            }
+
         } else {
-            Page<Faq> faqs = faqRepository.findByDeleteStatusFalseAndIsViewTrue(pageRequest);
-            if (faqs.getTotalElements() == 0) {
+            faqs = faqRepository.findByDeleteStatusFalseAndIsViewTrue(pageRequest);
+
+            if (faqs.isEmpty()) {
                 throw new DomainException(ExceptionType.FAQ_NOT_FOUND);
             }
-            return faqs;
         }
+
+        return faqs;
     }
 }
