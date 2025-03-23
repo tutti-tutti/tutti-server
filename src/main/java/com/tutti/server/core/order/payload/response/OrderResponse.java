@@ -16,7 +16,6 @@ public record OrderResponse(
         int totalAmount,
         String orderStatus,
         List<OrderItemResponse> orderItems
-
 ) {
 
     // 주문 정보를 추출하는 메서드

@@ -14,12 +14,12 @@ import java.util.List;
 public interface CartApiSpec {
 
     @Operation(summary = "장바구니 상품 추가")
-    void addCartItem(CustomUserDetails user, CartItemCreateRequest request);
+    void addCartItem(CartItemCreateRequest request, CustomUserDetails user);
 
     @Operation(summary = "장바구니 상품 조회")
     List<CartItemsResponse> getCartItems(CustomUserDetails user);
 
     @Operation(summary = "장바구니 상품 삭제")
-    void removeCartItem(CustomUserDetails user,
-            @Parameter(description = "삭제할 장바구니 상품 id", example = "1") Long cartItemId);
+    void removeCartItem(@Parameter(description = "삭제할 장바구니 상품 id", example = "1") Long cartItemId,
+            CustomUserDetails user);
 }

@@ -6,13 +6,12 @@ import lombok.Builder;
 @Builder
 public record OrderPageResponse(
 
-        int totalProductAmount,
         int totalDiscountAmount,
+        int totalProductAmount,
         int deliveryFee,
         int totalAmount,
 
         List<OrderItemResponse> orderItems
-
 ) {
 
 }

@@ -19,7 +19,7 @@ public record OrderCreateRequest(
 ) {
 
     public Order toEntity(Member member, String orderStatus, String orderNumber, String orderName,
-            int orderCount, int totalProductAmount, int totalDiscountAmount, int deliveryFee,
+            int orderCount, int totalDiscountAmount, int totalProductAmount, int deliveryFee,
             int totalAmount
     ) {
         return Order.builder()
@@ -29,8 +29,8 @@ public record OrderCreateRequest(
                 .orderNumber(orderNumber)
                 .orderName(orderName)
                 .orderCount(orderCount)
-                .totalProductAmount(totalProductAmount)
                 .totalDiscountAmount(totalDiscountAmount)
+                .totalProductAmount(totalProductAmount)
                 .deliveryFee(deliveryFee)
                 .totalAmount(totalAmount)
                 .build();
