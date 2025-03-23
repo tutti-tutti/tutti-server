@@ -40,7 +40,7 @@
     -[ ] 주문 상태를 결제 취소로 업데이트한다.
     -[ ] response: 없다.
 5. (DELETE) 유저는 주문 내역을 제거할 수 있다.
-    -[ ] 유저가 주문 내역 삭제(버튼) api를 요청하면, delete_status=true 로 업데이트한다.
-    -[ ] response: 없다.
-    -[ ] request: member.id(member의 인증 정보), orderId
-    -[ ] 해당 상품의 delete_status=true로 update 한다.
+    -[X] 유저가 주문 내역 삭제(버튼) api를 요청하면, delete_status=true 로 업데이트한다.
+    -[X] response: 없다.
+    -[X] request: member.id(member의 인증 정보), orderId
+    -[X] 해당 상품의 delete_status=true로 update 한다.
