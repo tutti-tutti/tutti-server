@@ -19,4 +19,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByMemberIdAndDeleteStatusFalse(Long memberId);
 
     Optional<Order> findByIdAndMemberIdAndDeleteStatusFalse(Long orderId, Long memberId);
+
+    Optional<Order> findByOrderNumberAndMemberId(String orderNumber,
+            Long memberId); //  orderNumber로 추가
 }

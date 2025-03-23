@@ -1,9 +1,11 @@
 package com.tutti.server.core.payment.application;
 
 import com.tutti.server.core.payment.domain.Payment;
-import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
-import com.tutti.server.core.payment.payload.TossPaymentsCancelRequest;
-import com.tutti.server.core.payment.payload.TossPaymentsCancelResponse;
+import com.tutti.server.core.payment.payload.request.PaymentConfirmRequest;
+import com.tutti.server.core.payment.payload.request.TossPaymentsCancelRequest;
+import com.tutti.server.core.payment.payload.response.TossPaymentsCancelResponse;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
@@ -79,14 +81,21 @@ public class TossPaymentService {
         HttpHeaders headers = createTossApiHeaders();
         TossPaymentsCancelRequest tossRequest = new TossPaymentsCancelRequest(cancelReason);
 
-        Map<String, Object> response = restClient.method(HttpMethod.POST)
-                .uri(cancelUrl)
-                .headers(httpHeaders -> httpHeaders.addAll(headers))
-                .body(tossRequest)
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {
-                });
+        try {
+            TossPaymentsCancelResponse response = restClient.method(HttpMethod.POST)
+                    .uri(cancelUrl)
+                    .headers(httpHeaders -> httpHeaders.addAll(headers))
+                    .body(tossRequest)
+                    .retrieve()
+                    .body(TossPaymentsCancelResponse.class);
 
-        return TossPaymentsCancelResponse.fromResponse(response);
+            if (response == null) {
+                throw new DomainException(ExceptionType.TOSS_NOT_RESPONSE);
+            }
+            return response;
+
+        } catch (RestClientResponseException e) {
+            throw new DomainException(ExceptionType.TOSS_ERROR);
+        }
     }
 }

@@ -1,18 +1,20 @@
 package com.tutti.server.core.payment.api;
 
+import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.payment.application.PaymentCancelService;
 import com.tutti.server.core.payment.application.PaymentService;
 import com.tutti.server.core.payment.application.PaymentViewService;
-import com.tutti.server.core.payment.payload.PaymentCancelRequest;
-import com.tutti.server.core.payment.payload.PaymentConfirmRequest;
-import com.tutti.server.core.payment.payload.PaymentRequest;
-import com.tutti.server.core.payment.payload.PaymentResponse;
-import com.tutti.server.core.payment.payload.PaymentViewResponse;
+import com.tutti.server.core.payment.payload.request.PaymentCancelRequest;
+import com.tutti.server.core.payment.payload.request.PaymentConfirmRequest;
+import com.tutti.server.core.payment.payload.request.PaymentRequest;
+import com.tutti.server.core.payment.payload.response.PaymentResponse;
+import com.tutti.server.core.payment.payload.response.PaymentViewResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/payments")
+@SecurityRequirement(name = "Bearer Authentication")  // 컨트롤러 전체에 적용
 public class PaymentApi implements PaymentApiSpec {
 
     private final PaymentService paymentService;
@@ -35,35 +38,42 @@ public class PaymentApi implements PaymentApiSpec {
 
     @PostMapping("/request")
     public PaymentResponse requestPayment(
-            @Valid @RequestBody PaymentRequest request) {
+            @Valid @RequestBody PaymentRequest request,
+            @AuthenticationPrincipal CustomUserDetails user) {
 
-        return paymentService.requestPayment(request);
+        return paymentService.requestPayment(request, user.getMemberId());
     }
 
     @PostMapping("/confirm/success")
     public void confirmPayment(
-            @Valid @RequestBody PaymentConfirmRequest request) {
-        paymentService.confirmPayment(request);
+            @Valid @RequestBody PaymentConfirmRequest request,
+            @AuthenticationPrincipal CustomUserDetails user) {
+
+        paymentService.confirmPayment(request, user.getMemberId());
     }
 
     @PostMapping("/cancel")
     public void cancelPayment(
-            @Valid @RequestBody PaymentCancelRequest request) {
-        paymentCancelService.paymentCancel(request);
+            @Valid @RequestBody PaymentCancelRequest request,
+            @AuthenticationPrincipal CustomUserDetails user) {
+
+        paymentCancelService.paymentCancel(request, user.getMemberId());
     }
 
-    // 회원ID로 결제 조회
-    @GetMapping("/memberId/{memberId}")
-    public List<PaymentViewResponse> getMemberPayments(@PathVariable Long memberId) {
+    // paymentId로 결제 조회
+    @GetMapping("/paymentId/{paymentId}")
+    public PaymentViewResponse getPaymentIdViewPayments(@PathVariable Long paymentId,
+            @AuthenticationPrincipal CustomUserDetails user) {
 
-        return paymentViewService.viewPaymentByMemberId(memberId);
+        return paymentViewService.viewPaymentByMemberId(paymentId, user.getMemberId());
     }
 
     // 주문ID로 결제 조회
     @GetMapping("/orderId/{orderId}")
-    public PaymentViewResponse getPaymentsViewOrderId(@PathVariable Long orderId) {
+    public PaymentViewResponse getPaymentsViewOrderId(@PathVariable Long orderId,
+            @AuthenticationPrincipal CustomUserDetails user) {
 
-        return paymentViewService.viewPaymentByOrderId(orderId);
+        return paymentViewService.viewPaymentByOrderId(orderId, user.getMemberId());
     }
 
 }

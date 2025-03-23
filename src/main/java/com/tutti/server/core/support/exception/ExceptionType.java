@@ -83,6 +83,11 @@ public enum ExceptionType {
         ERROR),
     PAYMENT_ALREADY_EXISTS(HttpStatus.CONFLICT, ExceptionCode.P07, "결제 요청이 불가능한 상태입니다.", ERROR),
     ORDER_NAME_MISMATCH(HttpStatus.BAD_REQUEST, ExceptionCode.P08, "주문명이 일치하지 않습니다.", ERROR),
+    TOSS_ERROR(HttpStatus.BAD_REQUEST, ExceptionCode.T1, "토스페이먼츠가 응답하지 않습니다. 잠시 후 다시 시도해주세요.",
+            ERROR),
+    TOSS_NOT_RESPONSE(HttpStatus.BAD_REQUEST, ExceptionCode.T2, "토스페이먼츠에서 응답이 없습니다.", ERROR),
+    TOSS_CANCEL_FAIL(HttpStatus.BAD_REQUEST, ExceptionCode.T3, "결제 취소가 실패하였습니다.", ERROR),
+
 
     // - 환불 -
     REFUND_REQUEST_NOT_ALLOWED(HttpStatus.CONFLICT, ExceptionCode.R01, "환불 및 결제취소 대상이 아닙니다.",

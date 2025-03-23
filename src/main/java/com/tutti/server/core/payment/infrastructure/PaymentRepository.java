@@ -3,7 +3,6 @@ package com.tutti.server.core.payment.infrastructure;
 import com.tutti.server.core.payment.domain.Payment;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -21,9 +20,9 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                 .orElseThrow(() -> new DomainException(ExceptionType.PAYMENT_NOT_FOUND));
     }
 
-    Optional<Payment> findByOrderNumber(String orderNumber);
-
-    List<Payment> findByMemberId(Long memberId);
+    Optional<Payment> findByIdAndMemberId(Long paymentId, Long memberId);
 
     Optional<Payment> findByOrderId(Long orderId);
+
+    Optional<Payment> findByOrderNumberAndMemberId(String orderNumber, Long memberId);
 }

@@ -1,4 +1,4 @@
-package com.tutti.server.core.payment.payload;
+package com.tutti.server.core.payment.payload.response;
 
 import com.tutti.server.core.payment.domain.Payment;
 import lombok.Builder;
