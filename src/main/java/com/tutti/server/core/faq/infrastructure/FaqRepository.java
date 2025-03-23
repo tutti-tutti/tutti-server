@@ -29,6 +29,8 @@ public interface FaqRepository extends JpaRepository<Faq, Long> {
     Page<Faq> findByFaqCategoryMainCategoryAndDeleteStatusFalseAndIsViewTrue(
         String mainCategory, Pageable pageable);
 
+    Page<Faq> findByFaqCategorySubCategoryAndDeleteStatusFalseAndIsViewTrue(
+        String subcategory, Pageable pageable);
 
     Page<Faq> findByDeleteStatusFalseAndIsViewTrue(Pageable pageable);
 
