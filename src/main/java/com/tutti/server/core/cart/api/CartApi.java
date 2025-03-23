@@ -27,7 +27,7 @@ public class CartApi implements CartApiSpec {
     @PostMapping
     public void addCartItem(@RequestBody @Valid CartItemCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails user) {
-        cartService.addCartItem(request, user.getMemberId());
+        cartService.addCartItems(request, user.getMemberId());
     }
 
     @Override

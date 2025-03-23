@@ -27,23 +27,23 @@ public interface OrderService {
 
     String generateOrderName(OrderCreateRequest request);
 
-    List<ProductItem> getProductItems(List<OrderItemRequest> orderItemRequests);
+    List<ProductItem> getProductItems(List<OrderItemRequest> requests);
 
     int calculateTotalProductAmount(
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems);
 
     int calculateTotalDiscountAmount(
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems);
 
     int calculateOrderTotal(
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems,
             BiFunction<ProductItem, Integer, Integer> calculator);
 
     List<OrderItem> createOrderItems(Order order,
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems);
 
     ProductItem findProductItemById(List<ProductItem> productItems, Long productItemId);

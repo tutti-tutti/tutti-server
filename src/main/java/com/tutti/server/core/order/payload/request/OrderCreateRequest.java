@@ -12,7 +12,7 @@ import lombok.Builder;
 @Builder
 public record OrderCreateRequest(
 
-        @NotNull
+        @NotNull(message = "주문할 상품을 선택해주세요.")
         List<OrderItemRequest> orderItems,
 
         PaymentMethodType paymentType

@@ -177,9 +177,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<ProductItem> getProductItems(
-            List<OrderItemRequest> orderItemRequests) {
+            List<OrderItemRequest> requests) {
         // 상품 ID 목록
-        List<Long> productItemIds = orderItemRequests.stream()
+        List<Long> productItemIds = requests.stream()
                 .map(OrderItemRequest::productItemId)
                 .toList();
 
@@ -208,35 +208,35 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int calculateTotalProductAmount(
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems) {
-        return calculateOrderTotal(orderItemRequests, productItems,
+        return calculateOrderTotal(requests, productItems,
                 (productItem, quantity) -> productItem.getSellingPrice() * quantity);
     }
 
     @Override
     public int calculateTotalDiscountAmount(
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems) {
-        return calculateOrderTotal(orderItemRequests, productItems,
+        return calculateOrderTotal(requests, productItems,
                 (productItem, quantity) -> productItem.getDiscountPrice());
     }
 
     /**
      * 주문 항목에 대한 계산을 수행하는 공통 메서드
      *
-     * @param orderItemRequests 주문 상품 요청 DTO 목록
-     * @param productItems      판매 상품 목록
-     * @param calculator        계산 로직을 담당하는 함수형 인터페이스
+     * @param requests     주문 상품 요청 DTO 목록
+     * @param productItems 판매 상품 목록
+     * @param calculator   계산 로직을 담당하는 함수형 인터페이스
      * @return 계산된 총액
      */
     public int calculateOrderTotal(
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems,
             BiFunction<ProductItem, Integer, Integer> calculator) {
         int total = 0;
 
-        for (OrderItemRequest orderItemRequest : orderItemRequests) {
+        for (OrderItemRequest orderItemRequest : requests) {
             ProductItem productItem = findProductItemById(productItems,
                     orderItemRequest.productItemId());
             total += calculator.apply(productItem, orderItemRequest.quantity());
@@ -248,9 +248,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderItem> createOrderItems(
             Order order,
-            List<OrderItemRequest> orderItemRequests,
+            List<OrderItemRequest> requests,
             List<ProductItem> productItems) {
-        return orderItemRequests.stream()
+        return requests.stream()
                 .map(orderItemRequest -> {
                     ProductItem productItem = findProductItemById(productItems,
                             orderItemRequest.productItemId());
