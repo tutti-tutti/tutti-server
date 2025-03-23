@@ -141,4 +141,8 @@ public class JWTUtil {
             throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
         }
     }
+
+    public SecretKey getSecretKey() {
+        return secretKey;
+    }
 }
