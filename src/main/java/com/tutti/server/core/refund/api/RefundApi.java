@@ -30,8 +30,8 @@ public class RefundApi implements RefundApiSpec {
             @Valid @RequestBody PaymentCancelRequest request,
             @AuthenticationPrincipal
             CustomUserDetails userDetails) {
-        Long AuthMemberId = userDetails.getMemberId();
-        refundService.requestRefund(request, AuthMemberId);
+
+        refundService.requestRefund(request, userDetails.getMemberId());
     }
 
 
@@ -39,7 +39,7 @@ public class RefundApi implements RefundApiSpec {
     public RefundViewResponse getRefundViewByOrderId(@PathVariable Long orderId,
             @AuthenticationPrincipal
             CustomUserDetails userDetails) {
-        long memberId = userDetails.getMemberId();
-        return refundService.getRefundView(orderId, memberId);
+
+        return refundService.getRefundView(orderId, userDetails.getMemberId());
     }
 }
