@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 public enum ExceptionType {
 
     DEFAULT_ERROR(INTERNAL_SERVER_ERROR, ExceptionCode.E500, "알 수 없는 이유로 서버에서 요청을 처리할 수 없습니다.",
-            ERROR),
+        ERROR),
     UNAUTHORIZED_ERROR(HttpStatus.UNAUTHORIZED, ExceptionCode.E401, "권한이 없습니다", INFO),
 
     //Global
@@ -55,8 +55,6 @@ public enum ExceptionType {
     PRODUCT_QNA_NOT_FOUND(ExceptionCode.B02, "존재하지 않는 QnA 입니다."),
     PRODUCT_REVIEW_NOT_FOUND(ExceptionCode.B03, "존재하지 않는 리뷰 입니다."),
     CATEGORY_NOT_FOUND(ExceptionCode.B04, "존재하지 않는 카테고리입니다."),
-    NON_EXISTENT_PRODUCT_INCLUDE(ExceptionCode.B05, "존재하지 않는 상품이 포함되어 있습니다."),
-    PRODUCT_MISMATCH(ExceptionCode.B06, "상품을 찾을 수 없습니다."),
     PRODUCT_CATEGORY_MAP_NOT_FOUND(ExceptionCode.B07, "존재하지 않는 카테고리 상품입니다."),
     PRODUCT_ITEM_NOT_FOUND(ExceptionCode.B08, "상품 옵션이 존재하지 않습니다"),
 
@@ -68,28 +66,32 @@ public enum ExceptionType {
     ORDER_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.D02, "해당 주문 상품을 찾을 수 없습니다.", ERROR),
     ORDER_HISTORY_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.D03, "해당 주문 이력을 찾을 수 없습니다.", ERROR),
     ORDER_ALREADY_COMPLETED(HttpStatus.BAD_REQUEST, ExceptionCode.D04, "구매 확정된 주문입니다.", ERROR),
+    NON_EXISTENT_PRODUCT_INCLUDE(HttpStatus.BAD_REQUEST, ExceptionCode.D05,
+            "존재하지 않는 상품이 포함되어 있습니다.", ERROR),
+    PRODUCT_MISMATCH(HttpStatus.BAD_REQUEST, ExceptionCode.D06, "상품을 찾을 수 없습니다.", ERROR),
+    DUPLICATE_PRODUCT_ITEMS(HttpStatus.BAD_REQUEST, ExceptionCode.D07, "중복된 상품 ID가 존재합니다.", ERROR),
 
     // - 결제 -
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.P01, "해당 결제 내역을 찾을 수 없습니다.", ERROR),
     PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, ExceptionCode.P02, "결제 금액과 주문 금액이 일치하지 않습니다.",
-            ERROR),
+        ERROR),
     PAYMENT_ALREADY_COMPLETED(HttpStatus.CONFLICT, ExceptionCode.P03, "이미 결제가 완료된 주문입니다.", ERROR),
     PAYMENT_ALREADY_PROCESSING(HttpStatus.CONFLICT, ExceptionCode.P04, "이미 결제가 진행 중인 주문입니다.",
-            ERROR),
+        ERROR),
     INVALID_METHOD(HttpStatus.BAD_REQUEST, ExceptionCode.P05, "유효하지 않은 결제 수단입니다.", ERROR),
     MISSING_METHOD_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.P06, "결제 수단이 선택되지 않았습니다.",
-            ERROR),
+        ERROR),
     PAYMENT_ALREADY_EXISTS(HttpStatus.CONFLICT, ExceptionCode.P07, "결제 요청이 불가능한 상태입니다.", ERROR),
     ORDER_NAME_MISMATCH(HttpStatus.BAD_REQUEST, ExceptionCode.P08, "주문명이 일치하지 않습니다.", ERROR),
 
     // - 환불 -
     REFUND_REQUEST_NOT_ALLOWED(HttpStatus.CONFLICT, ExceptionCode.R01, "환불 및 결제취소 대상이 아닙니다.",
-            ERROR),
+        ERROR),
     REFUND_REQUEST_EXPIRED(HttpStatus.BAD_REQUEST, ExceptionCode.R02, "환불 기간이 지났습니다.", ERROR),
     REFUND_ALREADY_COMPLETED(HttpStatus.CONFLICT, ExceptionCode.R03, "이미 환불이 완료된 결제입니다.", ERROR),
     REFUND_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.R07, "조회 가능한 환불정보가 없습니다.", ERROR),
     REFUND_OR_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.R08,
-            "권한이 없거나 조회 가능한 환불 정보가 없습니다.", ERROR),
+        "권한이 없거나 조회 가능한 환불 정보가 없습니다.", ERROR),
 
 
     // - 반품 -
@@ -102,7 +104,16 @@ public enum ExceptionType {
     FAQ_NOT_FOUND(ExceptionCode.F01, "존재하지 않는 FAQ 입니다."),
     FAQ_CATEGORY_NOT_FOUND(ExceptionCode.F02, "존재하지 않는 카테고리입니다."),
     FAQ_FEEDBACK_FAILED(ExceptionCode.F03, "피드백 등록에 실패했습니다."),
-    RESOURCE_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.F04, "FAQ 수정에 실패했습니다.", ERROR);
+    RESOURCE_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.F04, "FAQ 수정에 실패했습니다.", ERROR),
+
+    // - 리뷰 -
+    REVIEW_ALREADY_LIKED(ExceptionCode.G01, "이미 평가를 완료한 리뷰입니다."),
+    REVIEW_LIKE_FAILED(ExceptionCode.G02, "리뷰 평가에 실패했습니다."),
+    REVIEW_UNAUTHORIZED(ExceptionCode.G03, "리뷰에 대한 권한이 없습니다."),
+    REVIEW_CONTENT_EMPTY(ExceptionCode.G04, "리뷰 내용이 비어 있습니다."),
+    REVIEW_CREATE_FAILED(ExceptionCode.G05, "리뷰 등록에 실패했습니다."),
+    REVIEW_DELETE_FAILED(ExceptionCode.G06, "리뷰 삭제에 실패했습니다.");
+
 
     private final HttpStatus status;
 
@@ -125,5 +136,4 @@ public enum ExceptionType {
         this.message = message;
         this.logLevel = logLevel;
     }
-
 }
