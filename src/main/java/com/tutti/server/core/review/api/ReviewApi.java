@@ -3,13 +3,18 @@ package com.tutti.server.core.review.api;
 import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.review.application.ReviewCreateServiceImpl;
 import com.tutti.server.core.review.application.ReviewService;
+import com.tutti.server.core.review.application.SentimentService;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
+import com.tutti.server.core.review.payload.request.SentimentFeedbackRequest;
+import com.tutti.server.core.review.payload.request.SentimentRequest;
 import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
 import com.tutti.server.core.review.payload.response.ReviewDeleteResponse;
 import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
 import com.tutti.server.core.review.payload.response.ReviewLikeResponse;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
+import com.tutti.server.core.review.payload.response.SentimentFeedbackResponse;
+import com.tutti.server.core.review.payload.response.SentimentResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +36,19 @@ public class ReviewApi implements ReviewApiSpec {
 
     private final ReviewCreateServiceImpl reviewCreateServiceImpl;
     private final ReviewService reviewService;
+    private final SentimentService sentimentService;
+
+    @Override
+    @PostMapping("/analyze-sentiment")
+    public SentimentResponse analyzeSentiment(@RequestBody SentimentRequest request) {
+        return sentimentService.analyzeSentiment(request);
+    }
+
+    @Override
+    @PostMapping("/feedback")
+    public SentimentFeedbackResponse sendFeedback(@RequestBody SentimentFeedbackRequest request) {
+        return sentimentService.sendFeedback(request);
+    }
 
     @Override
     @PostMapping
