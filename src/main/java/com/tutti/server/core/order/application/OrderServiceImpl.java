@@ -19,7 +19,6 @@ import com.tutti.server.core.order.payload.response.OrderResponse;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
-import com.tutti.server.core.support.entity.BaseEntity;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.time.LocalDateTime;
@@ -282,9 +281,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public OrderDetailResponse getOrderDetail(Long orderId, Long memberId) {
-        // 주문 조회
-        var order = orderRepository.findByIdAndMemberIdAndDeleteStatusFalse(orderId, memberId)
-                .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
+        var order = getOrder(orderId, memberId);
 
         // 주문 상품 조회
         List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
@@ -295,10 +292,21 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void deleteOrder(Long orderId, Long memberId) {
-        orderRepository.findByIdAndMemberIdAndDeleteStatusFalse(orderId, memberId)
-                .ifPresentOrElse(BaseEntity::delete,
-                        () -> {
-                            throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);
-                        });
+        var order = getOrder(orderId, memberId);
+        order.delete();
+    }
+
+    @Override
+    @Transactional
+    public Order getOrder(Long orderId, Long memberId) {
+        // 1. 주문 존재 여부 확인
+        boolean exists = orderRepository.existsByIdAndDeleteStatusFalse(orderId);
+        if (!exists) {
+            throw new DomainException(ExceptionType.ORDER_NOT_FOUND);
+        }
+
+        // 2. 권한 확인과 함께 조회
+        return orderRepository.findByIdAndMemberIdAndDeleteStatusFalse(orderId, memberId)
+                .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
     }
 }

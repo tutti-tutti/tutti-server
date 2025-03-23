@@ -53,4 +53,6 @@ public interface OrderService {
     OrderDetailResponse getOrderDetail(Long orderId, Long memberId);
 
     void deleteOrder(Long orderId, Long memberId);
+
+    Order getOrder(Long orderId, Long memberId);
 }
