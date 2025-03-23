@@ -12,8 +12,6 @@ import lombok.Builder;
 @Builder
 public record OrderCreateRequest(
 
-        Long memberId,
-
         @NotNull
         List<OrderItemRequest> orderItems,
 

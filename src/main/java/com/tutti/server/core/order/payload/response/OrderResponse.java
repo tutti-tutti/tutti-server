@@ -8,12 +8,15 @@ import lombok.Builder;
 
 @Builder
 public record OrderResponse(
+
+        long orderId,
         String orderNumber,
         String orderName,
         LocalDateTime completedAt,
         int totalAmount,
         String orderStatus,
         List<OrderItemResponse> orderItems
+
 ) {
 
     // 주문 정보를 추출하는 메서드
@@ -23,6 +26,7 @@ public record OrderResponse(
                 .toList();
 
         return OrderResponse.builder()
+                .orderId(order.getId())
                 .orderNumber(order.getOrderNumber())
                 .orderName(order.getOrderName())
                 .completedAt(order.getCompletedAt())
