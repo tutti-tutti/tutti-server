@@ -1,7 +1,6 @@
 package com.tutti.server.core.review.application;
 
 import com.tutti.server.core.member.infrastructure.MemberRepository;
-import com.tutti.server.core.review.api.SentimentApi;
 import com.tutti.server.core.review.domain.Review;
 import com.tutti.server.core.review.infrastructure.ReviewRepository;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
@@ -17,12 +16,12 @@ public class ReviewCreateServiceImpl implements ReviewCreateService {
 
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
-    private final SentimentApi sentimentApi;
+    private final SentimentService sentimentService;
 
     @Transactional
     public ReviewCreateResponse createReview(ReviewCreateRequest req) {
         var member = memberRepository.findOne(req.memberId());
-        var sentiment = sentimentApi.analyzeSentiment(new SentimentRequest(req.content()));
+        var sentiment = sentimentService.analyzeSentiment(new SentimentRequest(req.content()));
 
         var review = Review.builder()
             .member(member)
