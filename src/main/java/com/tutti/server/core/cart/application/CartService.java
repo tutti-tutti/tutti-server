@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface CartService {
 
-    void addCartItem(CartItemCreateRequest request, Long memberId);
+    void addCartItems(CartItemCreateRequest request, Long memberId);
+
+    void validateProductItems(List<CartItemCreateRequest.CartItemRequest> requests);
 
     void createCartItem(CartItemCreateRequest.CartItemRequest request, Long memberId);
 
