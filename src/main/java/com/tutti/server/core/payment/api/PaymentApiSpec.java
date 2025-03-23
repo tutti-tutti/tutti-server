@@ -22,7 +22,7 @@ public interface PaymentApiSpec {
     void cancelPayment(PaymentCancelRequest request, CustomUserDetails user);
 
     @Operation(summary = "paymentId로 결제 조회", description = "특정 회원 ID를 기반으로 결제 내역을 조회하는 API")
-    PaymentViewResponse getPaymentIdViewPayments(Long memberId, CustomUserDetails user);
+    PaymentViewResponse getPaymentIdViewPayments(Long paymentId, CustomUserDetails user);
 
     @Operation(summary = "주문 ID로 결제 조회", description = "특정 주문 ID를 기반으로 결제 내역을 조회하는 API")
     PaymentViewResponse getPaymentsViewOrderId(Long orderId, CustomUserDetails user);
