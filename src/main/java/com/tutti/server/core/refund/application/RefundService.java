@@ -1,11 +1,11 @@
 package com.tutti.server.core.refund.application;
 
-import com.tutti.server.core.payment.payload.PaymentCancelRequest;
+import com.tutti.server.core.payment.payload.request.PaymentCancelRequest;
 import com.tutti.server.core.refund.payload.RefundViewResponse;
 
 public interface RefundService {
 
-    void requestRefund(PaymentCancelRequest request);
+    void requestRefund(PaymentCancelRequest request, Long AuthMemberId);
 
-    RefundViewResponse getRefundView(Long orderId, Long memberId);
+    RefundViewResponse getRefundView(Long orderId, Long AuthMemberId);
 }
