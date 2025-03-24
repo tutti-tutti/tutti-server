@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 public enum ExceptionType {
 
     DEFAULT_ERROR(INTERNAL_SERVER_ERROR, ExceptionCode.E500, "알 수 없는 이유로 서버에서 요청을 처리할 수 없습니다.",
-        ERROR),
+            ERROR),
     UNAUTHORIZED_ERROR(HttpStatus.UNAUTHORIZED, ExceptionCode.E401, "권한이 없습니다", INFO),
 
     //Global
@@ -49,6 +49,7 @@ public enum ExceptionType {
     INVALID_JWT_SIGNATURE(ExceptionCode.A43, "JWT 서명이 유효하지 않습니다."),
     JWT_CREATION_FAILED(ExceptionCode.A44, "JWT 토큰 생성에 실패했습니다."),
     MISSING_AUTH_HEADER(ExceptionCode.A45, "Authorization 헤더가 필요합니다."),
+    TOKEN_LOGGED_OUT(ExceptionCode.A46, "이미 로그아웃된 토큰입니다."),
 
     // - 상품 -
     PRODUCT_NOT_FOUND(ExceptionCode.B01, "존재하지 않는 상품입니다."),
@@ -74,13 +75,13 @@ public enum ExceptionType {
     // - 결제 -
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.P01, "해당 결제 내역을 찾을 수 없습니다.", ERROR),
     PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, ExceptionCode.P02, "결제 금액과 주문 금액이 일치하지 않습니다.",
-        ERROR),
+            ERROR),
     PAYMENT_ALREADY_COMPLETED(HttpStatus.CONFLICT, ExceptionCode.P03, "이미 결제가 완료된 주문입니다.", ERROR),
     PAYMENT_ALREADY_PROCESSING(HttpStatus.CONFLICT, ExceptionCode.P04, "이미 결제가 진행 중인 주문입니다.",
-        ERROR),
+            ERROR),
     INVALID_METHOD(HttpStatus.BAD_REQUEST, ExceptionCode.P05, "유효하지 않은 결제 수단입니다.", ERROR),
     MISSING_METHOD_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.P06, "결제 수단이 선택되지 않았습니다.",
-        ERROR),
+            ERROR),
     PAYMENT_ALREADY_EXISTS(HttpStatus.CONFLICT, ExceptionCode.P07, "결제 요청이 불가능한 상태입니다.", ERROR),
     ORDER_NAME_MISMATCH(HttpStatus.BAD_REQUEST, ExceptionCode.P08, "주문명이 일치하지 않습니다.", ERROR),
     TOSS_ERROR(HttpStatus.BAD_REQUEST, ExceptionCode.T1, "토스페이먼츠가 응답하지 않습니다. 잠시 후 다시 시도해주세요.",
@@ -91,12 +92,12 @@ public enum ExceptionType {
 
     // - 환불 -
     REFUND_REQUEST_NOT_ALLOWED(HttpStatus.CONFLICT, ExceptionCode.R01, "환불 및 결제취소 대상이 아닙니다.",
-        ERROR),
+            ERROR),
     REFUND_REQUEST_EXPIRED(HttpStatus.BAD_REQUEST, ExceptionCode.R02, "환불 기간이 지났습니다.", ERROR),
     REFUND_ALREADY_COMPLETED(HttpStatus.CONFLICT, ExceptionCode.R03, "이미 환불이 완료된 결제입니다.", ERROR),
     REFUND_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.R07, "조회 가능한 환불정보가 없습니다.", ERROR),
     REFUND_OR_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.R08,
-        "권한이 없거나 조회 가능한 환불 정보가 없습니다.", ERROR),
+            "권한이 없거나 조회 가능한 환불 정보가 없습니다.", ERROR),
 
 
     // - 반품 -

@@ -9,6 +9,7 @@ import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class AuthServiceImpl implements AuthServiceSpec {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
+    private final StringRedisTemplate redisTemplate;
 
     @Override
     public Map<String, String> login(LoginRequest request) {
@@ -60,6 +62,10 @@ public class AuthServiceImpl implements AuthServiceSpec {
 
     @Override
     public Map<String, String> updateAccessToken(String refreshToken) {
+
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(refreshToken))) {
+            throw new DomainException(ExceptionType.TOKEN_LOGGED_OUT);
+        }
 
         if (!jwtUtil.isRefreshToken(refreshToken) || !jwtUtil.validateRefreshToken(refreshToken)) {
             throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
