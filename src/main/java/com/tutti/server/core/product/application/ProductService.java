@@ -8,4 +8,6 @@ public interface ProductService {
     public List<ProductResponse> getAllProductsByCategory(Long categoryId);
 
     public List<ProductResponse> getAllProductsByCreated();
+
+    public List<ProductResponse> getDetailProductItem(Long productId);
 }

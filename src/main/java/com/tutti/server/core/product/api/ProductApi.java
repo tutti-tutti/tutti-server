@@ -5,6 +5,7 @@ import com.tutti.server.core.product.payload.response.ProductResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,4 +22,10 @@ public class ProductApi implements ProductApiSpec {
         return productService.getAllProductsByCreated();
     }
 
+    @Override
+    @GetMapping("/{productId}")
+    public List<ProductResponse> getAllProductsByCategory(
+            @PathVariable(name = "productId") long productId) {
+        return productService.getDetailProductItem(productId);
+    }
 }

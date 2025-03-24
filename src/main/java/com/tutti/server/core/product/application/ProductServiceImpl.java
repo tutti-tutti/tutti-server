@@ -45,6 +45,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductResponse> getDetailProductItem(Long productId) {
+        return List.of();
+    }
+
+    @Override
     public List<ProductResponse> getAllProductsByCategory(Long categoryId) {
         List<Product> products = productRepository.findProductsByCategoryId(categoryId);
 
