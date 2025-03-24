@@ -1,6 +1,7 @@
 package com.tutti.server.core.review.domain;
 
 import com.tutti.server.core.member.domain.Member;
+import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,8 +24,9 @@ import org.hibernate.annotations.CreationTimestamp;
 @Builder
 public class Review extends BaseEntity {
 
-    @Column(name = "product_id", nullable = false)
-    private long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_item_id", nullable = false)
+    private ProductItem productItem;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)

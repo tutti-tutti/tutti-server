@@ -12,8 +12,8 @@ public record ReviewResponse(
     @Schema(description = "리뷰 ID", example = "1")
     long id,
 
-    @Schema(description = "상품 ID", example = "1")
-    long productId,
+    @Schema(description = "상품 옵션 ID", example = "1")
+    Long productItemId,
 
     @Schema(description = "리뷰 작성자 닉네임", example = "tutti")
     String nickname,
@@ -46,7 +46,7 @@ public record ReviewResponse(
 
         return new ReviewResponse(
             review.getId(),
-            review.getProductId(),
+            review.getProductItem().getId(),
             review.getNickname(),
             review.getContent(),
             review.getRating(),
