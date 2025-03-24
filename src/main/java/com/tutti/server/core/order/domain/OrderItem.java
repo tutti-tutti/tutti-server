@@ -1,6 +1,7 @@
 package com.tutti.server.core.order.domain;
 
 import com.tutti.server.core.product.domain.ProductItem;
+import com.tutti.server.core.store.domain.Store;
 import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,6 +24,12 @@ public class OrderItem extends BaseEntity {
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    private Store store;
+
+    private String storeName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_item_id", nullable = false)
     private ProductItem productItem;
 
@@ -36,10 +43,13 @@ public class OrderItem extends BaseEntity {
     private int price;
 
     @Builder
-    public OrderItem(Order order, ProductItem productItem, String productName, String productImgUrl,
-            String firstOptionName, String firstOptionValue, String secondOptionName,
-            String secondOptionValue, int quantity, int price) {
+    public OrderItem(Order order, Store store, String storeName, ProductItem productItem,
+            String productName, String productImgUrl, String firstOptionName,
+            String firstOptionValue, String secondOptionName, String secondOptionValue,
+            int quantity, int price) {
         this.order = order;
+        this.store = store;
+        this.storeName = storeName;
         this.productItem = productItem;
         this.productName = productName;
         this.productImgUrl = productImgUrl;

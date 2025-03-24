@@ -25,14 +25,16 @@ public class Delivery extends BaseEntity {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "carrier_id", nullable = false)
-    private Carrier carrier;
+    @Column(length = 50)
+    private String carrierName;
+
+    @Column(length = 20)
+    private String carrierContact;
 
     @Column(length = 50)
     private String trackingNumber;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 50)
     private DeliveryStatus deliveryStatus;
 
     private LocalDate expectedAt;
@@ -56,12 +58,13 @@ public class Delivery extends BaseEntity {
     private String note;
 
     @Builder
-    public Delivery(Order order, Carrier carrier, String trackingNumber,
+    public Delivery(Order order, String carrierName, String carrierContact, String trackingNumber,
             DeliveryStatus deliveryStatus, LocalDate expectedAt, LocalDateTime departedAt,
             LocalDateTime deliveredAt, String destinationName, String recipientName,
             String recipientPhone, String recipientAddress, String zipcode, String note) {
         this.order = order;
-        this.carrier = carrier;
+        this.carrierName = "tutti_carrier";
+        this.carrierContact = "Tel) tutti-tutti";
         this.trackingNumber = trackingNumber;
         this.deliveryStatus = deliveryStatus;
         this.expectedAt = expectedAt;
