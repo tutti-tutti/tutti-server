@@ -1,19 +1,19 @@
 package com.tutti.server.core.cart.application;
 
 import com.tutti.server.core.cart.domain.CartItem;
-import com.tutti.server.core.cart.payload.request.CartItemCreateRequest;
-import com.tutti.server.core.cart.payload.response.CartItemsResponse;
+import com.tutti.server.core.cart.payload.request.CartItemsCreateRequest;
+import com.tutti.server.core.cart.payload.response.CartItemResponse;
 import java.util.List;
 
 public interface CartService {
 
-    void addCartItems(CartItemCreateRequest request, Long memberId);
+    void addCartItems(CartItemsCreateRequest request, Long memberId);
 
-    void validateProductItems(List<CartItemCreateRequest.CartItemRequest> requests);
+    void validateProductItems(List<CartItemsCreateRequest.CartItemRequest> requests);
 
-    void createCartItem(CartItemCreateRequest.CartItemRequest request, Long memberId);
+    void createCartItem(CartItemsCreateRequest.CartItemRequest request, Long memberId);
 
-    List<CartItemsResponse> getCartItems(Long memberId);
+    List<CartItemResponse> getCartItems(Long memberId);
 
     void removeCartItem(Long cartItemId, Long memberId);
 

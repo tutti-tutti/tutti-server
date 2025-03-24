@@ -18,20 +18,20 @@ public interface OrderService {
 
     OrderPageResponse getOrderPage(OrderPageRequest request);
 
-    List<OrderItemResponse> createOrderItemResponses(
-        List<OrderItemRequest> requests);
-
     void validateProductItems(List<OrderItemRequest> requests);
 
     int calculateTotalProductAmount(
-        List<OrderItemRequest> requests);
+            List<OrderItemRequest> requests);
 
     int calculateTotalDiscountAmount(
-        List<OrderItemRequest> requests);
+            List<OrderItemRequest> requests);
 
     int calculateOrderTotal(
-        List<OrderItemRequest> requests,
-        BiFunction<ProductItem, Integer, Integer> calculator);
+            List<OrderItemRequest> requests,
+            BiFunction<ProductItem, Integer, Integer> calculator);
+
+    List<OrderItemResponse> createOrderItemResponses(
+            List<OrderItemRequest> requests);
 
     PaymentRequest createOrder(OrderCreateRequest request, Long memberId);
 
@@ -40,7 +40,7 @@ public interface OrderService {
     String generateOrderName(OrderCreateRequest request);
 
     void createOrderItems(Order order,
-        List<OrderItemRequest> requests);
+            List<OrderItemRequest> requests);
 
     void createOrderHistory(Order order, CreatedByType createdByType, long createdById);
 
