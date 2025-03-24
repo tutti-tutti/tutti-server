@@ -1,7 +1,7 @@
 package com.tutti.server.core.cart.api;
 
 import com.tutti.server.core.cart.application.CartService;
-import com.tutti.server.core.cart.payload.request.CartItemCreateRequest;
+import com.tutti.server.core.cart.payload.request.CartItemsCreateRequest;
 import com.tutti.server.core.cart.payload.response.CartItemResponse;
 import com.tutti.server.core.member.application.CustomUserDetails;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ public class CartApi implements CartApiSpec {
 
     @Override
     @PostMapping
-    public void addCartItems(@RequestBody @Valid CartItemCreateRequest request,
+    public void addCartItems(@RequestBody @Valid CartItemsCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails user) {
         cartService.addCartItems(request, user.getMemberId());
     }

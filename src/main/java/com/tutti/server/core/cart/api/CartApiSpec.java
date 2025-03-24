@@ -1,6 +1,6 @@
 package com.tutti.server.core.cart.api;
 
-import com.tutti.server.core.cart.payload.request.CartItemCreateRequest;
+import com.tutti.server.core.cart.payload.request.CartItemsCreateRequest;
 import com.tutti.server.core.cart.payload.response.CartItemResponse;
 import com.tutti.server.core.member.application.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +14,7 @@ import java.util.List;
 public interface CartApiSpec {
 
     @Operation(summary = "장바구니 상품 추가")
-    void addCartItems(CartItemCreateRequest request, CustomUserDetails user);
+    void addCartItems(CartItemsCreateRequest request, CustomUserDetails user);
 
     @Operation(summary = "장바구니 상품 조회")
     List<CartItemResponse> getCartItems(CustomUserDetails user);

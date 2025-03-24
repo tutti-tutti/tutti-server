@@ -2,8 +2,8 @@ package com.tutti.server.core.cart.application;
 
 import com.tutti.server.core.cart.domain.CartItem;
 import com.tutti.server.core.cart.infrastructure.CartItemRepository;
-import com.tutti.server.core.cart.payload.request.CartItemCreateRequest;
-import com.tutti.server.core.cart.payload.request.CartItemCreateRequest.CartItemRequest;
+import com.tutti.server.core.cart.payload.request.CartItemsCreateRequest;
+import com.tutti.server.core.cart.payload.request.CartItemsCreateRequest.CartItemRequest;
 import com.tutti.server.core.cart.payload.response.CartItemResponse;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.domain.ProductItem;
@@ -29,11 +29,11 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     // 기존 장바구니 상품이 있는지 확인하고, 없으면 새로 생성하는 메서드
-    public void addCartItems(CartItemCreateRequest request, Long memberId) {
+    public void addCartItems(CartItemsCreateRequest request, Long memberId) {
         // 상품 조회 및 중복 검증
         validateProductItems(request.cartItems());
 
-        for (CartItemCreateRequest.CartItemRequest item : request.cartItems()) {
+        for (CartItemsCreateRequest.CartItemRequest item : request.cartItems()) {
             cartItemRepository.findByMemberIdAndProductItemIdAndDeleteStatusFalse(memberId,
                             item.productItemId())
                     // 이미 장바구니에 해당 상품이 있다면 수량만 업데이트
@@ -49,7 +49,7 @@ public class CartServiceImpl implements CartService {
     public void validateProductItems(List<CartItemRequest> requests) {
         // 상품 아이템 ID 목록
         List<Long> productItemIds = requests.stream()
-                .map(CartItemCreateRequest.CartItemRequest::productItemId)
+                .map(CartItemsCreateRequest.CartItemRequest::productItemId)
                 .toList();
 
         // 중복 상품 ID 검증
@@ -76,7 +76,7 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     // 장바구니 상품을 엔티티로 저장하는 메서드
-    public void createCartItem(CartItemCreateRequest.CartItemRequest request, Long memberId) {
+    public void createCartItem(CartItemsCreateRequest.CartItemRequest request, Long memberId) {
         var member = memberRepository.findOne(memberId);
         var productItem = productItemRepository.findOne(request.productItemId());
 
