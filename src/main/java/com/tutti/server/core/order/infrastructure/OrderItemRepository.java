@@ -11,13 +11,13 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
     default OrderItem findOne(Long id) {
         return findById(id)
-            .orElseThrow(() -> new DomainException(ExceptionType.ORDER_ITEM_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ExceptionType.ORDER_ITEM_NOT_FOUND));
     }
 
     List<OrderItem> findAllByOrderId(Long orderId);
 
     @Query("SELECT COUNT(oi) > 0 FROM OrderItem oi " +
-        "WHERE oi.order.member.id = :memberId AND oi.productItem.id = :productItemId")
+            "WHERE oi.order.member.id = :memberId AND oi.productItem.id = :productItemId")
     boolean existsByOrderMemberIdAndProductItemId(Long memberId, Long productItemId);
 
 }

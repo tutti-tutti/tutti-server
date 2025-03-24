@@ -28,20 +28,20 @@ public class ProductServiceImpl implements ProductService {
 
         // ProductResponse 리스트로 변환
         return products.stream()
-            .map(product -> {
-                // 해당 상품의 ProductItem 중 가장 낮은 판매가격을 가진 항목 찾기
-                ProductItem lowestPriceItem = productItemRepository
-                    .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
-                    .orElseThrow(() -> new DomainException(
-                        ExceptionType.PRODUCT_ITEM_NOT_FOUND));
+                .map(product -> {
+                    // 해당 상품의 ProductItem 중 가장 낮은 판매가격을 가진 항목 찾기
+                    ProductItem lowestPriceItem = productItemRepository
+                            .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
+                            .orElseThrow(() -> new DomainException(
+                                    ExceptionType.PRODUCT_ITEM_NOT_FOUND));
 
-                return ProductResponse.fromEntity(
-                    product,
-                    lowestPriceItem,
-                    product.getStoreId()
-                );
-            })
-            .collect(Collectors.toList());
+                    return ProductResponse.fromEntity(
+                            product,
+                            lowestPriceItem,
+                            product.getStoreId()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -49,25 +49,25 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findProductsByCategoryId(categoryId);
 
         return products.stream()
-            .map(product -> {
-                ProductItem lowestPriceItem = productItemRepository
-                    .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
-                    .orElseThrow(() -> new DomainException(
-                        ExceptionType.PRODUCT_ITEM_NOT_FOUND));
+                .map(product -> {
+                    ProductItem lowestPriceItem = productItemRepository
+                            .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
+                            .orElseThrow(() -> new DomainException(
+                                    ExceptionType.PRODUCT_ITEM_NOT_FOUND));
 
-                return ProductResponse.fromEntity(
-                    product,
-                    lowestPriceItem,
-                    product.getStoreId()
-                );
-            })
-            .collect(Collectors.toList());
+                    return ProductResponse.fromEntity(
+                            product,
+                            lowestPriceItem,
+                            product.getStoreId()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
     public ProductItem getProductItemById(Long productItemId) {
         return productItemRepository.findById(productItemId)
-            .orElseThrow(() -> new DomainException(
-                ExceptionType.PRODUCT_ITEM_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(
+                        ExceptionType.PRODUCT_ITEM_NOT_FOUND));
     }
 }
