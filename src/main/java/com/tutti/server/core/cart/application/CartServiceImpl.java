@@ -4,7 +4,7 @@ import com.tutti.server.core.cart.domain.CartItem;
 import com.tutti.server.core.cart.infrastructure.CartItemRepository;
 import com.tutti.server.core.cart.payload.request.CartItemCreateRequest;
 import com.tutti.server.core.cart.payload.request.CartItemCreateRequest.CartItemRequest;
-import com.tutti.server.core.cart.payload.response.CartItemsResponse;
+import com.tutti.server.core.cart.payload.response.CartItemResponse;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
@@ -86,10 +86,10 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CartItemsResponse> getCartItems(Long memberId) {
+    public List<CartItemResponse> getCartItems(Long memberId) {
         return cartItemRepository.findAllByMemberIdAndDeleteStatusFalse(memberId)
                 .stream()
-                .map(CartItemsResponse::fromEntity)
+                .map(CartItemResponse::fromEntity)
                 .toList();
     }
 

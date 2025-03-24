@@ -2,7 +2,7 @@ package com.tutti.server.core.cart.application;
 
 import com.tutti.server.core.cart.domain.CartItem;
 import com.tutti.server.core.cart.payload.request.CartItemCreateRequest;
-import com.tutti.server.core.cart.payload.response.CartItemsResponse;
+import com.tutti.server.core.cart.payload.response.CartItemResponse;
 import java.util.List;
 
 public interface CartService {
@@ -13,7 +13,7 @@ public interface CartService {
 
     void createCartItem(CartItemCreateRequest.CartItemRequest request, Long memberId);
 
-    List<CartItemsResponse> getCartItems(Long memberId);
+    List<CartItemResponse> getCartItems(Long memberId);
 
     void removeCartItem(Long cartItemId, Long memberId);
 
