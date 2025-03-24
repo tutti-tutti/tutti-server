@@ -16,7 +16,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
     List<OrderItem> findAllByOrderId(Long orderId);
 
-    @Query("SELECT oi FROM OrderItem oi " +
+    @Query("SELECT COUNT(oi) > 0 FROM OrderItem oi " +
             "WHERE oi.order.member.id = :memberId AND oi.productItem.id = :productItemId")
     boolean existsByOrderMemberIdAndProductItemId(Long memberId, Long productItemId);
 }

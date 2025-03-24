@@ -28,7 +28,6 @@ public class ReviewCreateServiceImpl implements ReviewCreateService {
     @Transactional
     public ReviewCreateResponse createReview(ReviewCreateRequest req, Long memberId) {
 
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!" + memberId);
         boolean exists = orderItemRepository.existsByOrderMemberIdAndProductItemId(memberId,
                 req.productItemId());
         if (!exists) {
