@@ -26,6 +26,11 @@ public class LogoutServiceImpl implements LogoutServiceSpec {
             throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
         }
 
+        Boolean alreadyLoggedOut = redisTemplate.hasKey(token);
+        if (Boolean.TRUE.equals(alreadyLoggedOut)) {
+            throw new DomainException(ExceptionType.TOKEN_LOGGED_OUT);
+        }
+
         Date expiration = Jwts.parser()
                 .verifyWith(jwtUtil.getSecretKey())
                 .build()
