@@ -8,4 +8,6 @@ public interface AuthServiceSpec {
     Map<String, String> login(LoginRequest request);
 
     Map<String, String> updateAccessToken(String refreshToken);
+
+    void withdrawMember(String refreshToken, String password);
 }
