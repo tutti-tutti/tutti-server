@@ -77,30 +77,6 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
-    public List<OrderItemResponse> createOrderItemResponses(
-            List<OrderItemRequest> requests) {
-
-        return requests.stream()
-                .map(request -> {
-                    ProductItem productItem = productItemRepository.findOne(
-                            request.productItemId());
-                    Product product = productItem.getProduct();
-
-                    return OrderItemResponse.builder()
-                            .productItemId(productItem.getId())
-                            .productName(product.getName())
-                            .productImgUrl(product.getTitleUrl())
-                            .firstOptionName(productItem.getFirstOptionName())
-                            .firstOptionValue(productItem.getFirstOptionValue())
-                            .secondOptionName(productItem.getSecondOptionName())
-                            .secondOptionValue(productItem.getSecondOptionValue())
-                            .quantity(request.quantity())
-                            .price(productItem.getSellingPrice())
-                            .build();
-                })
-                .toList();
-    }
-
     @Override
     public void validateProductItems(
             List<OrderItemRequest> requests) {
@@ -151,6 +127,7 @@ public class OrderServiceImpl implements OrderService {
      * @param calculator 계산 로직을 담당하는 함수형 인터페이스
      * @return 계산된 총액
      */
+    @Override
     public int calculateOrderTotal(
             List<OrderItemRequest> requests,
             BiFunction<ProductItem, Integer, Integer> calculator) {
@@ -163,6 +140,31 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return total;
+    }
+
+    @Override
+    public List<OrderItemResponse> createOrderItemResponses(
+            List<OrderItemRequest> requests) {
+
+        return requests.stream()
+                .map(request -> {
+                    ProductItem productItem = productItemRepository.findOne(
+                            request.productItemId());
+                    Product product = productItem.getProduct();
+
+                    return OrderItemResponse.builder()
+                            .productItemId(productItem.getId())
+                            .productName(product.getName())
+                            .productImgUrl(product.getTitleUrl())
+                            .firstOptionName(productItem.getFirstOptionName())
+                            .firstOptionValue(productItem.getFirstOptionValue())
+                            .secondOptionName(productItem.getSecondOptionName())
+                            .secondOptionValue(productItem.getSecondOptionValue())
+                            .quantity(request.quantity())
+                            .price(productItem.getSellingPrice())
+                            .build();
+                })
+                .toList();
     }
 
     @Override
