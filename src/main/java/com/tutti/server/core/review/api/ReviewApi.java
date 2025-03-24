@@ -13,6 +13,7 @@ import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
 import com.tutti.server.core.review.payload.response.ReviewLikeResponse;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
+import com.tutti.server.core.review.payload.response.ReviewRatingResponse;
 import com.tutti.server.core.review.payload.response.SentimentFeedbackResponse;
 import com.tutti.server.core.review.payload.response.SentimentResponse;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -120,6 +121,15 @@ public class ReviewApi implements ReviewApiSpec {
     ) {
         Long memberId = user.getMemberId();
         ReviewLikeResponse response = reviewService.likeReview(reviewId, memberId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/{productId}/average")
+    public ResponseEntity<ReviewRatingResponse> ratingAverage(
+            @PathVariable Long productId
+    ) {
+        ReviewRatingResponse response = reviewService.reviewRating(productId);
         return ResponseEntity.ok(response);
     }
 }

@@ -9,6 +9,7 @@ import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
 import com.tutti.server.core.review.payload.response.ReviewLikeResponse;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
+import com.tutti.server.core.review.payload.response.ReviewRatingResponse;
 import com.tutti.server.core.review.payload.response.SentimentFeedbackResponse;
 import com.tutti.server.core.review.payload.response.SentimentResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,31 +22,31 @@ import org.springframework.http.ResponseEntity;
 public interface ReviewApiSpec {
 
     @Operation(
-        summary = "감성 분석 요청",
-        description = "리뷰 텍스트를 FastAPI 감성 분석 모델에 전달하여, "
-            + "긍정 또는 부정으로 분류하고 신뢰도를 반환합니다."
+            summary = "감성 분석 요청 API",
+            description = "리뷰 텍스트를 FastAPI 감성 분석 모델에 전달하여, "
+                    + "긍정 또는 부정으로 분류하고 신뢰도를 반환합니다."
     )
     SentimentResponse analyzeSentiment(
-        @RequestBody(description = "감성 분석 요청 본문") SentimentRequest request
+            @RequestBody(description = "감성 분석 요청 본문") SentimentRequest request
     );
 
     @Operation(
-        summary = "감성 분석 피드백 요청",
-        description = "사용자의 피드백을 기반으로 감성 분석 모델을 재학습합니다."
-            + "예측이 올바르다면 'Correct', 잘못되었다면 'Incorrect' 값을 전달해 주세요."
+            summary = "감성 분석 피드백 요청 API",
+            description = "사용자의 피드백을 기반으로 감성 분석 모델을 재학습합니다."
+                    + "예측이 올바르다면 'Correct', 잘못되었다면 'Incorrect' 값을 전달해 주세요."
     )
     SentimentFeedbackResponse sendFeedback(
-        @RequestBody(description = "피드백 요청 본문") SentimentFeedbackRequest request
+            @RequestBody(description = "피드백 요청 본문") SentimentFeedbackRequest request
     );
 
     @Operation(summary = "리뷰 작성 API")
     @SecurityRequirement(name = "Bearer Authentication")
     ResponseEntity<String> createReview(
-        ReviewCreateRequest reviewCreateRequest, CustomUserDetails user);
+            ReviewCreateRequest reviewCreateRequest, CustomUserDetails user);
 
     @Operation(summary = "리뷰 목록 조회 API")
     ResponseEntity<ReviewListResponse> getReviewList(Long productId, Long cursor, int size,
-        String sort);
+            String sort);
 
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "리뷰 상세 조회 API")
@@ -60,4 +61,7 @@ public interface ReviewApiSpec {
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "리뷰 도움이 되었어요 API")
     ResponseEntity<ReviewLikeResponse> likeReview(Long id, CustomUserDetails user);
+
+    @Operation(summary = "리뷰 별점 평균 API")
+    ResponseEntity<ReviewRatingResponse> ratingAverage(Long productId);
 }
