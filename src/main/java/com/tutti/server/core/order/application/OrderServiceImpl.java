@@ -303,10 +303,4 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findByIdAndMemberIdAndDeleteStatusFalse(orderId, memberId)
                 .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
     }
-
-    // 사용자가 특정 상품을 구매했는지 확인하는 메서드
-    public boolean hasPurchasedProduct(Long memberId, Long productItemId) {
-        return orderItemRepository.existsByOrderMemberIdAndProductItemId(memberId,
-            productItemId);
-    }
 }

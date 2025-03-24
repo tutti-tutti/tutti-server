@@ -1,8 +1,8 @@
 package com.tutti.server.core.review.application;
 
 import com.tutti.server.core.member.infrastructure.MemberRepository;
-import com.tutti.server.core.order.application.OrderService;
-import com.tutti.server.core.product.application.ProductService;
+import com.tutti.server.core.order.infrastructure.OrderItemRepository;
+import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.review.domain.Review;
 import com.tutti.server.core.review.infrastructure.ReviewRepository;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
@@ -21,32 +21,34 @@ public class ReviewCreateServiceImpl implements ReviewCreateService {
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final SentimentService sentimentService;
-    private final ProductService productService;
-    private final OrderService orderService;
+    private final OrderItemRepository orderItemRepository;
+    private final ProductItemRepository productItemRepository;
 
+    @Override
     @Transactional
-    public ReviewCreateResponse createReview(ReviewCreateRequest req) {
+    public ReviewCreateResponse createReview(ReviewCreateRequest req, Long memberId) {
 
-        boolean hasPurchasedProduct = orderService.hasPurchasedProduct(req.memberId(),
-            req.productItemId());
-        if (!hasPurchasedProduct) {
-            throw new DomainException(ExceptionType.ORDER_ITEM_NOT_FOUND, "주문 내역이 존재하지 않습니다.");
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!" + memberId);
+        boolean exists = orderItemRepository.existsByOrderMemberIdAndProductItemId(memberId,
+                req.productItemId());
+        if (!exists) {
+            throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);
         }
 
-        var member = memberRepository.findOne(req.memberId());
+        var member = memberRepository.findOne(memberId);
         var sentiment = sentimentService.analyzeSentiment(new SentimentRequest(req.content()));
-        var productItem = productService.getProductItemById(req.productItemId());
+        var productItem = productItemRepository.findOne(req.productItemId());
 
         var review = Review.builder()
-            .member(member)
-            .productItem(productItem)
-            .nickname(req.nickname())
-            .rating(req.rating())
-            .content(req.content())
-            .reviewImageUrls(String.join(",", req.reviewImages()))
-            .sentiment(sentiment.sentiment())
-            .sentimentProbability(sentiment.probability())
-            .build();
+                .member(member)
+                .productItem(productItem)
+                .nickname(req.nickname())
+                .rating(req.rating())
+                .content(req.content())
+                .reviewImageUrls(String.join(",", req.reviewImages()))
+                .sentiment(sentiment.sentiment())
+                .sentimentProbability(sentiment.probability())
+                .build();
         reviewRepository.save(review);
 
         return ReviewCreateResponse.from(review);

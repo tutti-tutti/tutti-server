@@ -51,6 +51,4 @@ public interface OrderService {
     void deleteOrder(Long orderId, Long memberId);
 
     Order getOrder(Long orderId, Long memberId);
-
-    boolean hasPurchasedProduct(Long memberId, Long productItemId);
 }

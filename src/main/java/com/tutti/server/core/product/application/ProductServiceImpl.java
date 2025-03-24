@@ -63,11 +63,4 @@ public class ProductServiceImpl implements ProductService {
                 })
                 .collect(Collectors.toList());
     }
-
-    @Override
-    public ProductItem getProductItemById(Long productItemId) {
-        return productItemRepository.findById(productItemId)
-                .orElseThrow(() -> new DomainException(
-                        ExceptionType.PRODUCT_ITEM_NOT_FOUND));
-    }
 }
