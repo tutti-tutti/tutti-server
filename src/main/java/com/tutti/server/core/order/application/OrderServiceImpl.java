@@ -1,5 +1,6 @@
 package com.tutti.server.core.order.application;
 
+import com.tutti.server.core.delivery.infrastructure.DeliveryRepository;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.order.domain.CreatedByType;
@@ -43,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final ProductItemRepository productItemRepository;
     private final OrderHistoryRepository orderHistoryRepository;
+    private final DeliveryRepository deliveryRepository;
 
     @Override
     @Transactional
@@ -146,6 +148,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderItemResponse> createOrderItemResponses(
             List<OrderItemRequest> requests) {
 
+        // 여기는 OrderItem 이 생성되기 전이라는 것을 명심하자
         return requests.stream()
                 .map(request -> {
                     ProductItem productItem = productItemRepository.findOne(
@@ -153,6 +156,8 @@ public class OrderServiceImpl implements OrderService {
                     Product product = productItem.getProduct();
 
                     return OrderItemResponse.builder()
+                            .storeId(product.getStoreId().getId())
+                            .storeName(product.getStoreId().getName())
                             .productItemId(productItem.getId())
                             .productName(product.getName())
                             .productImgUrl(product.getTitleUrl())
@@ -179,18 +184,21 @@ public class OrderServiceImpl implements OrderService {
         // 3. 주문명 생성
         String orderName = generateOrderName(request);
 
-        // 9. 주문 생성
+        // 4. 주문 생성
         Order order = orderRepository.save(
                 request.toEntity(member, PaymentStatus.READY.name(), orderNumber,
                         orderName, request.orderItems().size(), request.totalDiscountAmount(),
                         request.totalProductAmount(), request.deliveryFee(), request.totalAmount()
                 ));
 
-        // 10. 주문 아이템 생성
+        // 5. 주문 아이템 생성
         createOrderItems(order, request.orderItems());
 
-        // 11. 주문 이력 생성
+        // 6. 주문 이력 생성
         createOrderHistory(order, CreatedByType.MEMBER, member.getId());
+
+        // 7. 배송 정보 저장
+        deliveryRepository.save(request.toEntity(order));
 
         return PaymentRequest.builder()
                 .orderNumber(order.getOrderNumber())
@@ -280,7 +288,10 @@ public class OrderServiceImpl implements OrderService {
         // 주문 상품 조회
         List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
 
-        return OrderDetailResponse.fromEntity(order, orderItems);
+        var delivery = deliveryRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new DomainException(ExceptionType.DELIVERY_NOT_FOUND));
+
+        return OrderDetailResponse.fromEntity(order, orderItems, delivery);
     }
 
     @Override
@@ -291,7 +302,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Order getOrder(Long orderId, Long memberId) {
         // 1. 주문 존재 여부 확인
         boolean exists = orderRepository.existsByIdAndDeleteStatusFalse(orderId);

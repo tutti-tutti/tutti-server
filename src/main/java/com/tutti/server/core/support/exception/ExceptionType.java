@@ -118,7 +118,10 @@ public enum ExceptionType {
     REVIEW_UNAUTHORIZED(ExceptionCode.G03, "리뷰에 대한 권한이 없습니다."),
     REVIEW_CONTENT_EMPTY(ExceptionCode.G04, "리뷰 내용이 비어 있습니다."),
     REVIEW_CREATE_FAILED(ExceptionCode.G05, "리뷰 등록에 실패했습니다."),
-    REVIEW_DELETE_FAILED(ExceptionCode.G06, "리뷰 삭제에 실패했습니다.");
+    REVIEW_DELETE_FAILED(ExceptionCode.G06, "리뷰 삭제에 실패했습니다."),
+
+    // - 배송 -
+    DELIVERY_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.H01, "존재하지 않는 배송입니다.", ERROR);
 
 
     private final HttpStatus status;
