@@ -4,7 +4,7 @@ import com.tutti.server.core.cart.domain.CartItem;
 import lombok.Builder;
 
 @Builder
-public record CartItemsResponse(
+public record CartItemResponse(
 
         Long cartItemId,
         String storeName,
@@ -22,9 +22,9 @@ public record CartItemsResponse(
         boolean soldOut
 ) {
 
-    public static CartItemsResponse fromEntity(CartItem cartItem) {
-        // 이 빌더는 CartItemsResponse 의 빌더
-        return CartItemsResponse.builder()
+    public static CartItemResponse fromEntity(CartItem cartItem) {
+        // 이 빌더는 CartItemResponse 의 빌더
+        return CartItemResponse.builder()
                 .cartItemId(cartItem.getId())
                 .storeName(cartItem.getProductItem().getProduct().getStoreId().getName())
                 .productItemId(cartItem.getProductItem().getId())

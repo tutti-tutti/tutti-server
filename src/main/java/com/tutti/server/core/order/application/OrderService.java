@@ -18,9 +18,6 @@ public interface OrderService {
 
     OrderPageResponse getOrderPage(OrderPageRequest request);
 
-    List<OrderItemResponse> createOrderItemResponses(
-            List<OrderItemRequest> requests);
-
     void validateProductItems(List<OrderItemRequest> requests);
 
     int calculateTotalProductAmount(
@@ -32,6 +29,9 @@ public interface OrderService {
     int calculateOrderTotal(
             List<OrderItemRequest> requests,
             BiFunction<ProductItem, Integer, Integer> calculator);
+
+    List<OrderItemResponse> createOrderItemResponses(
+            List<OrderItemRequest> requests);
 
     PaymentRequest createOrder(OrderCreateRequest request, Long memberId);
 

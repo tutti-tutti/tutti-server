@@ -1,5 +1,6 @@
 package com.tutti.server.core.order.payload.response;
 
+import com.tutti.server.core.delivery.domain.Delivery;
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.order.domain.OrderItem;
 import com.tutti.server.core.payment.domain.PaymentMethodType;
@@ -34,22 +35,14 @@ public record OrderDetailResponse(
         String recipientPhone,
         String recipientAddress,
         String zipCode,
-        String note,
-
-        // 판매 업체 정보
-        String storeName
+        String note
 ) {
 
-    public static OrderDetailResponse fromEntity(Order order, List<OrderItem> orderItems) {
+    public static OrderDetailResponse fromEntity(Order order, List<OrderItem> orderItems,
+            Delivery delivery) {
         List<OrderItemResponse> itemSummaries = orderItems.stream()
                 .map(OrderItemResponse::fromEntity)
                 .toList();
-
-        String productStoreName = orderItems.get(0)
-                .getProductItem()
-                .getProduct()
-                .getStoreId()
-                .getName();
 
         return OrderDetailResponse.builder()
                 .orderNumber(order.getOrderNumber())
@@ -64,7 +57,11 @@ public record OrderDetailResponse(
                 .deliveredAt(order.getDeliveredAt())
                 .completedAt(order.getCompletedAt())
                 .orderItems(itemSummaries)
-                .storeName(productStoreName)
+                .recipientName(delivery.getRecipientName())
+                .recipientPhone(delivery.getRecipientPhone())
+                .recipientAddress(delivery.getRecipientAddress())
+                .zipCode(delivery.getZipcode())
+                .note(delivery.getNote())
                 .build();
     }
 }
