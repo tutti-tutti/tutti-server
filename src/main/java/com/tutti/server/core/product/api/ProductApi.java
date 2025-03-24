@@ -1,6 +1,7 @@
 package com.tutti.server.core.product.api;
 
 import com.tutti.server.core.product.application.ProductService;
+import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class ProductApi implements ProductApiSpec {
 
     @Override
     @GetMapping("/{productId}")
-    public List<ProductResponse> getAllProductsByCategory(
+    public List<ProductItemResponse> getAllProductsByCategory(
             @PathVariable(name = "productId") long productId) {
         return productService.getDetailProductItem(productId);
     }

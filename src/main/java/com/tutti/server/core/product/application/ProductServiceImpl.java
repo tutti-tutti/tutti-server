@@ -4,7 +4,10 @@ import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
+import com.tutti.server.core.product.infrastructure.SkuRepository;
+import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
+import com.tutti.server.core.stock.domain.Sku;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import jakarta.transaction.Transactional;
@@ -20,6 +23,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductItemRepository productItemRepository;
+    private final SkuRepository skuRepository;
 
     @Override
     public List<ProductResponse> getAllProductsByCreated() {
@@ -45,9 +49,36 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> getDetailProductItem(Long productId) {
-        return List.of();
+    public List<ProductItemResponse> getDetailProductItem(Long productId) {
+        // 상품 조회
+        Product product = productRepository.findOne(productId);
+
+        // 해당 상품의 삭제되지 않은 ProductItem들 조회
+        List<ProductItem> productItems = productItemRepository.findActiveItemsByProductId(
+                productId);
+
+        if (productItems.isEmpty()) {
+            throw new DomainException(ExceptionType.PRODUCT_ITEM_NOT_FOUND);
+        }
+
+        // 해당 ProductItem들의 Sku 정보 조회
+        List<Sku> skus = skuRepository.findByProductItems(productItems);
+
+        // ProductItemResponse 생성
+        ProductItemResponse response = ProductItemResponse.fromEntity(
+                product,
+                productItems,
+                skus,
+                product.getStoreId()
+        );
+
+        return List.of(response);
     }
+
+    // firstOptionName, firstOtionValue, secondOptionName, secondOptionValue 등을 productOptionResponse로 바꿔주는 서비스
+    // 파라미터로 productId 주기 
+    // 리턴값은 ProductOptionResponse
+
 
     @Override
     public List<ProductResponse> getAllProductsByCategory(Long categoryId) {

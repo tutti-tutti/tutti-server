@@ -29,4 +29,9 @@ public interface ProductItemRepository extends JpaRepository<ProductItem, Long> 
 
     Optional<ProductItem> findFirstByProductIdOrderBySellingPriceAsc(Long productId);
 
+    @Query("SELECT pi FROM ProductItem pi " +
+           "WHERE pi.product.id = :productId " +
+           "AND pi.deleteStatus = false")
+    List<ProductItem> findActiveItemsByProductId(@Param("productId") Long productId);
+
 }

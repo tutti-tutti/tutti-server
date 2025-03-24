@@ -7,8 +7,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -20,28 +19,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Sku {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "sku_id", nullable = false)
-  private Long skuId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "sku_id", nullable = false)
+    private Long skuId;
 
-  @Column(name = "skuCode", nullable = false)
-  private String skuCode;
+    @Column(name = "sku_code", nullable = false)
+    private String skuCode;
 
-  @Column(name = "stock", nullable = false)
-  private int stock;
+    @Column(name = "stock_quantity", nullable = false)
+    private int stockQuantity;
 
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "product_item_id", nullable = false)
-  private ProductItem productItem;
+    @OneToOne(fetch = FetchType.LAZY)
+    private ProductItem productItem;
 
-  private String generateSkuCode(String category, int sequence) {
-    return category.toUpperCase() + "-" + String.format("%03d", sequence);
-  }
+    private String generateSkuCode(String category, int sequence) {
+        return category.toUpperCase() + "-" + String.format("%03d", sequence);
+    }
 }

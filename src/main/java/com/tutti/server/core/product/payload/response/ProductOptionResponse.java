@@ -1,12 +1,26 @@
 package com.tutti.server.core.product.payload.response;
 
-public record ProductOptionResponse(
+import com.tutti.server.core.product.domain.ProductItem;
+import lombok.Builder;
 
-        String name
-        // List<> values
+@Builder
+public record ProductOptionResponse(
+        Long productItemId,
+        String firstOptionName,
+        String firstOptionValue,
+        String secondOptionName,
+        String secondOptionValue,
+        int additionalPrice
 ) {
 
-    public static ProductItemResponse from() {
-        return null;
+    public static ProductOptionResponse from(ProductItem productItem) {
+        return ProductOptionResponse.builder()
+                .productItemId(productItem.getId())
+                .firstOptionName(productItem.getFirstOptionName())
+                .firstOptionValue(productItem.getFirstOptionValue())
+                .secondOptionName(productItem.getSecondOptionName())
+                .secondOptionValue(productItem.getSecondOptionValue())
+                .additionalPrice(productItem.getAdditionalPrice())
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.tutti.server.core.product.api;
 
+import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,7 +14,7 @@ public interface ProductApiSpec {
     public List<ProductResponse> getAllProductsByCreated();
 
     @Operation(summary = "상품 상세 조회")
-    public List<ProductResponse> getAllProductsByCategory(
-            @Parameter(description = "조회할 상품 상세 id", example = "50") long productId);
+    public List<ProductItemResponse> getAllProductsByCategory(
+            @Parameter(description = "조회할 상품 상세 id", example = "78") long productId);
 
 }
