@@ -5,6 +5,7 @@ import com.tutti.server.core.member.application.LogoutServiceImpl;
 import com.tutti.server.core.member.application.MemberServiceImpl;
 import com.tutti.server.core.member.payload.LoginRequest;
 import com.tutti.server.core.member.payload.SignupRequest;
+import com.tutti.server.core.member.payload.WithdrawalRequest;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -87,5 +88,26 @@ public class AuthApi implements AuthApiSpec {
         Map<String, String> tokens = authServiceImpl.updateAccessToken(refreshToken);
 
         return ResponseEntity.ok(tokens);
+    }
+
+    @Override
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PostMapping("/withdraw")
+    public ResponseEntity<String> withdraw(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+            @RequestBody @Valid WithdrawalRequest request
+    ) {
+        if (authorizationHeader == null || authorizationHeader.isBlank()) {
+            throw new DomainException(ExceptionType.MISSING_AUTH_HEADER);
+        }
+
+        if (!authorizationHeader.startsWith("Bearer ")) {
+            throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
+        }
+
+        String refreshToken = authorizationHeader.replace("Bearer ", "");
+        authServiceImpl.withdrawMember(refreshToken, request.password());
+
+        return ResponseEntity.ok("{\"message\": \"회원 탈퇴가 완료되었습니다.\"}");
     }
 }

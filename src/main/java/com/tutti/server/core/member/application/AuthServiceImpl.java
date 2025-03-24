@@ -7,6 +7,9 @@ import com.tutti.server.core.member.jwt.JWTUtil;
 import com.tutti.server.core.member.payload.LoginRequest;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
+import io.jsonwebtoken.Jwts;
+import java.time.Duration;
+import java.util.Date;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -48,11 +51,19 @@ public class AuthServiceImpl implements AuthServiceSpec {
         }
 
         // 5. JWT 토큰 생성
-        String accessToken = jwtUtil.createJwt(member.getId(), member.getEmail(),
+        String accessToken = jwtUtil.createJwt(
+                member.getId(),
+                member.getEmail(),
                 member.getMemberStatus().name(),
-                JWTUtil.ACCESS_TOKEN_EXPIRATION);
-        String refreshToken = jwtUtil.createRefreshToken(member.getId(), member.getEmail(),
-                member.getMemberStatus().name(), JWTUtil.REFRESH_TOKEN_EXPIRATION);
+                JWTUtil.ACCESS_TOKEN_EXPIRATION
+        );
+
+        String refreshToken = jwtUtil.createRefreshToken(
+                member.getId(),
+                member.getEmail(),
+                member.getMemberStatus().name(),
+                JWTUtil.REFRESH_TOKEN_EXPIRATION
+        );
 
         return Map.of(
                 "access_token", accessToken,
@@ -62,26 +73,62 @@ public class AuthServiceImpl implements AuthServiceSpec {
 
     @Override
     public Map<String, String> updateAccessToken(String refreshToken) {
-
-        if (Boolean.TRUE.equals(redisTemplate.hasKey(refreshToken))) {
-            throw new DomainException(ExceptionType.TOKEN_LOGGED_OUT);
-        }
-
-        if (!jwtUtil.isRefreshToken(refreshToken) || !jwtUtil.validateRefreshToken(refreshToken)) {
-            throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
-        }
-
-        if (jwtUtil.isExpired(refreshToken)) {
-            throw new DomainException(ExceptionType.TOKEN_EXPIRED);
-        }
+        validateRefreshToken(refreshToken);
 
         long memberId = jwtUtil.getMemberId(refreshToken);
         String email = jwtUtil.getEmail(refreshToken);
 
-        String newAccessToken = jwtUtil.createJwt(memberId, email, "ACTIVE",
-                JWTUtil.ACCESS_TOKEN_EXPIRATION);
+        String newAccessToken = jwtUtil.createJwt(
+                memberId,
+                email,
+                "ACTIVE",
+                JWTUtil.ACCESS_TOKEN_EXPIRATION
+        );
 
         return Map.of("access_token", newAccessToken);
     }
-}
 
+    @Override
+    public void withdrawMember(String refreshToken, String password) {
+        validateRefreshToken(refreshToken);
+
+        String email = jwtUtil.getEmail(refreshToken);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new DomainException(ExceptionType.MEMBER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new DomainException(ExceptionType.LOGIN_PASSWORD_MISMATCH);
+        }
+
+        member.withdraw();
+        memberRepository.save(member);
+
+        blacklistRefreshToken(refreshToken);
+    }
+
+    private void validateRefreshToken(String token) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(token))) {
+            throw new DomainException(ExceptionType.TOKEN_LOGGED_OUT);
+        }
+
+        if (!jwtUtil.isRefreshToken(token) || !jwtUtil.validateRefreshToken(token)) {
+            throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
+        }
+
+        if (jwtUtil.isExpired(token)) {
+            throw new DomainException(ExceptionType.TOKEN_EXPIRED);
+        }
+    }
+
+    private void blacklistRefreshToken(String token) {
+        Date expiration = Jwts.parser()
+                .verifyWith(jwtUtil.getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getExpiration();
+
+        long expireInMs = expiration.getTime() - System.currentTimeMillis();
+        redisTemplate.opsForValue().set(token, "logout", Duration.ofMillis(expireInMs));
+    }
+}

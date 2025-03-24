@@ -39,8 +39,9 @@ public interface ReviewApiSpec {
     );
 
     @Operation(summary = "리뷰 작성 API")
+    @SecurityRequirement(name = "Bearer Authentication")
     ResponseEntity<String> createReview(
-        ReviewCreateRequest reviewCreateRequest);
+        ReviewCreateRequest reviewCreateRequest, CustomUserDetails user);
 
     @Operation(summary = "리뷰 목록 조회 API")
     ResponseEntity<ReviewListResponse> getReviewList(Long productId, Long cursor, int size,

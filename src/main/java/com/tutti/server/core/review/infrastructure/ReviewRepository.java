@@ -21,7 +21,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 최신 리뷰 20개 조회 (초기 조회)
     @Query("""
             SELECT r FROM Review r 
-            WHERE r.productId = :productId 
+            WHERE r.productItem.product.id = :productId
             ORDER BY r.createdAt DESC
         """)
     List<Review> findFirstReviewsByProduct(
@@ -32,7 +32,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 특정 상품의 다음 리뷰 조회 (무한 스크롤 방식)
     @Query("""
             SELECT r FROM Review r 
-            WHERE r.productId = :productId 
+            WHERE r.productItem.product.id = :productId
             AND r.id < :cursor
             ORDER BY r.createdAt DESC
         """)
@@ -69,7 +69,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 특정 상품의 평점 높은 순 정렬 (초기 20개)
     @Query("""
             SELECT r FROM Review r 
-            WHERE r.productId = :productId 
+            WHERE r.productItem.product.id = :productId 
             ORDER BY r.rating DESC
         """)
     List<Review> findFirstReviewsByProductOrderByRatingDesc(
@@ -80,7 +80,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 특정 상품의 평점 높은 순 정렬 (커서 기반)
     @Query("""
             SELECT r FROM Review r 
-            WHERE r.productId = :productId 
+            WHERE r.productItem.product.id = :productId 
             AND r.id < :cursor
             ORDER BY r.rating DESC
         """)
@@ -93,7 +93,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 특정 상품의 좋아요 많은 순 정렬 (초기 20개)
     @Query("""
             SELECT r FROM Review r 
-            WHERE r.productId = :productId 
+            WHERE r.productItem.product.id = :productId 
             ORDER BY r.likeCount DESC
         """)
     List<Review> findFirstReviewsByProductOrderByLikeDesc(
@@ -104,7 +104,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 특정 상품의 좋아요 많은 순 정렬 (커서 기반)
     @Query("""
             SELECT r FROM Review r 
-            WHERE r.productId = :productId 
+            WHERE r.productItem.product.id = :productId 
             AND r.id < :cursor
             ORDER BY r.likeCount DESC
         """)

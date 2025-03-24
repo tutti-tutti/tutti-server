@@ -5,5 +5,5 @@ import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
 
 public interface ReviewCreateService {
 
-    ReviewCreateResponse createReview(ReviewCreateRequest reviewCreateRequest);
+    ReviewCreateResponse createReview(ReviewCreateRequest req, Long memberId);
 }

@@ -106,4 +106,8 @@ public class Member extends BaseEntity {
         this.password = newPassword;
     }
 
+    public void withdraw() {
+        this.memberStatus = MemberStatus.WITHDRAWN;
+    }
+
 }
