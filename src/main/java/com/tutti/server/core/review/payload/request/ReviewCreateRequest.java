@@ -12,11 +12,11 @@ public record ReviewCreateRequest(
 
     @Schema(description = "상품 ID", example = "1")
     @NotNull(message = "상품 ID는 필수입니다.")
-    long productId,
+    Long productItemId,
 
     @Schema(description = "리뷰 작성자 ID", example = "1")
     @NotNull(message = "리뷰 작성자 ID는 필수입니다.")
-    long memberId,
+    Long memberId,
 
     @Schema(description = "상품 평점 (1~5)", example = "5")
     @NotNull(message = "상품 평점은 필수입니다.")

@@ -8,6 +8,7 @@ public record ReviewCreateResponse(
     @Schema(description = "리뷰 ID", example = "1") long id,
     @Schema(description = "유저 ID", example = "1") long memberId,
     @Schema(description = "상품 ID", example = "1") long productId,
+    @Schema(description = "상품 옵션별 ID", example = "1") long productItemId,
     @Schema(description = "유저 닉네임", example = "tutti") String nickname,
     @Schema(description = "평점", example = "5") float rating,
     @Schema(description = "리뷰 내용", example = "너무 좋아요!") String content,
@@ -21,7 +22,8 @@ public record ReviewCreateResponse(
         return new ReviewCreateResponse(
             review.getId(),
             review.getMember().getId(),
-            review.getProductId(),
+            review.getProductItem().getProduct().getId(),
+            review.getProductItem().getId(),
             review.getNickname(),
             review.getRating(),
             review.getContent(),

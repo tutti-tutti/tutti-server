@@ -1,6 +1,7 @@
 package com.tutti.server.core.review.api;
 
 import com.tutti.server.core.member.application.CustomUserDetails;
+import com.tutti.server.core.product.application.ProductServiceImpl;
 import com.tutti.server.core.review.application.ReviewCreateServiceImpl;
 import com.tutti.server.core.review.application.ReviewService;
 import com.tutti.server.core.review.application.SentimentService;
@@ -37,6 +38,7 @@ public class ReviewApi implements ReviewApiSpec {
     private final ReviewCreateServiceImpl reviewCreateServiceImpl;
     private final ReviewService reviewService;
     private final SentimentService sentimentService;
+    private final ProductServiceImpl productService;
 
     @Override
     @PostMapping("/analyze-sentiment")
@@ -53,7 +55,8 @@ public class ReviewApi implements ReviewApiSpec {
     @Override
     @PostMapping
     public ResponseEntity<String> createReview(
-        @RequestBody ReviewCreateRequest reviewCreateRequest) {
+        @RequestBody ReviewCreateRequest reviewCreateRequest,
+        @AuthenticationPrincipal CustomUserDetails user) {
         try {
             ReviewCreateResponse review = reviewCreateServiceImpl.createReview(reviewCreateRequest);
             return ResponseEntity.ok("리뷰 작성이 완료되었습니다.");
