@@ -6,6 +6,7 @@ import com.tutti.server.core.member.application.PasswordChangeServiceImpl;
 import com.tutti.server.core.member.application.PasswordResetServiceImpl;
 import com.tutti.server.core.member.payload.PasswordChangeRequest;
 import com.tutti.server.core.member.payload.PasswordResetRequest;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class PasswordApi implements PasswordApiSpec {
     private final PasswordResetServiceImpl passwordResetServiceImpl;
 
     @Override
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/password/change")
     public ResponseEntity<Map<String, String>> changePassword(
             @RequestBody @Valid PasswordChangeRequest request,
