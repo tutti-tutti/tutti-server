@@ -15,102 +15,106 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     default Review findOne(Long id) {
         return findById(id)
-            .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_REVIEW_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_REVIEW_NOT_FOUND));
     }
 
     // 최신 리뷰 20개 조회 (초기 조회)
     @Query("""
-            SELECT r FROM Review r 
-            WHERE r.productItem.product.id = :productId
-            ORDER BY r.createdAt DESC
-        """)
+                SELECT r FROM Review r 
+                WHERE r.productItem.product.id = :productId
+                ORDER BY r.createdAt DESC
+            """)
     List<Review> findFirstReviewsByProduct(
-        @Param("productId") Long productId,
-        Pageable pageable
+            @Param("productId") Long productId,
+            Pageable pageable
     );
 
     // 특정 상품의 다음 리뷰 조회 (무한 스크롤 방식)
     @Query("""
-            SELECT r FROM Review r 
-            WHERE r.productItem.product.id = :productId
-            AND r.id < :cursor
-            ORDER BY r.createdAt DESC
-        """)
+                SELECT r FROM Review r 
+                WHERE r.productItem.product.id = :productId
+                AND r.id < :cursor
+                ORDER BY r.createdAt DESC
+            """)
     List<Review> findNextReviewsByProduct(
-        @Param("productId") Long productId,
-        @Param("cursor") Long cursor,
-        Pageable pageable
+            @Param("productId") Long productId,
+            @Param("cursor") Long cursor,
+            Pageable pageable
     );
 
     // 사용자가 작성한 리뷰 목록 (초기 조회)
     @Query("""
-            SELECT r FROM Review r 
-            WHERE r.nickname = :nickname 
-            ORDER BY r.id DESC
-        """)
+                SELECT r FROM Review r 
+                WHERE r.nickname = :nickname 
+                ORDER BY r.id DESC
+            """)
     List<Review> findFirstMyReviews(
-        @Param("nickname") String nickname,
-        Pageable pageable
+            @Param("nickname") String nickname,
+            Pageable pageable
     );
 
     // 사용자가 작성한 리뷰 목록 (커서 기반 조회)
     @Query("""
-            SELECT r FROM Review r 
-            WHERE r.nickname = :nickname 
-            AND r.id < :cursor
-            ORDER BY r.id DESC
-        """)
+                SELECT r FROM Review r 
+                WHERE r.nickname = :nickname 
+                AND r.id < :cursor
+                ORDER BY r.id DESC
+            """)
     List<Review> findNextMyReviews(
-        @Param("nickname") String nickname,
-        @Param("cursor") Long cursor,
-        Pageable pageable
+            @Param("nickname") String nickname,
+            @Param("cursor") Long cursor,
+            Pageable pageable
     );
 
     // 특정 상품의 평점 높은 순 정렬 (초기 20개)
     @Query("""
-            SELECT r FROM Review r 
-            WHERE r.productItem.product.id = :productId 
-            ORDER BY r.rating DESC
-        """)
+                SELECT r FROM Review r 
+                WHERE r.productItem.product.id = :productId 
+                ORDER BY r.rating DESC
+            """)
     List<Review> findFirstReviewsByProductOrderByRatingDesc(
-        @Param("productId") Long productId,
-        Pageable pageable
+            @Param("productId") Long productId,
+            Pageable pageable
     );
 
     // 특정 상품의 평점 높은 순 정렬 (커서 기반)
     @Query("""
-            SELECT r FROM Review r 
-            WHERE r.productItem.product.id = :productId 
-            AND r.id < :cursor
-            ORDER BY r.rating DESC
-        """)
+                SELECT r FROM Review r 
+                WHERE r.productItem.product.id = :productId 
+                AND r.id < :cursor
+                ORDER BY r.rating DESC
+            """)
     List<Review> findNextReviewsByProductOrderByRatingDesc(
-        @Param("productId") Long productId,
-        @Param("cursor") Long cursor,
-        Pageable pageable
+            @Param("productId") Long productId,
+            @Param("cursor") Long cursor,
+            Pageable pageable
     );
 
     // 특정 상품의 좋아요 많은 순 정렬 (초기 20개)
     @Query("""
-            SELECT r FROM Review r 
-            WHERE r.productItem.product.id = :productId 
-            ORDER BY r.likeCount DESC
-        """)
+                SELECT r FROM Review r 
+                WHERE r.productItem.product.id = :productId 
+                ORDER BY r.likeCount DESC
+            """)
     List<Review> findFirstReviewsByProductOrderByLikeDesc(
-        @Param("productId") Long productId,
-        Pageable pageable
+            @Param("productId") Long productId,
+            Pageable pageable
     );
 
     // 특정 상품의 좋아요 많은 순 정렬 (커서 기반)
     @Query("""
-            SELECT r FROM Review r 
-            WHERE r.productItem.product.id = :productId 
-            AND r.id < :cursor
-            ORDER BY r.likeCount DESC
-        """)
+                SELECT r FROM Review r 
+                WHERE r.productItem.product.id = :productId 
+                AND r.id < :cursor
+                ORDER BY r.likeCount DESC
+            """)
     List<Review> findNextReviewsByProductOrderByLikeDesc(
-        @Param("productId") Long productId,
-        @Param("cursor") Long cursor,
-        Pageable pageable
+            @Param("productId") Long productId,
+            @Param("cursor") Long cursor,
+            Pageable pageable
     );
+
+    // 리뷰의 평점을 합산하여 평균을 계산
+    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.productItem.product.id = :productId")
+    Double findAverageRatingByProductId(Long productId);
 }

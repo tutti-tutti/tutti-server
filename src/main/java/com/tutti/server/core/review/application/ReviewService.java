@@ -7,6 +7,7 @@ import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
 import com.tutti.server.core.review.payload.response.ReviewLikeResponse;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
+import com.tutti.server.core.review.payload.response.ReviewRatingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class ReviewService {
     private final ReviewMyListService reviewMyListService;
     private final ReviewDeleteService reviewDeleteService;
     private final ReviewLikeService reviewLikeService;
+    private final ReviewRatingService reviewRatingService;
 
     public ReviewCreateResponse createReview(ReviewCreateRequest request, Long memberId) {
         return reviewCreateService.createReview(request, memberId);
@@ -43,5 +45,9 @@ public class ReviewService {
 
     public ReviewLikeResponse likeReview(Long reviewId, Long memberId) {
         return reviewLikeService.likeReview(reviewId, memberId);
+    }
+
+    public ReviewRatingResponse reviewRating(Long productId) {
+        return reviewRatingService.ratingAverage(productId);
     }
 }
