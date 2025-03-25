@@ -58,6 +58,7 @@ public enum ExceptionType {
     CATEGORY_NOT_FOUND(ExceptionCode.B04, "존재하지 않는 카테고리입니다."),
     PRODUCT_CATEGORY_MAP_NOT_FOUND(ExceptionCode.B07, "존재하지 않는 카테고리 상품입니다."),
     PRODUCT_ITEM_NOT_FOUND(ExceptionCode.B08, "상품 옵션이 존재하지 않습니다"),
+    SKU_NOT_FOUND(ExceptionCode.B09, "상품에 대한 재고가 존재하지 않습니다"),
 
     // - 장바구니 -
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.C01, "존재하지 않는 상품입니다.", ERROR),
@@ -121,8 +122,10 @@ public enum ExceptionType {
     REVIEW_DELETE_FAILED(ExceptionCode.G06, "리뷰 삭제에 실패했습니다."),
 
     // - 배송 -
-    DELIVERY_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.H01, "존재하지 않는 배송입니다.", ERROR);
+    DELIVERY_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.H01, "존재하지 않는 배송입니다.", ERROR),
 
+    // - 스토어 -
+    STORE_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.I01, "존재하지 않는 스토어입니다.", ERROR);
 
     private final HttpStatus status;
 

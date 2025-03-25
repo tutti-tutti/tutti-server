@@ -1,10 +1,12 @@
 package com.tutti.server.core.product.api;
 
 import com.tutti.server.core.product.application.ProductService;
+import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,4 +23,10 @@ public class ProductApi implements ProductApiSpec {
         return productService.getAllProductsByCreated();
     }
 
+    @Override
+    @GetMapping("/{productId}")
+    public ProductItemResponse getProductItemsWithOptions(
+            @PathVariable(name = "productId") long productId) {
+        return productService.getProductItemsWithOptions(productId);
+    }
 }
