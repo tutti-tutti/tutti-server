@@ -1,4 +1,4 @@
-package com.tutti.server.core.config;
+package com.tutti.server.global.config;
 
 import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;

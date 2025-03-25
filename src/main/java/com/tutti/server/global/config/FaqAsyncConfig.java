@@ -1,4 +1,4 @@
-package com.tutti.server.core.config;
+package com.tutti.server.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;

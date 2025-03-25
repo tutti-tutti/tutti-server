@@ -19,7 +19,8 @@ public record CartItemResponse(
         int sellingPrice,
         int quantity,
         int maxQuantity,
-        boolean soldOut
+        boolean soldOut,
+        boolean checked
 ) {
 
     public static CartItemResponse fromEntity(CartItem cartItem) {
@@ -39,6 +40,7 @@ public record CartItemResponse(
                 .quantity(cartItem.getQuantity())
                 .maxQuantity(10)
                 .soldOut(cartItem.isSoldOut())
+                .checked(true)
                 .build();
     }
 }
