@@ -2,6 +2,7 @@ package com.tutti.server.core.member.api;
 
 import com.tutti.server.core.member.payload.LoginRequest;
 import com.tutti.server.core.member.payload.SignupRequest;
+import com.tutti.server.core.member.payload.WithdrawalRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,4 +25,9 @@ public interface AuthApiSpec {
 
     @Operation(summary = "AccessToken 갱신", description = "RefreshToken을 이용하여 AccessToken을 갱신합니다.")
     ResponseEntity<Map<String, String>> updateAccessToken(HttpServletRequest request);
+
+    // AuthApiSpec.java
+    @Operation(summary = "회원 탈퇴", description = "비밀번호와 RefreshToken을 통해 본인 인증 후 회원 탈퇴를 진행합니다.")
+    ResponseEntity<String> withdraw(String authorization, WithdrawalRequest request);
+
 }

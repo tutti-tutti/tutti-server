@@ -125,4 +125,8 @@ public class Member extends BaseEntity {
     public void updateGender(String gender) {
         this.gender = gender;
     }
+
+    public void withdraw() {
+        this.memberStatus = MemberStatus.WITHDRAWN;
+    }
 }

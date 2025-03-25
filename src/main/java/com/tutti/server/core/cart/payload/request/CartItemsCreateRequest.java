@@ -10,7 +10,7 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record CartItemCreateRequest(
+public record CartItemsCreateRequest(
 
         @NotNull(message = "옵션 선택 후에 버튼을 클릭해 주세요.")
         List<CartItemRequest> cartItems

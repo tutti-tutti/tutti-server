@@ -21,8 +21,8 @@ public class ReviewService {
     private final ReviewDeleteService reviewDeleteService;
     private final ReviewLikeService reviewLikeService;
 
-    public ReviewCreateResponse createReview(ReviewCreateRequest request) {
-        return reviewCreateService.createReview(request);
+    public ReviewCreateResponse createReview(ReviewCreateRequest request, Long memberId) {
+        return reviewCreateService.createReview(request, memberId);
     }
 
     public ReviewListResponse getReviews(Long productId, Long cursor, int size, String sort) {
