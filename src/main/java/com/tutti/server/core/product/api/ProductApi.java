@@ -25,8 +25,8 @@ public class ProductApi implements ProductApiSpec {
 
     @Override
     @GetMapping("/{productId}")
-    public List<ProductItemResponse> getAllProductsByCategory(
+    public ProductItemResponse getProductItemsWithOptions(
             @PathVariable(name = "productId") long productId) {
-        return productService.getDetailProductItem(productId);
+        return productService.getProductItemsWithOptions(productId);
     }
 }

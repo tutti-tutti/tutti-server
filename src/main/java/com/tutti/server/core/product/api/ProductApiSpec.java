@@ -14,7 +14,7 @@ public interface ProductApiSpec {
     public List<ProductResponse> getAllProductsByCreated();
 
     @Operation(summary = "상품 상세 조회")
-    public List<ProductItemResponse> getAllProductsByCategory(
+    public ProductItemResponse getProductItemsWithOptions(
             @Parameter(description = "조회할 상품 상세 id", example = "78") long productId);
 
 }
