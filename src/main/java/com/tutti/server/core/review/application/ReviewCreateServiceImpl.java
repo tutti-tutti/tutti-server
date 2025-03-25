@@ -28,8 +28,12 @@ public class ReviewCreateServiceImpl implements ReviewCreateService {
     @Transactional
     public ReviewCreateResponse createReview(ReviewCreateRequest req, Long memberId) {
 
-        boolean exists = orderItemRepository.existsByOrderMemberIdAndProductItemId(memberId,
-                req.productItemId());
+        boolean exists = orderItemRepository.existsByOrderIdAndOrderMemberIdAndProductItemId(
+                req.orderId(),
+                memberId,
+                req.productItemId()
+        );
+
         if (!exists) {
             throw new DomainException(ExceptionType.UNAUTHORIZED_ERROR);
         }

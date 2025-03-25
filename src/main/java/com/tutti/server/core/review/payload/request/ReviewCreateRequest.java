@@ -10,7 +10,11 @@ import java.util.List;
 @Schema(description = "리뷰 작성 요청")
 public record ReviewCreateRequest(
 
-        @Schema(description = "상품 ID", example = "1")
+        @Schema(description = "주문 ID", example = "10")
+        @NotNull(message = "주문 ID는 필수입니다.")
+        Long orderId,
+
+        @Schema(description = "상품 ID", example = "101")
         @NotNull(message = "상품 ID는 필수입니다.")
         Long productItemId,
 
