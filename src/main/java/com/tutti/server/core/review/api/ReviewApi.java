@@ -8,6 +8,7 @@ import com.tutti.server.core.review.application.SentimentService;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
 import com.tutti.server.core.review.payload.request.SentimentFeedbackRequest;
 import com.tutti.server.core.review.payload.request.SentimentRequest;
+import com.tutti.server.core.review.payload.response.ReviewCountPerStarResponse;
 import com.tutti.server.core.review.payload.response.ReviewDeleteResponse;
 import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
 import com.tutti.server.core.review.payload.response.ReviewLikeResponse;
@@ -130,6 +131,15 @@ public class ReviewApi implements ReviewApiSpec {
             @PathVariable Long productId
     ) {
         ReviewRatingResponse response = reviewService.reviewRating(productId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/{productId}/countStar")
+    public ResponseEntity<ReviewCountPerStarResponse> countStar(
+            @PathVariable Long productId
+    ) {
+        ReviewCountPerStarResponse response = reviewService.reviewCountPerStar(productId);
         return ResponseEntity.ok(response);
     }
 }
