@@ -117,4 +117,16 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 리뷰의 평점을 합산하여 평균을 계산
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.productItem.product.id = :productId")
     Double findAverageRatingByProductId(Long productId);
+
+    // 리뷰의 별점별 갯수
+    @Query(value = """
+                SELECT FLOOR(r.rating) AS star, COUNT(*) AS count
+                FROM reviews r
+                JOIN product_items pi ON r.product_item_id = pi.id
+                JOIN products p ON pi.product_id = p.id
+                WHERE p.id = :productId
+                GROUP BY FLOOR(r.rating)
+                ORDER BY star DESC
+            """, nativeQuery = true)
+    List<Object[]> countStarGroupBy(@Param("productId") Long productId);
 }
