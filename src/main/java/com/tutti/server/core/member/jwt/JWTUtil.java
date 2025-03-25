@@ -142,7 +142,31 @@ public class JWTUtil {
         }
     }
 
+    public boolean validateAccessToken(String accessToken) {
+        try {
+            var claims = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(accessToken)
+                    .getPayload();
+
+            String tokenType = claims.get("tokenType", String.class);
+
+            if (!"access".equals(tokenType)) {
+                throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
+            }
+
+            return true;
+        } catch (ExpiredJwtException e) {
+            throw new DomainException(ExceptionType.TOKEN_EXPIRED);
+        } catch (MalformedJwtException | SignatureException | UnsupportedJwtException |
+                 IllegalArgumentException e) {
+            throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
+        }
+    }
+
     public SecretKey getSecretKey() {
         return secretKey;
     }
 }
+
