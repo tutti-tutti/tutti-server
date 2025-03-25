@@ -106,8 +106,27 @@ public class Member extends BaseEntity {
         this.password = newPassword;
     }
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updatePhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void updateBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public void updateGender(String gender) {
+        this.gender = gender;
+    }
+
     public void withdraw() {
         this.memberStatus = MemberStatus.WITHDRAWN;
     }
-
 }
