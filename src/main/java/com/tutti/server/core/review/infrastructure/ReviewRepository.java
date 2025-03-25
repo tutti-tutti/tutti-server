@@ -129,4 +129,23 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
                 ORDER BY star DESC
             """, nativeQuery = true)
     List<Object[]> countStarGroupBy(@Param("productId") Long productId);
+
+    @Query(value = """
+                SELECT 
+                    ROUND(
+                        (SELECT COUNT(*) 
+                         FROM reviews r 
+                         JOIN product_items pi ON r.product_item_id = pi.id
+                         WHERE pi.product_id = :productId AND r.sentiment = 'positive') * 100.0
+                    / NULLIF((
+                        SELECT COUNT(*) 
+                        FROM reviews r 
+                        JOIN product_items pi ON r.product_item_id = pi.id
+                        WHERE pi.product_id = :productId
+                    ), 0), 1
+                )
+            """, nativeQuery = true)
+    Double getPositiveSentimentRate(@Param("productId") Long productId);
+
+
 }

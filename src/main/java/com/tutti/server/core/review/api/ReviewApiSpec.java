@@ -12,6 +12,7 @@ import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
 import com.tutti.server.core.review.payload.response.ReviewRatingResponse;
 import com.tutti.server.core.review.payload.response.SentimentFeedbackResponse;
+import com.tutti.server.core.review.payload.response.SentimentPositiveAvgResponse;
 import com.tutti.server.core.review.payload.response.SentimentResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -66,6 +67,9 @@ public interface ReviewApiSpec {
     @Operation(summary = "리뷰 별점 평균 API")
     ResponseEntity<ReviewRatingResponse> ratingAverage(Long productId);
 
-    @Operation(summary = "리뷰 점수별 리뷰 갯수")
+    @Operation(summary = "리뷰 점수별 리뷰 갯수 API")
     ResponseEntity<ReviewCountPerStarResponse> countStar(Long productId);
+
+    @Operation(summary = "리뷰 감성분석 긍정률 API")
+    ResponseEntity<SentimentPositiveAvgResponse> senPositive(Long productId);
 }

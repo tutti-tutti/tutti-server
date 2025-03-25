@@ -1,8 +1,6 @@
 package com.tutti.server.core.review.api;
 
 import com.tutti.server.core.member.application.CustomUserDetails;
-import com.tutti.server.core.product.application.ProductServiceImpl;
-import com.tutti.server.core.review.application.ReviewCreateServiceImpl;
 import com.tutti.server.core.review.application.ReviewService;
 import com.tutti.server.core.review.application.SentimentService;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
@@ -16,6 +14,7 @@ import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
 import com.tutti.server.core.review.payload.response.ReviewRatingResponse;
 import com.tutti.server.core.review.payload.response.SentimentFeedbackResponse;
+import com.tutti.server.core.review.payload.response.SentimentPositiveAvgResponse;
 import com.tutti.server.core.review.payload.response.SentimentResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/reviews")
 public class ReviewApi implements ReviewApiSpec {
 
-    private final ReviewCreateServiceImpl reviewCreateServiceImpl;
     private final ReviewService reviewService;
     private final SentimentService sentimentService;
-    private final ProductServiceImpl productService;
 
     @Override
     @PostMapping("/analyze-sentiment")
@@ -59,7 +56,7 @@ public class ReviewApi implements ReviewApiSpec {
             @RequestBody ReviewCreateRequest reviewCreateRequest,
             @AuthenticationPrincipal CustomUserDetails user) {
         try {
-            reviewCreateServiceImpl.createReview(reviewCreateRequest, user.getMemberId());
+            reviewService.createReview(reviewCreateRequest, user.getMemberId());
             return ResponseEntity.ok("리뷰 작성이 완료되었습니다.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -140,6 +137,14 @@ public class ReviewApi implements ReviewApiSpec {
             @PathVariable Long productId
     ) {
         ReviewCountPerStarResponse response = reviewService.reviewCountPerStar(productId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/{productId}/positiv")
+    public ResponseEntity<SentimentPositiveAvgResponse> senPositive(
+            @PathVariable Long productId) {
+        SentimentPositiveAvgResponse response = reviewService.reviewSentimentPositiveAvg(productId);
         return ResponseEntity.ok(response);
     }
 }

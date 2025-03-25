@@ -2,13 +2,13 @@ package com.tutti.server.core.review.application;
 
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
 import com.tutti.server.core.review.payload.response.ReviewCountPerStarResponse;
-import com.tutti.server.core.review.payload.response.ReviewCreateResponse;
 import com.tutti.server.core.review.payload.response.ReviewDeleteResponse;
 import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
 import com.tutti.server.core.review.payload.response.ReviewLikeResponse;
 import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
 import com.tutti.server.core.review.payload.response.ReviewRatingResponse;
+import com.tutti.server.core.review.payload.response.SentimentPositiveAvgResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +24,10 @@ public class ReviewService {
     private final ReviewLikeService reviewLikeService;
     private final ReviewRatingService reviewRatingService;
     private final ReviewCountStarService reviewCountStarService;
+    private final SentimentPositiveService sentimentPositiveService;
 
-    public ReviewCreateResponse createReview(ReviewCreateRequest request, Long memberId) {
-        return reviewCreateService.createReview(request, memberId);
+    public void createReview(ReviewCreateRequest request, Long memberId) {
+        reviewCreateService.createReview(request, memberId);
     }
 
     public ReviewListResponse getReviews(Long productId, Long cursor, int size, String sort) {
@@ -55,5 +56,9 @@ public class ReviewService {
 
     public ReviewCountPerStarResponse reviewCountPerStar(Long productId) {
         return reviewCountStarService.reviewCountPerStar(productId);
+    }
+
+    public SentimentPositiveAvgResponse reviewSentimentPositiveAvg(Long productId) {
+        return sentimentPositiveService.sentimentPositiveAvg(productId);
     }
 }
