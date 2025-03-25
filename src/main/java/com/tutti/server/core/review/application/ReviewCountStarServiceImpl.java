@@ -16,14 +16,11 @@ public class ReviewCountStarServiceImpl implements ReviewCountStarService {
 
     @Override
     public ReviewCountPerStarResponse reviewCountPerStar(Long productId) {
-        List<Object[]> starCounts = reviewRepository.countStarGroupBy(productId);
+        List<Object[]> starCounts = reviewRepository.countStarGroupBy(productId); // 여기 런타임 오류 위험!
 
         RatingResponse stars = RatingResponseFactory.fromStarCounts(starCounts);
         long totalCount = RatingResponseFactory.calculateTotalCount(stars);
 
-        return ReviewCountPerStarResponse.builder()
-                .totalCount(totalCount)
-                .reviewRatings(stars)
-                .build();
+        return ReviewCountPerStarResponse.of(totalCount, stars);
     }
 }

@@ -8,5 +8,11 @@ public record ReviewCountPerStarResponse(
         RatingResponse reviewRatings
 ) {
 
+    public static ReviewCountPerStarResponse of(Long totalCount, RatingResponse reviewRatings) {
+        return ReviewCountPerStarResponse.builder()
+                .totalCount(totalCount)
+                .reviewRatings(reviewRatings)
+                .build();
+    }
 }
 
