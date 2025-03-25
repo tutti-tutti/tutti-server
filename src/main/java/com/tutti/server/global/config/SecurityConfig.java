@@ -1,4 +1,4 @@
-package com.tutti.server.core.config;
+package com.tutti.server.global.config;
 
 import com.tutti.server.core.member.application.CustomUserDetailsService;
 import com.tutti.server.core.member.jwt.JWTFilter;
