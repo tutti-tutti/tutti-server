@@ -4,10 +4,10 @@ import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
-import com.tutti.server.core.product.infrastructure.SkuRepository;
 import com.tutti.server.core.product.payload.response.ProductItemResponse;
+import com.tutti.server.core.product.payload.response.ProductOptionResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
-import com.tutti.server.core.stock.domain.Sku;
+import com.tutti.server.core.sku.infrastructure.SkuRepository;
 import com.tutti.server.core.store.domain.Store;
 import com.tutti.server.core.store.infrastructure.StoreRepository;
 import com.tutti.server.core.support.exception.DomainException;
@@ -55,20 +55,21 @@ public class ProductServiceImpl implements ProductService {
     public ProductItemResponse getProductItemsWithOptions(Long productId) {
         // 1. 주어진 productId에 대한 모든 ProductItem 목록 가져오기
         List<ProductItem> productItems = getProductItemWithOptions(productId);
+        List<ProductOptionResponse> options = productItems.stream()
+                .map(ProductOptionResponse::from)
+                .toList();
 
         // 2. 상품 조회
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_NOT_FOUND));
+        Product product = productRepository.findOne(productId);
 
         // 3. 스토어 조회
-        Store store = storeRepository.findByName(product.getStoreId().getName())
-                .orElseThrow(() -> new DomainException(ExceptionType.STORE_NOT_FOUND));
+        Store store = storeRepository.findOne(product.getStoreId().getId());
 
-        // 4. 모든 ProductItem에 대한 SKU 정보 조회
-        List<Sku> skus = skuRepository.findByProductItems(productItems);
+//        // 4. 모든 ProductItem에 대한 SKU 정보 조회
+//        Sku sku = skuRepository.findByProductItemId(productItemId);
 
         // 5. fromEntities 메서드를 사용하여 통합된 응답 생성
-        return ProductItemResponse.fromEntities(product, productItems, skus, store);
+        return ProductItemResponse.fromEntity(product, options, store);
     }
 
 
