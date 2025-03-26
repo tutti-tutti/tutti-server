@@ -1,5 +1,6 @@
 package com.tutti.server.core.product.api;
 
+import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,6 @@ public interface ProductApiSpec {
 
     @Operation(summary = "상품 상세 조회")
     public ProductItemResponse getProductItemsWithOptions(
-            @Parameter(description = "조회할 상품 상세 id", example = "78") long productId);
-
+            @Parameter(description = "조회할 상품 상세 id", example = "78") long productId,
+            @Parameter(hidden = true) CustomUserDetails userDetails);
 }
