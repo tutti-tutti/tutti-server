@@ -93,12 +93,13 @@ public class ReviewApi implements ReviewApiSpec {
     @Override
     @GetMapping("/myReviews")
     public ResponseEntity<ReviewMyListResponse> getMyReviewList(
-            @RequestParam String nickname,
+            @AuthenticationPrincipal CustomUserDetails user,
             @Parameter(description = "이전 페이지 마지막 ID (첫 요청 시 null 가능), empty value check!", allowEmptyValue = true)
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "20") int size
     ) {
-        ReviewMyListResponse response = reviewService.getMyReviewList(nickname, cursor, size);
+        Long memberId = user.getMemberId();
+        ReviewMyListResponse response = reviewService.getMyReviewList(memberId, cursor, size);
         return ResponseEntity.ok(response);
     }
 
