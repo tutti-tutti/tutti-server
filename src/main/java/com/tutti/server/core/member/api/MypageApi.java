@@ -1,11 +1,11 @@
 package com.tutti.server.core.member.api;
 
+import static com.tutti.server.core.member.utils.TokenExtractor.extractToken;
+
 import com.tutti.server.core.member.application.MypageServiceSpec;
 import com.tutti.server.core.member.jwt.JWTUtil;
 import com.tutti.server.core.member.payload.MemberResponse;
 import com.tutti.server.core.member.payload.UpdateMemberRequest;
-import com.tutti.server.core.support.exception.DomainException;
-import com.tutti.server.core.support.exception.ExceptionType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -51,12 +51,5 @@ public class MypageApi implements MypageApiSpec {
 
         MypageService.updateMyPageInfo(userDetails.getUsername(), request);
         return ResponseEntity.ok(Map.of("message", "마이페이지 정보가 성공적으로 수정되었습니다."));
-    }
-
-    private String extractToken(String authHeader) {
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7);
-        }
-        throw new DomainException(ExceptionType.MISSING_AUTH_HEADER);
     }
 }
