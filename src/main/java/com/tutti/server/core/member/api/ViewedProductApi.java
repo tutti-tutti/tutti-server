@@ -7,7 +7,6 @@ import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.member.jwt.JWTUtil;
 import com.tutti.server.core.product.payload.response.ProductResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/viewed_products")
-@SecurityRequirement(name = "Bearer Authentication")
 public class ViewedProductApi implements ViewedProductApiSpec {
 
     private final ViewedProductServiceImpl viewedProductService;
