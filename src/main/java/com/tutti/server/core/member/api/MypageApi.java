@@ -6,7 +6,6 @@ import com.tutti.server.core.member.application.MypageServiceSpec;
 import com.tutti.server.core.member.jwt.JWTUtil;
 import com.tutti.server.core.member.payload.MemberResponse;
 import com.tutti.server.core.member.payload.UpdateMemberRequest;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members")
-@SecurityRequirement(name = "Bearer Authentication")
 public class MypageApi implements MypageApiSpec {
 
     private final MypageServiceSpec MypageService;
