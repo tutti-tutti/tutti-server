@@ -1,7 +1,9 @@
 package com.tutti.server.core.member.application;
 
 import com.tutti.server.core.member.domain.Member;
+import com.tutti.server.core.member.domain.VerificationCode;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
+import com.tutti.server.core.member.infrastructure.VerificationCodeRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.regex.Pattern;
@@ -15,23 +17,31 @@ public class PasswordResetServiceImpl implements PasswordResetServiceSpec {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-
+    private final VerificationCodeRepository verificationCodeRepository;
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$");
 
     @Override
     public void resetPassword(String email, String newPassword) {
-        // 1. 사용자 존재 여부 확인
+
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new DomainException(ExceptionType.MEMBER_NOT_FOUND));
 
-        // 2. 비밀번호 유효성 검증
+        VerificationCode code = verificationCodeRepository.findByEmail(email)
+                .orElseThrow(() -> new DomainException(ExceptionType.INVALID_VERIFICATION_CODE));
+
+        if (!code.isVerified()) {
+            throw new DomainException(ExceptionType.EMAIL_NOT_VERIFIED);
+        }
+
         if (!PASSWORD_PATTERN.matcher(newPassword).matches()) {
             throw new DomainException(ExceptionType.INVALID_PASSWORD_FORMAT);
         }
 
-        // 3. 비밀번호 업데이트 및 저장
         member.updatePassword(passwordEncoder.encode(newPassword));
         memberRepository.save(member);
+
+        code.expire();
+        verificationCodeRepository.save(code);
     }
 }

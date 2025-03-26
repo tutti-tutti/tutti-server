@@ -6,6 +6,8 @@ import com.tutti.server.core.member.application.PasswordChangeServiceImpl;
 import com.tutti.server.core.member.application.PasswordResetServiceImpl;
 import com.tutti.server.core.member.payload.PasswordChangeRequest;
 import com.tutti.server.core.member.payload.PasswordResetRequest;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -42,12 +44,13 @@ public class PasswordApi implements PasswordApiSpec {
     public ResponseEntity<Map<String, String>> resetPassword(
             @RequestBody @Valid PasswordResetRequest request) {
         String email = request.email();
-        String verificationCode = request.verificationCode();
         String password = request.newPassword();
+        String passwordConfirm = request.newPasswordConfirm();
 
-        // 1. 이메일 인증 코드 확인
-        emailVerificationServiceImpl.verifyEmail(email, verificationCode);
-        // 2. 비밀번호 재설정 요청
+        if (!password.equals(passwordConfirm)) {
+            throw new DomainException(ExceptionType.PASSWORD_MISMATCH);
+        }
+
         passwordResetServiceImpl.resetPassword(email, password);
 
         return ResponseEntity.ok(Map.of("message", "비밀번호가 성공적으로 변경되었습니다."));
