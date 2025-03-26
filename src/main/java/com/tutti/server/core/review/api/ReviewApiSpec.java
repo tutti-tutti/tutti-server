@@ -54,8 +54,10 @@ public interface ReviewApiSpec {
     @Operation(summary = "리뷰 상세 조회 API")
     ResponseEntity<ReviewDetailResponse> getReviewDetail(long reviewId, CustomUserDetails user);
 
-    @Operation(summary = "개인 리뷰 목록 조회 API")
-    ResponseEntity<ReviewMyListResponse> getMyReviewList(String nickname, Long cursor, int size);
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "개인 작성 리뷰 목록 조회 API")
+    ResponseEntity<ReviewMyListResponse> getMyReviewList(CustomUserDetails user, Long cursor,
+            int size);
 
     @Operation(summary = "리뷰 삭제 API")
     ResponseEntity<ReviewDeleteResponse> deleteMyReview(Long reviewId);
