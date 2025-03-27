@@ -4,6 +4,7 @@ import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
 import com.tutti.server.core.payment.payload.request.PaymentCancelRequest;
 import com.tutti.server.core.payment.payload.request.PaymentConfirmRequest;
+import com.tutti.server.core.payment.payload.response.PaymentResponse;
 import com.tutti.server.core.payment.payload.response.PaymentViewResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,7 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public interface PaymentApiSpec {
 
     @Operation(summary = "주문/결제 요청", description = "사용자가 주문을 완료하고, 결제를 요청하는 API")
-    void requestPayment(OrderCreateRequest request, CustomUserDetails user);
+    PaymentResponse requestPayment(OrderCreateRequest request, CustomUserDetails user);
 
     @Operation(summary = "결제 승인", description = "사용자가 결제 승인을 요청하는 API")
     void confirmPayment(PaymentConfirmRequest request, CustomUserDetails user);

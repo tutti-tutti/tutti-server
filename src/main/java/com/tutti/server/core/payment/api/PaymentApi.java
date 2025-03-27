@@ -9,6 +9,7 @@ import com.tutti.server.core.payment.application.PaymentViewService;
 import com.tutti.server.core.payment.payload.request.PaymentCancelRequest;
 import com.tutti.server.core.payment.payload.request.PaymentConfirmRequest;
 import com.tutti.server.core.payment.payload.request.PaymentRequest;
+import com.tutti.server.core.payment.payload.response.PaymentResponse;
 import com.tutti.server.core.payment.payload.response.PaymentViewResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -35,12 +36,12 @@ public class PaymentApi implements PaymentApiSpec {
     private final PaymentCancelService paymentCancelService;
 
     @PostMapping
-    public void requestPayment(
+    public PaymentResponse requestPayment(
             @Valid @RequestBody OrderCreateRequest request,
             @AuthenticationPrincipal CustomUserDetails user) {
         PaymentRequest paymentRequest = orderService.createOrder(request, user.getMemberId());
 
-        paymentService.requestPayment(paymentRequest, user.getMemberId());
+        return paymentService.requestPayment(paymentRequest, user.getMemberId());
     }
 
     @PostMapping("/confirm/success")
