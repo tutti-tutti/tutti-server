@@ -133,9 +133,11 @@ public class ReviewApi implements ReviewApiSpec {
     @Override
     @DeleteMapping("/myReviews/{reviewId}")
     public ResponseEntity<ReviewDeleteResponse> deleteMyReview(
-            @PathVariable Long reviewId
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal CustomUserDetails user
     ) {
-        ReviewDeleteResponse response = reviewService.deleteReview(reviewId);
+        Long memberId = user.getMemberId();
+        ReviewDeleteResponse response = reviewService.deleteReview(reviewId, memberId);
         return ResponseEntity.ok(response);
     }
 
