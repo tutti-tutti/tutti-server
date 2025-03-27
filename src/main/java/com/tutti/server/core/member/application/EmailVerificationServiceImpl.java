@@ -1,6 +1,7 @@
 package com.tutti.server.core.member.application;
 
 import com.tutti.server.core.member.domain.VerificationCode;
+import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.member.infrastructure.VerificationCodeRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class EmailVerificationServiceImpl implements EmailVerificationServiceSpec {
 
     private final VerificationCodeRepository verificationCodeRepository;
+    private final MemberRepository memberRepository;
     private final JavaMailSender mailSender;
 
     private String generateVerificationCode() {
@@ -25,8 +27,9 @@ public class EmailVerificationServiceImpl implements EmailVerificationServiceSpe
     }
 
     @Override
-    public void sendVerificationEmail(String email) {
+    public void sendVerificationEmail(String email, String type) {
         validateEmailFormat(email); // 이메일 형식 검증
+        validateByType(email, type);
 
         verificationCodeRepository.deleteByEmail(email); // 기존 인증번호 삭제 후 새로 발송
 
@@ -42,6 +45,21 @@ public class EmailVerificationServiceImpl implements EmailVerificationServiceSpe
         if (email == null || email.isBlank() || !email.matches(
                 "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
             throw new DomainException(ExceptionType.INVALID_EMAIL_FORMAT);
+        }
+    }
+
+    private void validateByType(String email, String type) {
+        boolean exists = memberRepository.existsByEmail(email);
+        if ("signup".equalsIgnoreCase(type)) {
+            if (exists) {
+                throw new DomainException(ExceptionType.EMAIL_ALREADY_EXISTS);
+            }
+        } else if ("reset".equalsIgnoreCase(type)) {
+            if (!exists) {
+                throw new DomainException(ExceptionType.MEMBER_NOT_FOUND);
+            }
+        } else {
+            throw new DomainException(ExceptionType.INVALID_EMAIL_VERIFICATION_TYPE);
         }
     }
 

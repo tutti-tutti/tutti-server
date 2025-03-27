@@ -22,6 +22,7 @@ public enum ExceptionType {
     INVALID_EMAIL_FORMAT(ExceptionCode.A01, "올바른 이메일 주소를 입력해주세요."),
     EMAIL_ALREADY_VERIFIED(ExceptionCode.A02, "이미 인증된 이메일입니다."),
     INVALID_VERIFICATION_CODE(ExceptionCode.A03, "인증 코드가 올바르지 않거나 만료되었습니다."),
+    INVALID_EMAIL_VERIFICATION_TYPE(ExceptionCode.A04, "유효하지 않은 이메일 인증 목적입니다."),
 
     // - 회원 가입 관련 -
     PASSWORD_MISMATCH(ExceptionCode.A11, "비밀번호와 비밀번호 확인이 일치하지 않습니다."),
