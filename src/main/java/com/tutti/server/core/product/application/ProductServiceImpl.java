@@ -137,13 +137,10 @@ public class ProductServiceImpl implements ProductService {
         if (skus.isEmpty()) {
             throw new DomainException(ExceptionType.SKU_NOT_FOUND);
         }
-
-        Sku minStockSku = skus.get(0);
-        for (Sku sku : skus) {
-            if (sku.getStockQuantity() < minStockSku.getStockQuantity()) {
-                minStockSku = sku;
-            }
-        }
-        return minStockSku;
+        
+        return skus.stream()
+                .min((sku1, sku2) -> 
+                    Integer.compare(sku1.getStockQuantity(), sku2.getStockQuantity()))
+                .get();
     }
 }
