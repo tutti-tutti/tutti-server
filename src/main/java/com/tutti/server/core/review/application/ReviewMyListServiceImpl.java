@@ -21,7 +21,7 @@ public class ReviewMyListServiceImpl implements ReviewMyListService {
     @Transactional(readOnly = true)
     public ReviewMyListResponse getMyList(Long memberId, Long cursor, int size) {
         // 페이지네이션을 위한 PageRequest 객체 생성 (size 개수만큼 데이터 조회)
-        final PageRequest pageRequest = PageRequest.of(0, size);
+        final PageRequest pageRequest = PageRequest.of(0, size + 1);
 
         // 커서(cursor)가 존재하면 이후 데이터를 조회, 없으면 처음 데이터를 조회
         final List<Review> reviews = Optional.ofNullable(cursor)
@@ -29,6 +29,8 @@ public class ReviewMyListServiceImpl implements ReviewMyListService {
                 .map(c -> reviewRepository.findNextMyReviews(memberId, c, pageRequest))
                 // cursor가 null이면 → findFirstMyReviews() 실행
                 .orElseGet(() -> reviewRepository.findFirstMyReviews(memberId, pageRequest));
+
+        boolean hasNext = reviews.size() > size;
 
         // 가져온 리뷰 리스트에서 마지막 리뷰의 ID를 nextCursor로 사용
         Long nextCursor = reviews.stream()
@@ -42,6 +44,6 @@ public class ReviewMyListServiceImpl implements ReviewMyListService {
                 .toList(); // Java 17 이상에서 사용 가능 (Collectors.toList() 대체)
 
         // Review 목록과 nextCursor를 담아 응답 반환
-        return new ReviewMyListResponse(reviewResponses, nextCursor);
+        return new ReviewMyListResponse(reviewResponses, nextCursor, hasNext);
     }
 }
