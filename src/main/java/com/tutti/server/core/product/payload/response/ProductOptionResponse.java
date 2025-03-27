@@ -10,6 +10,8 @@ public record ProductOptionResponse(
         String firstOptionValue,
         String secondOptionName,
         String secondOptionValue,
+        int sellingPrice,
+        int discountPrice,
         int additionalPrice
 ) {
 
@@ -20,6 +22,8 @@ public record ProductOptionResponse(
                 .firstOptionValue(productItem.getFirstOptionValue())
                 .secondOptionName(productItem.getSecondOptionName())
                 .secondOptionValue(productItem.getSecondOptionValue())
+                .sellingPrice(productItem.getSellingPrice())
+                .discountPrice(productItem.getDiscountPrice())
                 .additionalPrice(productItem.getAdditionalPrice())
                 .build();
     }

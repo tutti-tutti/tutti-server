@@ -1,4 +1,4 @@
-package com.tutti.server.core.stock.domain;
+package com.tutti.server.core.sku.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,22 +21,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SkuHistory {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "sku_history_id")
-  private Long skuHistoryId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "sku_history_id")
+    private Long skuHistoryId;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "skuHistoryType", nullable = false)
-  private SkuHistoryType skuHistoryType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sku_history_type", nullable = false)
+    private SkuHistoryType skuHistoryType;
 
-  @Column(name = "quantity", nullable = false)
-  private int quantity;
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
 
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "sku_id", nullable = false)
-  private Sku sku;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sku_id", nullable = false)
+    private Sku sku;
 }
