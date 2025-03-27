@@ -66,17 +66,4 @@ public class Review extends BaseEntity {
             this.likeCount--;
         }
     }
-
-    // 테스트용 생성자
-    public Review(ProductItem productItem, Member member, Float rating, String content,
-            String sentiment, Double sentimentProbability, Integer likeCount) {
-        this.productItem = productItem;
-        this.member = member;
-        this.rating = rating;
-        this.content = content;
-        this.sentiment = sentiment;
-        this.sentimentProbability = sentimentProbability;
-        this.likeCount = likeCount;
-    }
-
 }
