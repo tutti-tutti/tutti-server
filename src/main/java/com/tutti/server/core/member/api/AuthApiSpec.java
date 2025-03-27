@@ -2,6 +2,7 @@ package com.tutti.server.core.member.api;
 
 import com.tutti.server.core.member.payload.LoginRequest;
 import com.tutti.server.core.member.payload.SignupRequest;
+import com.tutti.server.core.member.payload.SocialLoginRequest;
 import com.tutti.server.core.member.payload.WithdrawalRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -19,6 +20,9 @@ public interface AuthApiSpec {
 
     @Operation(summary = "이메일 회원 로그인", description = "이메일과 비밀번호를 이용해 로그인을 진행합니다.")
     ResponseEntity<Map<String, String>> login(LoginRequest request);
+
+    @Operation(summary = "소셜 회원 로그인", description = "소셜 사이트를 이용해 로그인을 진행합니다.")
+    ResponseEntity<Map<String, String>> socialLogin(SocialLoginRequest request);
 
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "회원 로그아웃", description = "클라이언트에서 JWT 토큰을 삭제하면 로그아웃이 완료됩니다.")

@@ -5,6 +5,7 @@ import com.tutti.server.core.member.application.LogoutServiceImpl;
 import com.tutti.server.core.member.application.MemberServiceImpl;
 import com.tutti.server.core.member.payload.LoginRequest;
 import com.tutti.server.core.member.payload.SignupRequest;
+import com.tutti.server.core.member.payload.SocialLoginRequest;
 import com.tutti.server.core.member.payload.WithdrawalRequest;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
@@ -45,6 +46,13 @@ public class AuthApi implements AuthApiSpec {
     @PostMapping("/login/email")
     public ResponseEntity<Map<String, String>> login(@RequestBody @Valid LoginRequest request) {
         Map<String, String> tokens = authServiceImpl.login(request);
+        return ResponseEntity.ok(tokens);
+    }
+
+    @PostMapping("/social")
+    public ResponseEntity<Map<String, String>> socialLogin(
+            @RequestBody @Valid SocialLoginRequest request) {
+        Map<String, String> tokens = authServiceImpl.socialLogin(request);
         return ResponseEntity.ok(tokens);
     }
 
