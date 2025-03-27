@@ -2,9 +2,11 @@ package com.tutti.server.core.member.application;
 
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.domain.MemberStatus;
+import com.tutti.server.core.member.domain.SocialProvider;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.member.jwt.JWTUtil;
 import com.tutti.server.core.member.payload.LoginRequest;
+import com.tutti.server.core.member.payload.SocialLoginRequest;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import io.jsonwebtoken.Jwts;
@@ -23,6 +25,7 @@ public class AuthServiceImpl implements AuthServiceSpec {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
+    private final Map<String, SocialTokenVerifier> socialTokenVerifierMap;
     private final StringRedisTemplate redisTemplate;
 
     @Override
@@ -130,5 +133,55 @@ public class AuthServiceImpl implements AuthServiceSpec {
 
         long expireInMs = expiration.getTime() - System.currentTimeMillis();
         redisTemplate.opsForValue().set(token, "logout", Duration.ofMillis(expireInMs));
+    }
+
+    public Map<String, String> socialLogin(SocialLoginRequest request) {
+        SocialProvider provider;
+        try {
+            provider = SocialProvider.valueOf(request.provider().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new DomainException(ExceptionType.INVALID_SOCIAL_PROVIDER);
+        }
+
+        SocialTokenVerifier verifier = socialTokenVerifierMap.get(provider.name());
+        if (verifier == null || !verifier.verify(provider, request.accessToken(),
+                request.socialId())) {
+            throw new DomainException(ExceptionType.INVALID_SOCIAL_TOKEN);
+        }
+
+        Member member = memberRepository.findByEmail(request.email())
+                .map(existing -> {
+                    if (!request.socialId().equals(existing.getSocialId())) {
+                        throw new DomainException(ExceptionType.EMAIL_ALREADY_EXISTS);
+                    }
+                    return existing;
+                })
+                .orElseGet(() -> {
+                    Member newMember = Member.createSocialMember(
+                            request.socialId(),
+                            provider,
+                            request.email()
+                    );
+                    return memberRepository.save(newMember);
+                });
+
+        String accessToken = jwtUtil.createJwt(
+                member.getId(),
+                member.getEmail(),
+                member.getMemberStatus().name(),
+                JWTUtil.ACCESS_TOKEN_EXPIRATION
+        );
+
+        String refreshToken = jwtUtil.createRefreshToken(
+                member.getId(),
+                member.getEmail(),
+                member.getMemberStatus().name(),
+                JWTUtil.REFRESH_TOKEN_EXPIRATION
+        );
+
+        return Map.of(
+                "access_token", accessToken,
+                "refresh_token", refreshToken
+        );
     }
 }
