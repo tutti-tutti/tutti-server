@@ -11,6 +11,7 @@ import com.tutti.server.core.payment.payload.request.PaymentConfirmRequest;
 import com.tutti.server.core.payment.payload.request.PaymentRequest;
 import com.tutti.server.core.payment.payload.response.PaymentResponse;
 import com.tutti.server.core.payment.payload.response.PaymentViewResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/payments")
+@SecurityRequirement(name = "Bearer Authentication")
 public class PaymentApi implements PaymentApiSpec {
 
     private final OrderService orderService;
