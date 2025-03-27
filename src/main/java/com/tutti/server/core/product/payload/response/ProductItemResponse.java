@@ -1,10 +1,13 @@
 package com.tutti.server.core.product.payload.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.tutti.server.core.product.domain.Product;
-import com.tutti.server.core.store.domain.Store;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.tutti.server.core.product.domain.Product;
+import com.tutti.server.core.sku.domain.Sku;
+import com.tutti.server.core.store.domain.Store;
+
 import lombok.Builder;
 
 @Builder
@@ -16,9 +19,10 @@ public record ProductItemResponse(
         String description,
         int maxPurchaseQuantity,
         int originalPrice,
-        List<ProductOptionResponse> productItems,
+        List<ProductOptionResponse> productOptionItems,
         boolean adultOnly,
         int likes,
+        boolean almostOutOfStock,
 
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime createdAt,
@@ -27,11 +31,8 @@ public record ProductItemResponse(
         LocalDateTime updatedAt
 ) {
 
-    /**
-     * 단일 ProductItem과 단일 Sku를 받는 fromEntity 메서드
-     */
     public static ProductItemResponse fromEntity(Product product,
-            List<ProductOptionResponse> productItems, Store store) {
+            List<ProductOptionResponse> productOptionItems, Store store, Sku sku) {
 
         return ProductItemResponse.builder()
                 .productId(product.getId())
@@ -41,11 +42,10 @@ public record ProductItemResponse(
                 .description(product.getDescription())
                 .maxPurchaseQuantity(product.getMaxQuantity())
                 .originalPrice(product.getOriginalPrice())
-//                .stockQuantity(sku.getStockQuantity())
-                .productItems(productItems)  // List<ProductOptionResponse> 설정
+                .productOptionItems(productOptionItems)
                 .adultOnly(product.isAdultOnly())
                 .likes(product.getLikeCount())
-//                .almostOutOfStock(sku.getStockQuantity() <= 5)
+                .almostOutOfStock(sku != null && sku.getStockQuantity() <= 5)
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();

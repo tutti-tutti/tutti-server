@@ -12,9 +12,7 @@ public interface SkuRepository extends JpaRepository<Sku, Long> {
     @Query("SELECT s FROM Sku s WHERE s.productItem IN :productItems")
     List<Sku> findByProductItems(@Param("productItems") List<ProductItem> productItems);
 
-
     @Query("SELECT s FROM Sku s WHERE s.productItem.id IN :productItemIds")
     List<Sku> findByProductItemIds(@Param("productItemIds") List<Long> productItemIds);
-
-
+    
 }
