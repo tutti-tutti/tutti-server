@@ -1,13 +1,11 @@
 package com.tutti.server.core.product.payload.response;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.sku.domain.Sku;
 import com.tutti.server.core.store.domain.Store;
-
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 
 @Builder
@@ -45,7 +43,7 @@ public record ProductItemResponse(
                 .productOptionItems(productOptionItems)
                 .adultOnly(product.isAdultOnly())
                 .likes(product.getLikeCount())
-                .almostOutOfStock(sku != null && sku.getStockQuantity() <= 5)
+                .almostOutOfStock(sku != null && sku.getStockQuantity() <= 10)
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();
