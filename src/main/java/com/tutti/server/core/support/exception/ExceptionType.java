@@ -118,6 +118,7 @@ public enum ExceptionType {
     FAQ_CATEGORY_NOT_FOUND(ExceptionCode.F02, "존재하지 않는 카테고리입니다."),
     FAQ_FEEDBACK_FAILED(ExceptionCode.F03, "피드백 등록에 실패했습니다."),
     RESOURCE_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.F04, "FAQ 수정에 실패했습니다.", ERROR),
+    FAQ_ADMIN_ONLY(ExceptionCode.F04, "권한이 존재하지 않습니다."),
 
     // - 리뷰 -
     REVIEW_ALREADY_LIKED(ExceptionCode.G01, "이미 평가를 완료한 리뷰입니다."),

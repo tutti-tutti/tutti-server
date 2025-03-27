@@ -5,5 +5,5 @@ import com.tutti.server.core.faq.payload.response.FaqCreateResponse;
 
 public interface FaqAdminCreateService {
 
-    FaqCreateResponse createFaq(FaqCreateRequest faqCreateRequest);
+    FaqCreateResponse createFaq(FaqCreateRequest faqCreateRequest, Long memberId);
 }
