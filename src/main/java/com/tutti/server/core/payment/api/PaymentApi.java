@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,8 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/payments")
-@CrossOrigin(origins = "http://127.0.0.1:5500") // 프론트엔드 주소
-@SecurityRequirement(name = "Bearer Authentication")  // 컨트롤러 전체에 적용
+@SecurityRequirement(name = "Bearer Authentication")
 public class PaymentApi implements PaymentApiSpec {
 
     private final OrderService orderService;
