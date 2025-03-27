@@ -45,23 +45,23 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 사용자가 작성한 리뷰 목록 (초기 조회)
     @Query("""
                 SELECT r FROM Review r 
-                WHERE r.nickname = :nickname 
+                WHERE r.member.id = :memberId 
                 ORDER BY r.id DESC
             """)
     List<Review> findFirstMyReviews(
-            @Param("nickname") String nickname,
+            @Param("memberId") Long memberId,
             Pageable pageable
     );
 
     // 사용자가 작성한 리뷰 목록 (커서 기반 조회)
     @Query("""
                 SELECT r FROM Review r 
-                WHERE r.nickname = :nickname 
+                WHERE r.member.id = :memberId 
                 AND r.id < :cursor
                 ORDER BY r.id DESC
             """)
     List<Review> findNextMyReviews(
-            @Param("nickname") String nickname,
+            @Param("memberId") Long memberId,
             @Param("cursor") Long cursor,
             Pageable pageable
     );

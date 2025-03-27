@@ -8,7 +8,6 @@ import com.tutti.server.core.member.payload.SignupRequest;
 import com.tutti.server.core.member.payload.WithdrawalRequest;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.Collections;
@@ -50,7 +49,6 @@ public class AuthApi implements AuthApiSpec {
     }
 
     @Override
-    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/logout")
     public ResponseEntity<String> logout(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
@@ -71,7 +69,6 @@ public class AuthApi implements AuthApiSpec {
     }
 
     @Override
-    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/update-token")
     public ResponseEntity<Map<String, String>> updateAccessToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
@@ -91,7 +88,6 @@ public class AuthApi implements AuthApiSpec {
     }
 
     @Override
-    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/withdraw")
     public ResponseEntity<String> withdraw(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,

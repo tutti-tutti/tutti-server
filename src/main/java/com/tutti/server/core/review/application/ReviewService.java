@@ -38,8 +38,8 @@ public class ReviewService {
         return reviewDetailService.getReviewDetail(reviewId, memberId);
     }
 
-    public ReviewMyListResponse getMyReviewList(String email, Long cursor, int size) {
-        return reviewMyListService.getMyList(email, cursor, size);
+    public ReviewMyListResponse getMyReviewList(Long memberId, Long cursor, int size) {
+        return reviewMyListService.getMyList(memberId, cursor, size);
     }
 
     public ReviewDeleteResponse deleteReview(Long reviewId) {

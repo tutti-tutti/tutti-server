@@ -3,7 +3,7 @@ package com.tutti.server.core.support.exception;
 public enum ExceptionCode {
 
     E401, E500,
-    A01, A02, A03, //이메일 인증 관련 예외 코드
+    A01, A02, A03, A04,//이메일 인증 관련 예외 코드
     A11, A12, A13, A14, A15, A16, A17, A18, //회원가입 관련 예외 코드
     A20, A21, A22, A23, A24, //로그인 관련 예외 코드
     A30, A31, // 비밀번호 기능 관련
