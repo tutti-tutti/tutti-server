@@ -24,7 +24,7 @@ public class Sku extends BaseEntity {
 //    private Long skuId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produc_item_id")
+    @JoinColumn(name = "product_item_id")
     private ProductItem productItem;
 
     @Column(name = "sku_code", nullable = false)

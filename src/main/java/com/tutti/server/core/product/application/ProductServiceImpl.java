@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
         // 3. 스토어 조회
         Store store = storeRepository.findOne(product.getStoreId().getId());
 
-//        // 4. 모든 ProductItem에 대한 SKU 정보 조회
+        // 4. 모든 ProductItem에 대한 SKU 정보 조회 - 나중에
 //        Sku sku = skuRepository.findByProductItemId(productItemId);
 
         // 5. fromEntities 메서드를 사용하여 통합된 응답 생성
@@ -74,12 +74,10 @@ public class ProductServiceImpl implements ProductService {
 
 
     // productId를 받아서 옵션을 매핑하고 productItems 반환하는 메서드
-    // 필요시 사용 
     @Override
     public List<ProductItem> getProductItemWithOptions(Long productId) {
         // 상품 조회
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_NOT_FOUND));
+        Product product = productRepository.findOne(productId);
 
         // 해당 상품의 삭제되지 않은 ProductItem들 조회
         List<ProductItem> productItems = productItemRepository.findActiveItemsByProductId(

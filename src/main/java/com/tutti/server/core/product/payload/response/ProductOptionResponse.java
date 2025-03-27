@@ -13,8 +13,6 @@ public record ProductOptionResponse(
         int sellingPrice,
         int discountPrice,
         int additionalPrice
-//        int stockQuantity,
-//        boolean almostOutOfStock
 ) {
 
     public static ProductOptionResponse from(ProductItem productItem) {
@@ -27,8 +25,6 @@ public record ProductOptionResponse(
                 .sellingPrice(productItem.getSellingPrice())
                 .discountPrice(productItem.getDiscountPrice())
                 .additionalPrice(productItem.getAdditionalPrice())
-//                .stockQuantity(sku.getStockQuantity())
-//                .almostOutOfStock(sku.getStockQuantity() <= 5)
                 .build();
     }
 }
