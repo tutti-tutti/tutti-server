@@ -66,8 +66,6 @@ public class TossPaymentService {
                     });
 
         } catch (RestClientResponseException e) {
-            log.error("Toss 결제 승인 실패: status={}, body={}", e.getStatusCode().value(),
-                    e.getResponseBodyAsString());
             throw new RuntimeException("Toss 결제 승인 요청 실패: " + e.getMessage(), e);
         }
     }
@@ -76,7 +74,7 @@ public class TossPaymentService {
     private Map<String, Object> buildRequestBody(PaymentConfirmRequest request) {
         return Map.of(
                 "paymentKey", request.paymentKey(),
-                "orderNumber", request.orderId(),
+                "orderId", request.orderId(),
                 "amount", request.amount()
         );
     }
