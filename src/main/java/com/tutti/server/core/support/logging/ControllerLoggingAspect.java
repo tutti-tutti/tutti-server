@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -15,8 +16,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class ControllerLoggingAspect {
 
-    // 컨트롤러 클래스의 모든 메서드 실행 전
-    @Before("execution(* com.tutti.server.core.payment.api..*(..))")
+    // 모든 컨트롤러 메서드 포인트컷 (core 하위 도메인의 api 패키지)
+    @Pointcut("execution(* com.tutti.server.core..api..*(..))")
+    public void controllerMethods() {
+    }
+
+    // 실행 전 로그
+    @Before("controllerMethods()")
     public void logBefore(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().toShortString();
         String args = Arrays.toString(joinPoint.getArgs());
@@ -29,8 +35,8 @@ public class ControllerLoggingAspect {
         }
     }
 
-    // 실행 성공 후
-    @AfterReturning(pointcut = "execution(* com.tutti.server.core.payment.api..*(..))", returning = "result")
+    // 실행 성공 후 로그
+    @AfterReturning(pointcut = "controllerMethods()", returning = "result")
     public void logAfter(JoinPoint joinPoint, Object result) {
         String methodName = joinPoint.getSignature().toShortString();
         Long userId = extractUserId(joinPoint);
@@ -47,8 +53,8 @@ public class ControllerLoggingAspect {
         }
     }
 
-    // 예외 발생 시
-    @AfterThrowing(pointcut = "execution(* com.tutti.server.core.payment.api..*(..))", throwing = "ex")
+    // 예외 발생 시 로그
+    @AfterThrowing(pointcut = "controllerMethods()", throwing = "ex")
     public void logException(JoinPoint joinPoint, Exception ex) {
         String methodName = joinPoint.getSignature().toShortString();
         Long userId = extractUserId(joinPoint);
@@ -61,7 +67,7 @@ public class ControllerLoggingAspect {
         }
     }
 
-    // 공통: 사용자 ID 추출
+    // 사용자 ID 추출
     private Long extractUserId(JoinPoint joinPoint) {
         for (Object arg : joinPoint.getArgs()) {
             if (arg instanceof CustomUserDetails) {
