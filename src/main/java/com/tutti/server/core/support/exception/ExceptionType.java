@@ -56,6 +56,7 @@ public enum ExceptionType {
     INVALID_SOCIAL_TOKEN(ExceptionCode.A51, "유효하지 않은 소셜 로그인 액세스 토큰입니다."),
     INVALID_SOCIAL_PROVIDER(ExceptionCode.A52, "지원하지 않는 소셜 로그인 제공자입니다."),
     SOCIAL_AUTH_SERVER_ERROR(ExceptionCode.A53, "소셜 인증 서버에서 오류가 발생했습니다."),
+    NOT_SOCIAL_MEMBER(ExceptionCode.A54, "소셜 회원이 아닙니다."),
 
     // - 상품 -
     PRODUCT_NOT_FOUND(ExceptionCode.B01, "존재하지 않는 상품입니다."),
