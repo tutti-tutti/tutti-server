@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ControllerLoggingAspect {
 
-    // 모든 컨트롤러 메서드 포인트컷 (core 하위 도메인의 api 패키지)
+    // core 하위 도메인의 api 패키지
     @Pointcut("execution(* com.tutti.server.core..api..*(..))")
     public void controllerMethods() {
     }
