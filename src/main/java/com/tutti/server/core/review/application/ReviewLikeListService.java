@@ -5,5 +5,6 @@ import com.tutti.server.core.review.payload.response.LikeReviewListResponse;
 
 public interface ReviewLikeListService {
 
-    LikeReviewListResponse getLikeReviews(Long productId, LikeReviewCursor cursor, int size);
+    LikeReviewListResponse getLikeReviews(Long productId, LikeReviewCursor cursor, int size,
+            Long memberId);
 }

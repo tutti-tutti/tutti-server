@@ -1,10 +1,12 @@
 package com.tutti.server.core.review.application;
 
 import com.tutti.server.core.review.domain.Review;
+import com.tutti.server.core.review.infrastructure.ReviewLikeRepository;
 import com.tutti.server.core.review.infrastructure.ReviewRepository;
 import com.tutti.server.core.review.payload.request.LikeReviewCursor;
 import com.tutti.server.core.review.payload.response.LikeReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewResponse;
+import com.tutti.server.core.review.utils.ReviewLike;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,9 +16,10 @@ import org.springframework.stereotype.Service;
 public class ReviewLikeListServiceImpl implements ReviewLikeListService {
 
     private final ReviewRepository reviewRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
 
     public LikeReviewListResponse getLikeReviews(Long productId, LikeReviewCursor cursor,
-            int size) {
+            int size, Long memberId) {
 
         int limit = size + 1;
 
@@ -43,9 +46,9 @@ public class ReviewLikeListServiceImpl implements ReviewLikeListService {
                 .map(r -> new LikeReviewCursor(r.getId(), r.getLikeCount()))
                 .orElse(null);
 
-        List<ReviewResponse> responses = reviews.stream()
-                .map(ReviewResponse::from)
-                .toList();
+        List<ReviewResponse> responses = ReviewLike.toResponseListWithLikes(
+                reviews, memberId, reviewLikeRepository
+        );
 
         return new LikeReviewListResponse(responses, nextCursor, hasNext);
     }
