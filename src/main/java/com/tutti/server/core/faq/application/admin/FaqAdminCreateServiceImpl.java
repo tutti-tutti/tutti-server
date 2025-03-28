@@ -19,7 +19,12 @@ public class FaqAdminCreateServiceImpl implements FaqAdminCreateService {
     private final FaqCategoryRepository faqCategoryRepository;
 
     @Override
-    public FaqCreateResponse createFaq(FaqCreateRequest faqCreateRequest) {
+    public FaqCreateResponse createFaq(FaqCreateRequest faqCreateRequest, Long memberId) {
+
+        // 관리자 검증: memberId가 1번인 경우만 관리자 권한을 가진다고 가정.
+        if (!memberId.equals(1L)) {
+            throw new DomainException(ExceptionType.FAQ_ADMIN_ONLY);
+        }
 
         FaqCategory faqCategory = faqCategoryRepository.findOne(faqCreateRequest.categoryId());
         if (faqCategory == null) {
@@ -27,11 +32,11 @@ public class FaqAdminCreateServiceImpl implements FaqAdminCreateService {
         }
 
         Faq faq = Faq.builder()
-            .faqCategory(faqCategory)
-            .question(faqCreateRequest.question())
-            .answer(faqCreateRequest.answer())
-            .isView(faqCreateRequest.isView())
-            .build();
+                .faqCategory(faqCategory)
+                .question(faqCreateRequest.question())
+                .answer(faqCreateRequest.answer())
+                .isView(faqCreateRequest.isView())
+                .build();
 
         try {
             faqRepository.save(faq);

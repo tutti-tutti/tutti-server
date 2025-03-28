@@ -7,9 +7,9 @@ import com.tutti.server.core.faq.payload.response.FaqUpdateResponse;
 
 public interface FaqAdminService {
 
-    FaqCreateResponse createFaq(FaqCreateRequest faqCreateRequest);
+    FaqCreateResponse createFaq(FaqCreateRequest faqCreateRequest, Long memberId);
 
-    FaqUpdateResponse updateFaq(Long FaqId, FaqUpdateRequest faqUpdateRequest);
+    FaqUpdateResponse updateFaq(Long FaqId, FaqUpdateRequest faqUpdateRequest, Long memberId);
 
-    void deleteFaq(Long FaqId);
+    void deleteFaq(Long FaqId, Long memberId);
 }
