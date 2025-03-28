@@ -1,11 +1,16 @@
 package com.tutti.server.core.review.application;
 
+import com.tutti.server.core.review.payload.request.LatestReviewCursor;
+import com.tutti.server.core.review.payload.request.LikeReviewCursor;
+import com.tutti.server.core.review.payload.request.RatingReviewCursor;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
+import com.tutti.server.core.review.payload.response.LatestReviewListResponse;
+import com.tutti.server.core.review.payload.response.LikeReviewListResponse;
+import com.tutti.server.core.review.payload.response.RatingReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewCountPerStarResponse;
 import com.tutti.server.core.review.payload.response.ReviewDeleteResponse;
 import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
 import com.tutti.server.core.review.payload.response.ReviewLikeResponse;
-import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
 import com.tutti.server.core.review.payload.response.ReviewRatingResponse;
 import com.tutti.server.core.review.payload.response.SentimentPositiveAvgResponse;
@@ -17,7 +22,9 @@ import org.springframework.stereotype.Service;
 public class ReviewService {
 
     private final ReviewCreateService reviewCreateService;
-    private final ReviewListService reviewListService;
+    private final ReviewLatestListService reviewLatestListService;
+    private final ReviewRatingListService reviewRatingListService;
+    private final ReviewLikeListService reviewLikeListService;
     private final ReviewDetailService reviewDetailService;
     private final ReviewMyListService reviewMyListService;
     private final ReviewDeleteService reviewDeleteService;
@@ -30,20 +37,31 @@ public class ReviewService {
         reviewCreateService.createReview(request, memberId);
     }
 
-    public ReviewListResponse getReviews(Long productId, Long cursor, int size, String sort) {
-        return reviewListService.getReviewsByProductId(productId, cursor, size, sort);
+    public LatestReviewListResponse getLatestReviews(Long productId, LatestReviewCursor cursor,
+            Integer size) {
+        return reviewLatestListService.getLatestReviews(productId, cursor, size);
+    }
+
+    public RatingReviewListResponse getRatingReviews(Long productId, RatingReviewCursor cursor,
+            int size) {
+        return reviewRatingListService.getRatingReviews(productId, cursor, size);
+    }
+
+    public LikeReviewListResponse getLikeReviews(Long productId, LikeReviewCursor cursor,
+            int size) {
+        return reviewLikeListService.getLikeReviews(productId, cursor, size);
     }
 
     public ReviewDetailResponse getReviewDetail(long reviewId, Long memberId) {
         return reviewDetailService.getReviewDetail(reviewId, memberId);
     }
 
-    public ReviewMyListResponse getMyReviewList(String email, Long cursor, int size) {
-        return reviewMyListService.getMyList(email, cursor, size);
+    public ReviewMyListResponse getMyReviewList(Long memberId, Long cursor, int size) {
+        return reviewMyListService.getMyList(memberId, cursor, size);
     }
 
-    public ReviewDeleteResponse deleteReview(Long reviewId) {
-        return reviewDeleteService.deleteMyReview(reviewId);
+    public ReviewDeleteResponse deleteReview(Long reviewId, Long memberId) {
+        return reviewDeleteService.deleteMyReview(reviewId, memberId);
     }
 
     public ReviewLikeResponse likeReview(Long reviewId, Long memberId) {

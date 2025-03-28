@@ -3,14 +3,19 @@ package com.tutti.server.core.review.api;
 import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.review.application.ReviewService;
 import com.tutti.server.core.review.application.SentimentService;
+import com.tutti.server.core.review.payload.request.LatestReviewCursor;
+import com.tutti.server.core.review.payload.request.LikeReviewCursor;
+import com.tutti.server.core.review.payload.request.RatingReviewCursor;
 import com.tutti.server.core.review.payload.request.ReviewCreateRequest;
 import com.tutti.server.core.review.payload.request.SentimentFeedbackRequest;
 import com.tutti.server.core.review.payload.request.SentimentRequest;
+import com.tutti.server.core.review.payload.response.LatestReviewListResponse;
+import com.tutti.server.core.review.payload.response.LikeReviewListResponse;
+import com.tutti.server.core.review.payload.response.RatingReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewCountPerStarResponse;
 import com.tutti.server.core.review.payload.response.ReviewDeleteResponse;
 import com.tutti.server.core.review.payload.response.ReviewDetailResponse;
 import com.tutti.server.core.review.payload.response.ReviewLikeResponse;
-import com.tutti.server.core.review.payload.response.ReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewMyListResponse;
 import com.tutti.server.core.review.payload.response.ReviewRatingResponse;
 import com.tutti.server.core.review.payload.response.SentimentFeedbackResponse;
@@ -18,11 +23,13 @@ import com.tutti.server.core.review.payload.response.SentimentPositiveAvgRespons
 import com.tutti.server.core.review.payload.response.SentimentResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,19 +73,39 @@ public class ReviewApi implements ReviewApiSpec {
         }
     }
 
+
     @Override
-    @GetMapping("/product/{productId}")
-    public ResponseEntity<ReviewListResponse> getReviewList(
+    @GetMapping("/{productId}/latest")
+    public ResponseEntity<LatestReviewListResponse> getLatestReviewList(
             @PathVariable Long productId,
-            @Parameter(description = "이전 페이지 마지막 ID (첫 요청 시 null 가능), empty value check!", allowEmptyValue = true)
-            @RequestParam(required = false) Long cursor,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "rating_desc") String sort
+            @ParameterObject @ModelAttribute LatestReviewCursor cursor,
+            @RequestParam(defaultValue = "20") int size
     ) {
-        ReviewListResponse response = reviewService.getReviews(productId, cursor, size, sort);
+        LatestReviewListResponse response = reviewService.getLatestReviews(productId, cursor, size);
         return ResponseEntity.ok(response);
     }
 
+    @Override
+    @GetMapping("/{productId}/rating")
+    public ResponseEntity<RatingReviewListResponse> getRatingReviewList(
+            @PathVariable Long productId,
+            @ParameterObject @ModelAttribute RatingReviewCursor cursor,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        RatingReviewListResponse response = reviewService.getRatingReviews(productId, cursor, size);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/{productId}/like")
+    public ResponseEntity<LikeReviewListResponse> getLikeReviewList(
+            @PathVariable Long productId,
+            @ParameterObject @ModelAttribute LikeReviewCursor cursor,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        LikeReviewListResponse response = reviewService.getLikeReviews(productId, cursor, size);
+        return ResponseEntity.ok(response);
+    }
 
     @Override
     @GetMapping("/{reviewId}")
@@ -93,21 +120,24 @@ public class ReviewApi implements ReviewApiSpec {
     @Override
     @GetMapping("/myReviews")
     public ResponseEntity<ReviewMyListResponse> getMyReviewList(
-            @RequestParam String nickname,
+            @AuthenticationPrincipal CustomUserDetails user,
             @Parameter(description = "이전 페이지 마지막 ID (첫 요청 시 null 가능), empty value check!", allowEmptyValue = true)
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "20") int size
     ) {
-        ReviewMyListResponse response = reviewService.getMyReviewList(nickname, cursor, size);
+        Long memberId = user.getMemberId();
+        ReviewMyListResponse response = reviewService.getMyReviewList(memberId, cursor, size);
         return ResponseEntity.ok(response);
     }
 
     @Override
     @DeleteMapping("/myReviews/{reviewId}")
     public ResponseEntity<ReviewDeleteResponse> deleteMyReview(
-            @PathVariable Long reviewId
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal CustomUserDetails user
     ) {
-        ReviewDeleteResponse response = reviewService.deleteReview(reviewId);
+        Long memberId = user.getMemberId();
+        ReviewDeleteResponse response = reviewService.deleteReview(reviewId, memberId);
         return ResponseEntity.ok(response);
     }
 

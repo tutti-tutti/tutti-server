@@ -16,17 +16,18 @@ public class FaqAdminServiceImpl implements FaqAdminService {
     private final FaqAdminDeleteService faqAdminDeleteService;
 
     @Override
-    public FaqCreateResponse createFaq(FaqCreateRequest faqCreateRequest) {
-        return faqAdminCreateService.createFaq(faqCreateRequest);
+    public FaqCreateResponse createFaq(FaqCreateRequest faqCreateRequest, Long memberId) {
+        return faqAdminCreateService.createFaq(faqCreateRequest, memberId);
     }
 
     @Override
-    public FaqUpdateResponse updateFaq(Long faqId, FaqUpdateRequest faqUpdateRequest) {
-        return faqAdminUpdateService.updateFaq(faqId, faqUpdateRequest);
+    public FaqUpdateResponse updateFaq(Long faqId, FaqUpdateRequest faqUpdateRequest,
+            Long memberId) {
+        return faqAdminUpdateService.updateFaq(faqId, faqUpdateRequest, memberId);
     }
 
     @Override
-    public void deleteFaq(Long faqId) {
-        faqAdminDeleteService.deleteFaq(faqId);
+    public void deleteFaq(Long faqId, Long memberId) {
+        faqAdminDeleteService.deleteFaq(faqId, memberId);
     }
 }

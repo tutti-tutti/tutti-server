@@ -21,23 +21,30 @@ public class FaqAdminUpdateServiceImpl implements FaqAdminUpdateService {
 
     @Override
     @Transactional
-    public FaqUpdateResponse updateFaq(Long faqId, FaqUpdateRequest faqUpdateRequest) {
+    public FaqUpdateResponse updateFaq(Long faqId, FaqUpdateRequest faqUpdateRequest,
+            Long memberId) {
+
+        // 관리자 검증: memberId가 1번인 경우만 관리자 권한을 가진다고 가정.
+        if (!memberId.equals(1L)) {
+            throw new DomainException(ExceptionType.FAQ_ADMIN_ONLY);
+        }
+        
         Faq faq = faqRepository.findById(faqId)
-            .orElseThrow(() -> new DomainException(ExceptionType.RESOURCE_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ExceptionType.RESOURCE_NOT_FOUND));
 
         FaqCategory newCategory = faqCategoryRepository.findById(faqUpdateRequest.categoryId())
-            .orElseThrow(() -> new DomainException(ExceptionType.RESOURCE_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ExceptionType.RESOURCE_NOT_FOUND));
         faq.updateCategory(newCategory);
 
         faq.updateFaq(faqUpdateRequest.question(), faqUpdateRequest.answer(),
-            faqUpdateRequest.isView());
+                faqUpdateRequest.isView());
 
         return new FaqUpdateResponse(
-            faq.getId(),
-            faq.getQuestion(),
-            faq.getAnswer(),
-            faq.isView(),
-            faq.getCategoryName()
+                faq.getId(),
+                faq.getQuestion(),
+                faq.getAnswer(),
+                faq.isView(),
+                faq.getCategoryName()
         );
     }
 

@@ -5,5 +5,5 @@ import com.tutti.server.core.faq.payload.response.FaqUpdateResponse;
 
 public interface FaqAdminUpdateService {
 
-    FaqUpdateResponse updateFaq(Long faqId, FaqUpdateRequest faqUpdateRequest);
+    FaqUpdateResponse updateFaq(Long faqId, FaqUpdateRequest faqUpdateRequest, Long memberId);
 }

@@ -54,6 +54,10 @@ public class VerificationCode extends BaseEntity {
         this.isVerified = true;
     }
 
+    public void expire() {
+        this.isVerified = false;
+    }
+
     // 인증번호 만료 여부 체크
     public boolean isExpired() {
         return expiresAt == null || LocalDateTime.now().isAfter(expiresAt);

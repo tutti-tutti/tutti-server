@@ -22,6 +22,7 @@ public enum ExceptionType {
     INVALID_EMAIL_FORMAT(ExceptionCode.A01, "올바른 이메일 주소를 입력해주세요."),
     EMAIL_ALREADY_VERIFIED(ExceptionCode.A02, "이미 인증된 이메일입니다."),
     INVALID_VERIFICATION_CODE(ExceptionCode.A03, "인증 코드가 올바르지 않거나 만료되었습니다."),
+    INVALID_EMAIL_VERIFICATION_TYPE(ExceptionCode.A04, "유효하지 않은 이메일 인증 목적입니다."),
 
     // - 회원 가입 관련 -
     PASSWORD_MISMATCH(ExceptionCode.A11, "비밀번호와 비밀번호 확인이 일치하지 않습니다."),
@@ -50,6 +51,11 @@ public enum ExceptionType {
     JWT_CREATION_FAILED(ExceptionCode.A44, "JWT 토큰 생성에 실패했습니다."),
     MISSING_AUTH_HEADER(ExceptionCode.A45, "Authorization 헤더가 필요합니다."),
     TOKEN_LOGGED_OUT(ExceptionCode.A46, "이미 로그아웃된 토큰입니다."),
+
+    // - 소셜 관련 예외 -
+    INVALID_SOCIAL_TOKEN(ExceptionCode.A51, "유효하지 않은 소셜 로그인 액세스 토큰입니다."),
+    INVALID_SOCIAL_PROVIDER(ExceptionCode.A52, "지원하지 않는 소셜 로그인 제공자입니다."),
+    SOCIAL_AUTH_SERVER_ERROR(ExceptionCode.A53, "소셜 인증 서버에서 오류가 발생했습니다."),
 
     // - 상품 -
     PRODUCT_NOT_FOUND(ExceptionCode.B01, "존재하지 않는 상품입니다."),
@@ -112,6 +118,7 @@ public enum ExceptionType {
     FAQ_CATEGORY_NOT_FOUND(ExceptionCode.F02, "존재하지 않는 카테고리입니다."),
     FAQ_FEEDBACK_FAILED(ExceptionCode.F03, "피드백 등록에 실패했습니다."),
     RESOURCE_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.F04, "FAQ 수정에 실패했습니다.", ERROR),
+    FAQ_ADMIN_ONLY(ExceptionCode.F04, "권한이 존재하지 않습니다."),
 
     // - 리뷰 -
     REVIEW_ALREADY_LIKED(ExceptionCode.G01, "이미 평가를 완료한 리뷰입니다."),
@@ -120,6 +127,7 @@ public enum ExceptionType {
     REVIEW_CONTENT_EMPTY(ExceptionCode.G04, "리뷰 내용이 비어 있습니다."),
     REVIEW_CREATE_FAILED(ExceptionCode.G05, "리뷰 등록에 실패했습니다."),
     REVIEW_DELETE_FAILED(ExceptionCode.G06, "리뷰 삭제에 실패했습니다."),
+    UNAUTHORIZED_REVIEW_ACCESS(ExceptionCode.G07, "접근이 허용되지 않은 리뷰입니다."),
 
     // - 배송 -
     DELIVERY_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.H01, "존재하지 않는 배송입니다.", ERROR),

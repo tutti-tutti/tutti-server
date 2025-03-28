@@ -63,9 +63,8 @@ public class ProductItem extends BaseEntity {
     // 필수 필드만 포함한 빌더 패턴
     @Builder
     public ProductItem(Product product, Integer additionalPrice, Integer discountPrice,
-            Integer sellingPrice,
-            String firstOptionName, String firstOptionValue, String secondOptionName,
-            String secondOptionValue, boolean soldOut) {
+            Integer sellingPrice, String firstOptionName, String firstOptionValue,
+            String secondOptionName, String secondOptionValue, boolean soldOut) {
         this.product = product;
         this.additionalPrice = additionalPrice;
         this.discountPrice = discountPrice;
