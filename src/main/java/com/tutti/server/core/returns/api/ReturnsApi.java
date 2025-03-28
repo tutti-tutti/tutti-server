@@ -5,6 +5,7 @@ import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.returns.application.ReturnsService;
 import com.tutti.server.core.returns.payload.ReturnsRequest;
 import com.tutti.server.core.returns.payload.ReturnsResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 @RequestMapping("/returns")
 public class ReturnsApi implements ReturnsApiSpec {
 
