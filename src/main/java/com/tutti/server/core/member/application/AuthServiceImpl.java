@@ -109,6 +109,24 @@ public class AuthServiceImpl implements AuthServiceSpec {
         blacklistRefreshToken(refreshToken);
     }
 
+    @Override
+    public void withdrawSocialMember(String refreshToken) {
+        validateRefreshToken(refreshToken);
+
+        String email = jwtUtil.getEmail(refreshToken);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new DomainException(ExceptionType.MEMBER_NOT_FOUND));
+
+        if (member.getSocialProvider() == null) {
+            throw new DomainException(ExceptionType.NOT_SOCIAL_MEMBER);
+        }
+
+        member.withdraw();
+        memberRepository.save(member);
+
+        blacklistRefreshToken(refreshToken);
+    }
+
     private void validateRefreshToken(String token) {
         if (Boolean.TRUE.equals(redisTemplate.hasKey(token))) {
             throw new DomainException(ExceptionType.TOKEN_LOGGED_OUT);

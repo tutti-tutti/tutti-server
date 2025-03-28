@@ -10,7 +10,9 @@ public interface AuthServiceSpec {
 
     Map<String, String> updateAccessToken(String refreshToken);
 
+    Map<String, String> socialLogin(SocialLoginRequest request);
+
     void withdrawMember(String refreshToken, String password);
 
-    Map<String, String> socialLogin(SocialLoginRequest request);
+    void withdrawSocialMember(String refreshToken);
 }

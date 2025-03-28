@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -96,7 +97,7 @@ public class AuthApi implements AuthApiSpec {
     }
 
     @Override
-    @PostMapping("/withdraw")
+    @DeleteMapping("/withdrawal")
     public ResponseEntity<String> withdraw(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
             @RequestBody @Valid WithdrawalRequest request
@@ -113,5 +114,23 @@ public class AuthApi implements AuthApiSpec {
         authServiceImpl.withdrawMember(refreshToken, request.password());
 
         return ResponseEntity.ok("{\"message\": \"회원 탈퇴가 완료되었습니다.\"}");
+    }
+
+    @DeleteMapping("/social/withdrawal")
+    public ResponseEntity<Map<String, String>> withdrawSocial(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+
+        if (authorizationHeader == null || authorizationHeader.isBlank()) {
+            throw new DomainException(ExceptionType.MISSING_AUTH_HEADER);
+        }
+
+        if (!authorizationHeader.startsWith("Bearer ")) {
+            throw new DomainException(ExceptionType.INVALID_JWT_TOKEN);
+        }
+
+        String refreshToken = authorizationHeader.replace("Bearer ", "");
+        authServiceImpl.withdrawSocialMember(refreshToken);
+
+        return ResponseEntity.ok(Map.of("message", "회원 탈퇴가 성공적으로 처리되었습니다."));
     }
 }

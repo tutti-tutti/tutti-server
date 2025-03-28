@@ -34,7 +34,11 @@ public interface AuthApiSpec {
     ResponseEntity<Map<String, String>> updateAccessToken(HttpServletRequest request);
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "회원 탈퇴", description = "비밀번호와 RefreshToken을 통해 본인 인증 후 회원 탈퇴를 진행합니다.")
+    @Operation(summary = "이메일 회원 탈퇴", description = "비밀번호와 RefreshToken을 통해 본인 인증 후 회원 탈퇴를 진행합니다.")
     ResponseEntity<String> withdraw(String authorization, WithdrawalRequest request);
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "소셜 로그인 회원 탈퇴", description = "소셜 로그인 회원의 계정을 삭제합니다.")
+    ResponseEntity<Map<String, String>> withdrawSocial(String authorization);
 }
+
