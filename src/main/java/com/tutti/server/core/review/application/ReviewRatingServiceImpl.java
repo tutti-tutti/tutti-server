@@ -20,5 +20,4 @@ public class ReviewRatingServiceImpl implements ReviewRatingService {
 
         return new ReviewRatingResponse(productId, formatted);
     }
-
 }

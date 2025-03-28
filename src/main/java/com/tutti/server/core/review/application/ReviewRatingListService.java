@@ -5,5 +5,6 @@ import com.tutti.server.core.review.payload.response.RatingReviewListResponse;
 
 public interface ReviewRatingListService {
 
-    RatingReviewListResponse getRatingReviews(Long productId, RatingReviewCursor cursor, int size);
+    RatingReviewListResponse getRatingReviews(Long productId, RatingReviewCursor cursor, int size,
+            Long memberId);
 }
