@@ -106,8 +106,10 @@ public interface ReviewApiSpec {
     ResponseEntity<ReviewMyListResponse> getMyReviewList(CustomUserDetails user, Long cursor,
             int size);
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "리뷰 삭제 API")
-    ResponseEntity<ReviewDeleteResponse> deleteMyReview(Long reviewId);
+    ResponseEntity<ReviewDeleteResponse> deleteMyReview(Long reviewId,
+            CustomUserDetails user);
 
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "리뷰 도움이 되었어요 API")

@@ -14,7 +14,7 @@ public enum ExceptionCode {
     C01,
     D01, D02, D03, D04, D05, D06, D07,
     F01, F02, F03, F04,
-    G01, G02, G03, G04, G05, G06,
+    G01, G02, G03, G04, G05, G06, G07,
     H01,
     P01, P02, P03, P04, P05, P06, P07, P08,
     R01, R02, R03, R04, R05, R06, R07, R08,

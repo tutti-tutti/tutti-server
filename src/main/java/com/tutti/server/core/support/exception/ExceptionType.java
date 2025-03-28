@@ -126,6 +126,7 @@ public enum ExceptionType {
     REVIEW_CONTENT_EMPTY(ExceptionCode.G04, "리뷰 내용이 비어 있습니다."),
     REVIEW_CREATE_FAILED(ExceptionCode.G05, "리뷰 등록에 실패했습니다."),
     REVIEW_DELETE_FAILED(ExceptionCode.G06, "리뷰 삭제에 실패했습니다."),
+    UNAUTHORIZED_REVIEW_ACCESS(ExceptionCode.G07, "접근이 허용되지 않은 리뷰입니다."),
 
     // - 배송 -
     DELIVERY_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.H01, "존재하지 않는 배송입니다.", ERROR),

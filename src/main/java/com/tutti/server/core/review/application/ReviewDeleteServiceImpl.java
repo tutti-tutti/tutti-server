@@ -16,10 +16,14 @@ public class ReviewDeleteServiceImpl implements ReviewDeleteService {
     private final ReviewRepository reviewRepository;
 
     @Transactional
-    public ReviewDeleteResponse deleteMyReview(Long reviewId) {
+    public ReviewDeleteResponse deleteMyReview(Long reviewId, Long memberId) {
         Review review = reviewRepository.findById(reviewId)
-            .orElseThrow(
-                () -> new DomainException(ExceptionType.PRODUCT_REVIEW_NOT_FOUND, reviewId));
+                .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_REVIEW_NOT_FOUND,
+                        reviewId));
+
+        if (!review.getMember().getId().equals(memberId)) {
+            throw new DomainException(ExceptionType.UNAUTHORIZED_REVIEW_ACCESS, reviewId);
+        }
 
         reviewRepository.delete(review);
 

@@ -60,8 +60,8 @@ public class ReviewService {
         return reviewMyListService.getMyList(memberId, cursor, size);
     }
 
-    public ReviewDeleteResponse deleteReview(Long reviewId) {
-        return reviewDeleteService.deleteMyReview(reviewId);
+    public ReviewDeleteResponse deleteReview(Long reviewId, Long memberId) {
+        return reviewDeleteService.deleteMyReview(reviewId, memberId);
     }
 
     public ReviewLikeResponse likeReview(Long reviewId, Long memberId) {
