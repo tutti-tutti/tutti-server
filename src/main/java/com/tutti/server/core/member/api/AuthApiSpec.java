@@ -41,3 +41,4 @@ public interface AuthApiSpec {
     @Operation(summary = "소셜 로그인 회원 탈퇴", description = "소셜 로그인 회원의 계정을 삭제합니다.")
     ResponseEntity<Map<String, String>> withdrawSocial(String authorization);
 }
+
