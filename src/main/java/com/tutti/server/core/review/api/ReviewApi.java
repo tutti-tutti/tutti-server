@@ -82,7 +82,7 @@ public class ReviewApi implements ReviewApiSpec {
             @RequestParam(defaultValue = "20") int size,
             @AuthenticationPrincipal CustomUserDetails user
     ) {
-        Long memberId = user.getMemberId();
+        Long memberId = (user != null) ? user.getMemberId() : null;
         LatestReviewListResponse response = reviewService.getLatestReviews(productId, cursor, size,
                 memberId);
         return ResponseEntity.ok(response);
@@ -96,8 +96,7 @@ public class ReviewApi implements ReviewApiSpec {
             @RequestParam(defaultValue = "20") int size,
             @AuthenticationPrincipal CustomUserDetails user
     ) {
-
-        Long memberId = user.getMemberId();
+        Long memberId = (user != null) ? user.getMemberId() : null;
         RatingReviewListResponse response = reviewService.getRatingReviews(productId, cursor, size,
                 memberId);
         return ResponseEntity.ok(response);
@@ -111,8 +110,7 @@ public class ReviewApi implements ReviewApiSpec {
             @RequestParam(defaultValue = "20") int size,
             @AuthenticationPrincipal CustomUserDetails user
     ) {
-
-        Long memberId = user.getMemberId();
+        Long memberId = (user != null) ? user.getMemberId() : null;
         LikeReviewListResponse response = reviewService.getLikeReviews(productId, cursor, size,
                 memberId);
         return ResponseEntity.ok(response);
