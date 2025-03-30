@@ -24,6 +24,7 @@ import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -167,9 +168,17 @@ public class OrderServiceImpl implements OrderService {
                             .secondOptionValue(productItem.getSecondOptionValue())
                             .quantity(request.quantity())
                             .price(productItem.getSellingPrice())
+                            .expectedArrivalAt(generateRandomDays())
                             .build();
                 })
                 .toList();
+    }
+
+    @Override
+    public LocalDate generateRandomDays() {
+        int randomInt = (int) ((Math.random()) * 7) + 1;
+
+        return LocalDate.now().plusDays(randomInt);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.tutti.server.core.order.payload.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tutti.server.core.order.domain.OrderItem;
+import java.time.LocalDate;
 import lombok.Builder;
 
 @Builder
@@ -16,7 +18,10 @@ public record OrderItemResponse(
         String secondOptionName,
         String secondOptionValue,
         int quantity,
-        int price
+        int price,
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        LocalDate expectedArrivalAt
 ) {
 
     public static OrderItemResponse fromEntity(OrderItem orderItem) {

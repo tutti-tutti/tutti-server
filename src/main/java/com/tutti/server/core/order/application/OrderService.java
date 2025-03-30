@@ -11,6 +11,7 @@ import com.tutti.server.core.order.payload.response.OrderPageResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
 import com.tutti.server.core.payment.payload.request.PaymentRequest;
 import com.tutti.server.core.product.domain.ProductItem;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -32,6 +33,8 @@ public interface OrderService {
 
     List<OrderItemResponse> createOrderItemResponses(
             List<OrderItemRequest> requests);
+
+    LocalDate generateRandomDays();
 
     PaymentRequest createOrder(OrderCreateRequest request, Long memberId);
 
