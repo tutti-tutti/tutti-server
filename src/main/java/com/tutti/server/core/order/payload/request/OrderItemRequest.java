@@ -24,9 +24,12 @@ public record OrderItemRequest(
 
     public OrderItem toEntity(Order order, ProductItem productItem) {
         var product = productItem.getProduct();
+        var store = product.getStoreId();
 
         return OrderItem.builder()
                 .order(order)
+                .store(store)
+                .storeName(store.getName())
                 .productItem(productItem)
                 .productName(product.getName())
                 .productImgUrl(product.getTitleUrl())
