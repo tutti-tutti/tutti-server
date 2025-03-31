@@ -66,6 +66,8 @@ public enum ExceptionType {
     PRODUCT_CATEGORY_MAP_NOT_FOUND(ExceptionCode.B07, "존재하지 않는 카테고리 상품입니다."),
     PRODUCT_ITEM_NOT_FOUND(ExceptionCode.B08, "상품 옵션이 존재하지 않습니다"),
     SKU_NOT_FOUND(ExceptionCode.B09, "상품에 대한 재고가 존재하지 않습니다"),
+    INVALID_SORT_PARAMETER(ExceptionCode.B10, "유효하지 않은 정렬 파라미터입니다."),
+    INVALID_PAGINATION_PARAMETER(ExceptionCode.B11, "유효하지 않은 페이지네이션 파라미터입니다."),
 
     // - 장바구니 -
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.C01, "존재하지 않는 상품입니다.", ERROR),

@@ -2,6 +2,9 @@ package com.tutti.server.core.product.application;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
@@ -13,9 +16,12 @@ public interface ProductService {
 
     List<ProductResponse> getAllProductsByCreated();
 
+    Slice<ProductResponse> getAllProductsByCreated(Long cursorId, Pageable pageable);
+
     ProductItemResponse getProductItemsWithOptions(Long productId);
 
     List<ProductItem> getProductItemWithOptions(Long productId);
 
     List<Sku> getSkuListByProductItems(List<ProductItem> productItems);
 }
+

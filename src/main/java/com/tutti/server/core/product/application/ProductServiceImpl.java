@@ -3,6 +3,8 @@ package com.tutti.server.core.product.application;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import com.tutti.server.core.product.domain.Product;
@@ -53,6 +55,32 @@ public class ProductServiceImpl implements ProductService {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Slice<ProductResponse> getAllProductsByCreated(Long cursorId, Pageable pageable) {
+        // 기본값으로 가장 큰 ID 값을 사용 (첫 페이지 요청 시)
+        if (cursorId == null) {
+            cursorId = Long.MAX_VALUE;
+        }
+
+        // 생성일자 기준 내림차순으로 커서 기반 페이징 적용하여 상품 조회
+        Slice<Product> productSlice = productRepository.findAllByIdLessThanOrderByCreatedAtDescIdDesc(cursorId, pageable);
+
+        // ProductResponse로 매핑
+        return productSlice.map(product -> {
+            // 해당 상품의 ProductItem 중 가장 낮은 판매가격을 가진 항목 찾기
+            ProductItem lowestPriceItem = productItemRepository
+                    .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
+                    .orElseThrow(() -> new DomainException(
+                            ExceptionType.PRODUCT_ITEM_NOT_FOUND));
+
+            return ProductResponse.fromEntity(
+                    product,
+                    lowestPriceItem,
+                    product.getStoreId()
+            );
+        });
     }
 
     @Override
