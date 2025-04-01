@@ -4,6 +4,7 @@ import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
 import com.tutti.server.core.payment.payload.request.PaymentCancelRequest;
 import com.tutti.server.core.payment.payload.request.PaymentConfirmRequest;
+import com.tutti.server.core.payment.payload.response.PaymentConfirmResponse;
 import com.tutti.server.core.payment.payload.response.PaymentResponse;
 import com.tutti.server.core.payment.payload.response.PaymentViewResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +17,7 @@ public interface PaymentApiSpec {
     PaymentResponse requestPayment(OrderCreateRequest request, CustomUserDetails user);
 
     @Operation(summary = "결제 승인", description = "사용자가 결제 승인을 요청하는 API")
-    void confirmPayment(PaymentConfirmRequest request, CustomUserDetails user);
+    PaymentConfirmResponse confirmPayment(PaymentConfirmRequest request, CustomUserDetails user);
 
     @Operation(summary = "결제 취소", description = "사용자가 결제를 취소하는 API")
     void cancelPayment(PaymentCancelRequest request, CustomUserDetails user);

@@ -12,6 +12,7 @@ import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.payment.payload.request.PaymentConfirmRequest;
 import com.tutti.server.core.payment.payload.request.PaymentRequest;
 import com.tutti.server.core.payment.payload.response.ParsedTossApiResponse;
+import com.tutti.server.core.payment.payload.response.PaymentConfirmResponse;
 import com.tutti.server.core.payment.payload.response.PaymentResponse;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
@@ -48,7 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
     //2. 결제 승인
     @Override
     @Transactional
-    public Map<String, Object> confirmPayment(PaymentConfirmRequest request, Long authMemberId) {
+    public PaymentConfirmResponse confirmPayment(PaymentConfirmRequest request, Long authMemberId) {
         Payment payment = getValidPayment(request.orderId(), authMemberId);
         Map<String, Object> response = tossPaymentService.confirmPayment(request);
         ParsedTossApiResponse parsedResponse = ParsedTossApiResponse.fromResponse(response);
@@ -65,7 +66,7 @@ public class PaymentServiceImpl implements PaymentService {
         // 주문 이력 업데이트
         orderService.createOrderHistory(order, CreatedByType.MEMBER, authMemberId);
 
-        return response;
+        return PaymentConfirmResponse.fromEntity(order.getId());
     }
 
     private void validateOrderAmountAndName(Order order, PaymentRequest request) {
