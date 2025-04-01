@@ -1,12 +1,5 @@
 package com.tutti.server.core.product.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.stereotype.Service;
-
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
@@ -20,9 +13,14 @@ import com.tutti.server.core.store.domain.Store;
 import com.tutti.server.core.store.infrastructure.StoreRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
-
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
@@ -58,29 +56,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Slice<ProductResponse> getAllProductsByCreated(Long cursorId, Pageable pageable) {
-        // 기본값으로 가장 큰 ID 값을 사용 (첫 페이지 요청 시)
-        if (cursorId == null) {
-            cursorId = Long.MAX_VALUE;
+    public Slice<Product> getAllProductsByCreated(Long cursorId, int size) {
+        // 페이지 크기 + 1만큼 상품 조회하여 다음 페이지 존재 여부 확인
+        List<Product> products = productRepository.findProductsByCursorId(cursorId, size + 1);
+
+        // 다음 페이지 존재 여부 확인
+        boolean hasNext = products.size() > size;
+        if (hasNext) {
+            products = products.subList(0, size);
         }
 
-        // 생성일자 기준 내림차순으로 커서 기반 페이징 적용하여 상품 조회
-        Slice<Product> productSlice = productRepository.findAllByIdLessThanOrderByCreatedAtDescIdDesc(cursorId, pageable);
-
-        // ProductResponse로 매핑
-        return productSlice.map(product -> {
-            // 해당 상품의 ProductItem 중 가장 낮은 판매가격을 가진 항목 찾기
-            ProductItem lowestPriceItem = productItemRepository
-                    .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
-                    .orElseThrow(() -> new DomainException(
-                            ExceptionType.PRODUCT_ITEM_NOT_FOUND));
-
-            return ProductResponse.fromEntity(
-                    product,
-                    lowestPriceItem,
-                    product.getStoreId()
-            );
-        });
+        // Slice 객체 생성
+        return new SliceImpl<>(products, PageRequest.of(0, size), hasNext);
     }
 
     @Override
@@ -165,10 +152,10 @@ public class ProductServiceImpl implements ProductService {
         if (skus.isEmpty()) {
             throw new DomainException(ExceptionType.SKU_NOT_FOUND);
         }
-        
+
         return skus.stream()
-                .min((sku1, sku2) -> 
-                    Integer.compare(sku1.getStockQuantity(), sku2.getStockQuantity()))
+                .min((sku1, sku2) ->
+                        Integer.compare(sku1.getStockQuantity(), sku2.getStockQuantity()))
                 .get();
     }
 }

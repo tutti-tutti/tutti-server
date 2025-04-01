@@ -1,5 +1,15 @@
 package com.tutti.server.core.product.api;
 
+import java.util.List;
+
+import org.springframework.data.domain.Slice;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.member.application.ViewedProductServiceSpec;
 import com.tutti.server.core.member.domain.Member;
@@ -11,19 +21,8 @@ import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,26 +42,11 @@ public class ProductApi implements ProductApiSpec {
 
     @Override
     @GetMapping("latest-list/page")
-    public Slice<ProductResponse> getAllProductsByCreatedWithPagination(
+    public Slice<Product> getAllProductsByCreatedWithPagination(
             @RequestParam(name = "cursorId", required = false) Long cursorId,
-            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        // Validate sort parameters
-        Sort sort = pageable.getSort();
-        if (sort == null || sort.isEmpty()) {
-            throw new DomainException(ExceptionType.INVALID_SORT_PARAMETER);
-        }
+            @RequestParam(name = "size", defaultValue = "20") int size) {
 
-        // Validate pagination parameters
-        if (pageable.getPageSize() <= 0 || pageable.getPageSize() > 100) {
-            throw new DomainException(ExceptionType.INVALID_PAGINATION_PARAMETER);
-        }
-
-        // Ensure we're using a valid sort
-        Sort validSort = Sort.by(Sort.Direction.DESC, "createdAt", "id");
-        Pageable validPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-                validSort);
-
-        return productService.getAllProductsByCreated(cursorId, validPageable);
+        return productService.getAllProductsByCreated(cursorId, size);
     }
 
     @Override

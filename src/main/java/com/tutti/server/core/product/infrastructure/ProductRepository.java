@@ -4,8 +4,6 @@ import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,8 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findAllByOrderByCreatedAtDesc();
 
-    @Query("SELECT p FROM Product p WHERE p.id < :lastId ORDER BY p.createdAt DESC, p.id DESC")
-    Slice<Product> findAllByIdLessThanOrderByCreatedAtDescIdDesc(@Param("lastId") Long lastId,
-            Pageable pageable);
-
+    @Query("SELECT p FROM Product p WHERE (:cursorId IS NULL OR (p.createdAt < (SELECT p2.createdAt FROM Product p2 WHERE p2.id = :cursorId) OR (p.createdAt = (SELECT p2.createdAt FROM Product p2 WHERE p2.id = :cursorId) AND p.id < :cursorId))) ORDER BY p.createdAt DESC, p.id DESC LIMIT :size")
+    List<Product> findProductsByCursorId(@Param("cursorId") Long cursorId,
+            @Param("size") int size);
 }
