@@ -9,6 +9,7 @@ import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
 import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
+import com.tutti.server.core.product.payload.response.ProductSliceResponse;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,6 +35,15 @@ public class ProductApi implements ProductApiSpec {
     @GetMapping("latest-list")
     public List<ProductResponse> getAllProductsByCreated() {
         return productService.getAllProductsByCreated();
+    }
+
+    @Override
+    @GetMapping("latest-list/page")
+    public ProductSliceResponse getAllProductsByCreatedWithPagination(
+            @RequestParam(name = "cursorId", required = false) Long cursorId,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
+
+        return productService.getAllProductsByCreated(cursorId, size);
     }
 
     @Override

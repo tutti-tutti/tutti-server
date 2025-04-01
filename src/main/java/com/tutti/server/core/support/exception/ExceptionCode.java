@@ -10,7 +10,7 @@ public enum ExceptionCode {
     A41, A42, A43, A44, A45, A46, //JWT 관련
     A51, A52, A53, A54, //소셜 관련
 
-    B01, B02, B03, B04, B07, B08, B09,
+    B01, B02, B03, B04, B07, B08, B09, B10, B11, //상품 관련
     C01,
     D01, D02, D03, D04, D05, D06, D07,
     F01, F02, F03, F04,
