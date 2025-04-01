@@ -64,4 +64,11 @@ public class ProductApi implements ProductApiSpec {
         }
         return response;
     }
+
+    @Override
+    @GetMapping("recommend")
+    public List<ProductResponse> getProductsByLikes(
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return productService.getProductsByLikes(size);
+    }
 }

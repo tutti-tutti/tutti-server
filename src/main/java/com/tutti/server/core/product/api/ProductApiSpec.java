@@ -24,4 +24,8 @@ public interface ProductApiSpec {
     public ProductItemResponse getProductItemsWithOptions(
             @Parameter(description = "조회할 상품 상세 id", example = "3") long productId,
             @Parameter(hidden = true) CustomUserDetails userDetails);
+
+    @Operation(summary = "상품 추천 조회 (좋아요순)")
+    public List<ProductResponse> getProductsByLikes(
+            @Parameter(description = "받아올 상품 개수", required = false) int size);
 }
