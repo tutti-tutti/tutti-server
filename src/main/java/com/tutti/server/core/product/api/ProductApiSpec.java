@@ -24,4 +24,10 @@ public interface ProductApiSpec {
     public ProductItemResponse getProductItemsWithOptions(
             @Parameter(description = "조회할 상품 상세 id", example = "3") long productId,
             @Parameter(hidden = true) CustomUserDetails userDetails);
+
+    @Operation(summary = "상품 검색")
+    public ProductSliceResponse getAllSearchedProducts(
+            @Parameter(description = "커서 ID (마지막으로 받은 상품의 ID) / 첫페이지 로딩시 비워두면 됩니다", required = false) Long cursorId,
+            @Parameter(description = "페이지당 가져올 상품 개수", required = false) int size,
+            @Parameter(description = "검색어", required = true) String searchWord);
 }

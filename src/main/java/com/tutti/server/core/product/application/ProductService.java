@@ -1,12 +1,11 @@
 package com.tutti.server.core.product.application;
 
-import java.util.List;
-
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
 import com.tutti.server.core.product.payload.response.ProductSliceResponse;
 import com.tutti.server.core.sku.domain.Sku;
+import java.util.List;
 
 public interface ProductService {
 
@@ -15,6 +14,9 @@ public interface ProductService {
     List<ProductResponse> getAllProductsByCreated();
 
     ProductSliceResponse getAllProductsByCreated(Long cursorId, int size);
+
+    ProductSliceResponse getAllProductsBySearchWord(Long cursorId, int size,
+            String searchWord);
 
     ProductItemResponse getProductItemsWithOptions(Long productId);
 
