@@ -6,6 +6,8 @@ import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
@@ -16,7 +18,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     boolean existsByIdAndDeleteStatusFalse(Long orderId);
 
-    List<Order> findAllByMemberIdAndDeleteStatusFalse(Long memberId);
+    @Query("SELECT o FROM Order o " +
+            "WHERE o.member.id = :memberId AND o.deleteStatus = false " +
+            "ORDER BY o.createdAt DESC")
+    List<Order> findAllByMemberId(@Param("memberId") Long memberId);
+
 
     Optional<Order> findByIdAndMemberIdAndDeleteStatusFalse(Long orderId, Long memberId);
 
