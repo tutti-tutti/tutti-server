@@ -22,7 +22,7 @@ public record OrderDetailResponse(
         PaymentMethodType paymentType,
 
         // 날짜 정보
-        LocalDateTime orderedAt,
+        LocalDateTime createdAt,
         LocalDateTime paidAt,
         LocalDateTime deliveredAt,
         LocalDateTime completedAt,
@@ -52,7 +52,7 @@ public record OrderDetailResponse(
                 .deliveryFee(order.getDeliveryFee())
                 .totalAmount(order.getTotalAmount())
                 .paymentType(order.getPaymentType())
-                .orderedAt(order.getCreatedAt())
+                .createdAt(order.getCreatedAt())
                 .paidAt(order.getPaidAt())
                 .deliveredAt(order.getDeliveredAt())
                 .completedAt(order.getCompletedAt())
