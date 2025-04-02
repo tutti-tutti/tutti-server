@@ -12,4 +12,4 @@ spring:
       local-dev: local-dev
       dev: dev
 
-    active: local-dev
+    active: dev
