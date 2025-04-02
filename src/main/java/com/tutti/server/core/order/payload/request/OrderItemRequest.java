@@ -1,6 +1,5 @@
 package com.tutti.server.core.order.payload.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.order.domain.OrderItem;
 import com.tutti.server.core.product.domain.ProductItem;
@@ -16,15 +15,13 @@ public record OrderItemRequest(
 
         @Min(value = 1, message = "수량은 1 이상이어야 합니다.")
         @Max(value = 10, message = "최대 10개까지 주문 가능합니다.")
-        int quantity,
-
-        @JsonFormat(pattern = "yyyy-MM-dd")
-        LocalDate expectedArrivalAt
+        int quantity
 ) {
 
     public OrderItem toEntity(Order order, ProductItem productItem) {
         var product = productItem.getProduct();
         var store = product.getStoreId();
+        var expectedArrivalAt = LocalDate.now().plusDays((int) ((Math.random()) * 7) + 1);
 
         return OrderItem.builder()
                 .order(order)
@@ -39,6 +36,7 @@ public record OrderItemRequest(
                 .secondOptionValue(productItem.getSecondOptionValue())
                 .quantity(quantity)
                 .price(productItem.getSellingPrice())
+                .expectedArrivalAt(expectedArrivalAt)
                 .build();
     }
 }

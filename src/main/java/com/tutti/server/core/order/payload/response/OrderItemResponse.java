@@ -37,6 +37,7 @@ public record OrderItemResponse(
                 .secondOptionValue(orderItem.getSecondOptionValue())
                 .quantity(orderItem.getQuantity())
                 .price(orderItem.getPrice())
+                .expectedArrivalAt(orderItem.getExpectedArrivalAt())
                 .build();
     }
 }

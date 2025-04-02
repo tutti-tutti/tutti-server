@@ -12,6 +12,7 @@ public record OrderResponse(
         long orderId,
         String orderNumber,
         String orderName,
+        LocalDateTime createdAt,
         LocalDateTime completedAt,
         int totalAmount,
         String orderStatus,
@@ -28,6 +29,7 @@ public record OrderResponse(
                 .orderId(order.getId())
                 .orderNumber(order.getOrderNumber())
                 .orderName(order.getOrderName())
+                .createdAt(order.getCreatedAt())
                 .completedAt(order.getCompletedAt())
                 .totalAmount(order.getTotalAmount())
                 .orderStatus(order.getOrderStatus())
