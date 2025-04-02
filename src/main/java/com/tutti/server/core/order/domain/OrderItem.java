@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,11 +43,13 @@ public class OrderItem extends BaseEntity {
     private int quantity;
     private int price;
 
+    private LocalDate expectedArrivalAt;
+
     @Builder
     public OrderItem(Order order, Store store, String storeName, ProductItem productItem,
             String productName, String productImgUrl, String firstOptionName,
             String firstOptionValue, String secondOptionName, String secondOptionValue,
-            int quantity, int price) {
+            int quantity, int price, LocalDate expectedArrivalAt) {
         this.order = order;
         this.store = store;
         this.storeName = storeName;
@@ -59,5 +62,6 @@ public class OrderItem extends BaseEntity {
         this.secondOptionValue = secondOptionValue;
         this.quantity = quantity;
         this.price = price;
+        this.expectedArrivalAt = expectedArrivalAt;
     }
 }
