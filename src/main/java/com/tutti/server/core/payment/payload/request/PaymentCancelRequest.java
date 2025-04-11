@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record PaymentCancelRequest(
-        @NotNull String orderNumber,
+        @NotNull String orderSheetNo,
         @NotNull String cancelReason
 ) {
 

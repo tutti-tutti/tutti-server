@@ -40,7 +40,7 @@ public interface OrderService {
 
     PaymentRequest createOrder(OrderCreateRequest request, Long memberId);
 
-    String generateOrderNumber();
+    String generateOrderSheetNo();
 
     String generateOrderName(OrderCreateRequest request);
 

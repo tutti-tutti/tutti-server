@@ -18,7 +18,7 @@ public record OrderDetailResponse(
         Long orderId,
 
         @Schema(description = "주문 번호(고객 확인용)", example = "20250122-3f2b1a5d", pattern = "{Today's Date}-{UUID.Random}")
-        String orderNumber,
+        String orderSheetNo,
 
         @Schema(description = "주문 상태", example = "READY")
         String orderStatus,
@@ -117,7 +117,7 @@ public record OrderDetailResponse(
 
         return OrderDetailResponse.builder()
                 .orderId(order.getId())
-                .orderNumber(order.getOrderNumber())
+                .orderSheetNo(order.getOrderSheetNo())
                 .orderStatus(order.getOrderStatus())
                 .totalDiscountAmount(order.getTotalDiscountAmount())
                 .totalProductAmount(order.getTotalProductAmount())

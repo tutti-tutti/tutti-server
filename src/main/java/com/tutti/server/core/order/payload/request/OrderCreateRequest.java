@@ -66,7 +66,7 @@ public record OrderCreateRequest(
         String note
 ) {
 
-    public Order toEntity(Member member, String orderStatus, String orderNumber, String orderName,
+    public Order toEntity(Member member, String orderStatus, String orderSheetNo, String orderName,
             int orderCount, int totalDiscountAmount, int totalProductAmount, int deliveryFee,
             int totalAmount
     ) {
@@ -74,7 +74,7 @@ public record OrderCreateRequest(
                 .member(member)
                 .paymentType(paymentType)
                 .orderStatus(orderStatus)
-                .orderNumber(orderNumber)
+                .orderSheetNo(orderSheetNo)
                 .orderName(orderName)
                 .orderCount(orderCount)
                 .totalDiscountAmount(totalDiscountAmount)
