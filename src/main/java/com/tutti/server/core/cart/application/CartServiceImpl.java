@@ -36,8 +36,8 @@ public class CartServiceImpl implements CartService {
         for (CartItemsCreateRequest.CartItemRequest item : request.cartItems()) {
             cartItemRepository.findByMemberIdAndProductItemIdAndDeleteStatusFalse(memberId,
                             item.productItemId())
-                    // 이미 장바구니에 해당 상품이 있다면 수량만 업데이트
-                    .ifPresentOrElse(cartItem -> cartItem.changeQuantity(item.quantity()),
+                    // 이미 장바구니에 해당 상품이 있다면 수량만 더해서 업데이트
+                    .ifPresentOrElse(cartItem -> cartItem.updateQuantity(item.quantity()),
                             // 없다면 장바구니에 상품을 새로 생성하여 저장
                             () -> createCartItem(item, memberId));
         }
