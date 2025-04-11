@@ -190,14 +190,14 @@ public class OrderServiceImpl implements OrderService {
         Member member = memberRepository.findOne(memberId);
 
         // 2. 주문번호 생성
-        String orderNumber = generateOrderNumber();
+        String orderSheetNo = generateOrderSheetNo();
 
         // 3. 주문명 생성
         String orderName = generateOrderName(request);
 
         // 4. 주문 생성
         Order order = orderRepository.save(
-                request.toEntity(member, PaymentStatus.READY.name(), orderNumber,
+                request.toEntity(member, PaymentStatus.READY.name(), orderSheetNo,
                         orderName, request.orderItems().size(), request.totalDiscountAmount(),
                         request.totalProductAmount(), request.deliveryFee(), request.totalAmount()
                 ));
@@ -212,14 +212,14 @@ public class OrderServiceImpl implements OrderService {
         deliveryRepository.save(request.toEntity(order));
 
         return PaymentRequest.builder()
-                .orderNumber(order.getOrderNumber())
+                .orderSheetNo(order.getOrderSheetNo())
                 .amount(order.getTotalAmount())
                 .orderName(order.getOrderName())
                 .build();
     }
 
     @Override
-    public String generateOrderNumber() {
+    public String generateOrderSheetNo() {
         LocalDateTime now = LocalDateTime.now();
         String datePart = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String randomPart = UUID.randomUUID().toString().substring(0, 8);

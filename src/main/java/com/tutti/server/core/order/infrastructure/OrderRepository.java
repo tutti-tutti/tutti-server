@@ -21,6 +21,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Optional<Order> findByIdAndMemberIdAndDeleteStatusFalse(Long orderId, Long memberId);
 
-    Optional<Order> findByOrderNumberAndMemberId(String orderNumber,
-            Long memberId); //  orderNumber로 추가
+    Optional<Order> findByOrderSheetNoAndMemberId(String orderSheetNo,
+            Long memberId); //  orderSheetNo로 추가
 }

@@ -13,7 +13,7 @@ import lombok.Builder;
 public record PaymentRequest(
 
         @NotNull(message = "주문 ID는 필수입니다.")
-        String orderNumber, // 요청을 orderId로 보내서 dto는 id로
+        String orderSheetNo, // 요청을 orderId로 보내서 dto는 id로
 
         @Min(value = 1, message = "결제 금액은 최소 1원 이상이어야 합니다.")
         int amount,
@@ -24,7 +24,7 @@ public record PaymentRequest(
 
     // 요청이 들어왔을때 첫 결제가 생성됨.
     public static Payment toEntity(Order order, Member member, int amount, String orderName,
-            String orderNumber) {
+            String orderSheetNo) {
         return Payment.builder()
                 .orderName(orderName)
                 .amount(amount)
@@ -33,7 +33,7 @@ public record PaymentRequest(
                 .member(member)
                 .order(order)
                 .paymentMethodType(order.getPaymentType())
-                .orderNumber(orderNumber)
+                .orderSheetNo(orderSheetNo)
                 .build();
     }
 }

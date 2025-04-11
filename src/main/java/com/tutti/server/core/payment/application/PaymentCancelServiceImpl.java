@@ -35,7 +35,7 @@ public class PaymentCancelServiceImpl implements PaymentCancelService {
     @Transactional
     public Payment paymentCancel(PaymentCancelRequest request, Long authMemberId) {
 
-        Order order = orderRepository.findByOrderNumberAndMemberId(request.orderNumber(),
+        Order order = orderRepository.findByOrderSheetNoAndMemberId(request.orderSheetNo(),
                         authMemberId)
                 .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
 

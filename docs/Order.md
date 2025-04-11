@@ -23,7 +23,7 @@
     -[X] 유저가 주문 상세 내역 api를 요청하면 상세 내역을 반환한다.
     -[X] request: member.id(member의 인증 정보), orderId
     -[ ] response: order, orderItem List
-        - ~~주문 번호(orderNumber)~~
+        - ~~주문 번호(orderSheetNo)~~
         - ~~주문 상태~~ 및 배송 상태 (발송 준비 중(배송 전), 배송 중, 주문 완료)
         - ~~결제 금액 (합계, ~~할인 금액~~, 배송비, 총 결제 금액)~~
         - ~~결제 수단~~
