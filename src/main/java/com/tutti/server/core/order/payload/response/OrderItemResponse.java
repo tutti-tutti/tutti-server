@@ -9,7 +9,7 @@ import lombok.Builder;
 @Schema(description = "주문 상품 응답 DTO")
 public record OrderItemResponse(
 
-        @Schema(description = "판매자 스토어 ID(시스템용)", example = "1")
+        @Schema(description = "판매자 스토어 ID", example = "1")
         Long storeId,
 
         @Schema(description = "판매자 스토어명", example = "Sony 공식몰")

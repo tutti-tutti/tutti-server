@@ -61,7 +61,7 @@ public class CartItem extends BaseEntity {
         this.soldOut = soldOut;
     }
 
-    public void changeQuantity(int quantity) {
-        this.quantity = quantity;
+    public void updateQuantity(int quantity) {
+        this.quantity += quantity;
     }
 }

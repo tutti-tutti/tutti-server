@@ -26,9 +26,10 @@ public record OrderPageResponse(
                             {
                                 "storeId": 4,
                                 "storeName": "홈 & 테크 쇼핑몰",
-                                "productItemId": 72,
+                                "productId": 32,
                                 "productName": "아이폰 16 128GB [자급제]",
                                 "productImgUrl": "https://shopping-phinf.pstatic.net/main_5023842/50238421618.20240910101919.jpg",
+                                "productItemId": 72,
                                 "firstOptionName": "버전",
                                 "firstOptionValue": "아이폰 16 Pro",
                                 "secondOptionName": "패키지",
@@ -40,9 +41,10 @@ public record OrderPageResponse(
                             {
                                 "storeId": 1,
                                 "storeName": "Sony 공식몰",
-                                "productItemId": 196,
+                                "productId": 92,
                                 "productName": "LG전자 2024 LED FHD 스탠바이미 68cm (27ART10CMPL)",
                                 "productImgUrl": "https://shopping-phinf.pstatic.net/main_4786597/47865974618.20240521000426.jpg",
+                                "productItemId": 196,
                                 "firstOptionName": "크기",
                                 "firstOptionValue": "3.0",
                                 "secondOptionName": "구성품",
