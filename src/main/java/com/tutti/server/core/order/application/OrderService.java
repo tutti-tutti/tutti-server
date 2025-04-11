@@ -14,6 +14,8 @@ import com.tutti.server.core.product.domain.ProductItem;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.function.BiFunction;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
 
@@ -45,9 +47,9 @@ public interface OrderService {
     void createOrderItems(Order order,
             List<OrderItemRequest> requests);
 
-    void createOrderHistory(Order order, CreatedByType createdByType, long createdById);
+    void createOrderHistory(Order order, CreatedByType createdByType, Long createdById);
 
-    List<OrderResponse> getOrders(Long memberId);
+    Page<OrderResponse> getOrders(Long memberId, Pageable pageable);
 
     OrderDetailResponse getOrderDetail(Long orderId, Long memberId);
 

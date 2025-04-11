@@ -14,7 +14,7 @@ public record OrderResponse(
         @Schema(description = "주문 ID(시스템용)", example = "105189", pattern = "null ~ 2^63 - 1")
         Long orderId,
 
-        @Schema(description = "주문 번호(고객 확인용)", example = "20250122-3f2b1a5d", pattern = "{Today's Date}-{UUID.Random}")
+        @Schema(description = "주문 번호(고객 확인용)", example = "20250122-3f2b1a5d", pattern = "{Today's Date}-{UUID.Random()}")
         String orderNumber,
 
         @Schema(description = "주문 상태", example = "READY")
