@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -262,7 +264,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void createOrderHistory(Order order, CreatedByType createdByType,
-            long createdById) {
+            Long createdById) {
         // 1. 이전 버전들의 latestVersion을 모두 false로 변경
         orderHistoryRepository.updatePreviousVersions(order.getId());
 
@@ -279,14 +281,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponse> getOrders(Long memberId) {
-        return orderRepository.findAllByMemberId(memberId)
-                .stream()
-                .map(order -> OrderResponse.fromEntity(order,
-                                orderItemRepository.findAllByOrderId(order.getId())
-                        )
-                )
-                .toList();
+    public Page<OrderResponse> getOrders(Long memberId, Pageable pageable) {
+        Page<Order> orderPage = orderRepository.findAllByMemberIdAndDeleteStatusFalse(memberId,
+                pageable);
+
+        return orderPage.map(order ->
+                OrderResponse.fromEntity(order, orderItemRepository.findAllByOrderId(order.getId()))
+        );
     }
 
     @Override

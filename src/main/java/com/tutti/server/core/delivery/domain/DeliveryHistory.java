@@ -25,7 +25,7 @@ public class DeliveryHistory {
     @Id
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id", nullable = false)
@@ -44,7 +44,7 @@ public class DeliveryHistory {
     private LocalDateTime createdAt;
 
     @Builder
-    public DeliveryHistory(long id, Delivery delivery, DeliveryStatus deliveryStatus, String note,
+    public DeliveryHistory(Long id, Delivery delivery, DeliveryStatus deliveryStatus, String note,
             boolean latestVersion) {
         this.id = id;
         this.delivery = delivery;
