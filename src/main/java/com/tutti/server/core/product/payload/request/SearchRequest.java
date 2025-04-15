@@ -9,7 +9,7 @@ public record SearchRequest(
         String keyword,
         @Schema(description = "다음페이지 스크롤을 위해 기억야할 productId")
         Long cursorId,
-        @Schema(description = "한 페이당 불러올 상품개수")
+        @Schema(description = "한 페이지(스크롤)당 불러올 상품개수")
         int size
 ) {
 
