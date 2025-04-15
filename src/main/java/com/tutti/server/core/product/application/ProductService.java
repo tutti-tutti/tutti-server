@@ -15,6 +15,9 @@ public interface ProductService {
 
     ProductSliceResponse getAllProductsByCreated(Long cursorId, int size);
 
+    ProductSliceResponse getAllProductsBySearchWord(Long cursorId, int size,
+            String searchWord);
+
     ProductItemResponse getProductItemsWithOptions(Long productId);
 
     List<ProductItem> getProductItemWithOptions(Long productId);

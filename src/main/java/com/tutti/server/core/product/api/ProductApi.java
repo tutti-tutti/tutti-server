@@ -7,6 +7,7 @@ import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.application.ProductService;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
+import com.tutti.server.core.product.payload.request.SearchRequest;
 import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
 import com.tutti.server.core.product.payload.response.ProductSliceResponse;
@@ -17,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,5 +73,15 @@ public class ProductApi implements ProductApiSpec {
     public List<ProductResponse> getProductsByLikes(
             @RequestParam(name = "size", defaultValue = "10") int size) {
         return productService.getProductsByLikes(size);
+    }
+
+    // getAllSearchedProductsByCreatedWithPagination
+    @Override
+    @PostMapping("/search-list")
+    public ProductSliceResponse getAllSearchedProducts(@RequestBody SearchRequest searchRequest) {
+        return productService.getAllProductsBySearchWord(
+                searchRequest.cursorId(),
+                searchRequest.size(),
+                searchRequest.keyword());
     }
 }
