@@ -35,17 +35,17 @@ public interface ProductApiSpec {
 
     @Operation(summary = "상품 검색", description = "검색어와 무한스크롤을 위한 정보를 요청하여 조회합니다.")
     public ProductSliceResponse getAllSearchedProducts(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Example Value와 Schema를 통해 예시와 각 필드의 값을 설명합니다",
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Example Value와 Schema를 통해 예시와 각 필드의 값을 설명합니다. cursorId는 데이터베이스의 데이터에 따라 수정될 수 있습니다.",
                     content = @Content(schema = @Schema(implementation = SearchRequest.class),
                             examples = {
                                     @ExampleObject(name = "검색어 \"케이스\"로 첫페이지를 요청하는 방식입니다.",
                                             value = "{\"keyword\": \"케이스\", \"cursorId\": null, \"size\": 10}",
                                             summary = "첫 페이지 검색"),
                                     @ExampleObject(name = "cursorId 값이 존재하는 중간페이지를 요청하는 방식입니다.\n응답 마지막 productId가 다음요청을 위한 cursorId 입니다!",
-                                            value = "{\"keyword\": \"케이스\", \"cursorId\": 6, \"size\": 10}",
+                                            value = "{\"keyword\": \"케이스\", \"cursorId\": 70, \"size\": 10}",
                                             summary = "중간 페이지 검색"),
                                     @ExampleObject(name = "검색어 \"케이스\"로 마지막 페이지를 요청하는 방식입니다.",
-                                            value = "{\"keyword\": \"케이스\", \"cursorId\": 10, \"size\": 10}",
+                                            value = "{\"keyword\": \"케이스\", \"cursorId\": 58, \"size\": 10}",
                                             summary = "마지막 페이지 검색")
                             }
                     ))
