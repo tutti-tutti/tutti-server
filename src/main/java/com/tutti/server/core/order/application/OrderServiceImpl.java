@@ -13,10 +13,11 @@ import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
 import com.tutti.server.core.order.payload.request.OrderItemRequest;
 import com.tutti.server.core.order.payload.request.OrderPageRequest;
+import com.tutti.server.core.order.payload.response.CursorBasedOrdersResponse;
 import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderItemResponse;
-import com.tutti.server.core.order.payload.response.OrderPageResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
+import com.tutti.server.core.order.payload.response.OrderSheetResponse;
 import com.tutti.server.core.payment.domain.PaymentStatus;
 import com.tutti.server.core.payment.payload.request.PaymentRequest;
 import com.tutti.server.core.product.domain.Product;
@@ -33,7 +34,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderPageResponse getOrderPage(OrderPageRequest request) {
+    public OrderSheetResponse getOrderPage(OrderPageRequest request) {
 
         // 1. 주문 상품 정보 조회 및 검증
         validateProductItems(request.orderItems());
@@ -73,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItemResponse> orderItems = createOrderItemResponses(
                 request.orderItems());
 
-        return OrderPageResponse.builder()
+        return OrderSheetResponse.builder()
                 .totalDiscountAmount(totalDiscountAmount)
                 .totalProductAmount(totalProductAmount)
                 .deliveryFee(deliveryFee)
@@ -197,10 +198,18 @@ public class OrderServiceImpl implements OrderService {
 
         // 4. 주문 생성
         Order order = orderRepository.save(
-                request.toEntity(member, PaymentStatus.READY.name(), orderSheetNo,
-                        orderName, request.orderItems().size(), request.totalDiscountAmount(),
-                        request.totalProductAmount(), request.deliveryFee(), request.totalAmount()
-                ));
+                request.toEntity(
+                        member,
+                        PaymentStatus.READY.name(),
+                        orderSheetNo,
+                        orderName,
+                        request.orderItems().size(),
+                        request.totalDiscountAmount(),
+                        request.totalProductAmount(),
+                        request.deliveryFee(),
+                        request.totalAmount()
+                )
+        );
 
         // 5. 주문 아이템 생성
         createOrderItems(order, request.orderItems());
@@ -263,8 +272,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void createOrderHistory(Order order, CreatedByType createdByType,
-            Long createdById) {
+    public void createOrderHistory(Order order, CreatedByType createdByType, Long createdById) {
         // 1. 이전 버전들의 latestVersion을 모두 false로 변경
         orderHistoryRepository.updatePreviousVersions(order.getId());
 
@@ -281,13 +289,38 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<OrderResponse> getOrders(Long memberId, Pageable pageable) {
-        Page<Order> orderPage = orderRepository.findAllByMemberIdAndDeleteStatusFalse(memberId,
-                pageable);
+    public CursorBasedOrdersResponse getOrders(
+            Long memberId, LocalDateTime cursorCreatedAt, Long cursorId, int size
+    ) {
 
-        return orderPage.map(order ->
-                OrderResponse.fromEntity(order, orderItemRepository.findAllByOrderId(order.getId()))
+        int fetchSize = size + 1;
+        Pageable pageable = PageRequest.of(0, fetchSize);
+        List<Order> orders = orderRepository.findByMemberIdWithCursor(
+                memberId, cursorCreatedAt, cursorId, pageable
         );
+
+        boolean hasNext = orders.size() > size;
+        if (hasNext) {
+            orders = orders.subList(0, size);
+        }
+
+        List<OrderResponse> content = orders.stream()
+                .map(order -> OrderResponse.fromEntity(order,
+                                orderItemRepository.findAllByOrderId(order.getId())
+                        )
+                )
+                .toList();
+
+        LocalDateTime nextCursorCreatedAt =
+                hasNext ? orders.get(orders.size() - 1).getCreatedAt() : null;
+        Long nextCursorId = hasNext ? orders.get(orders.size() - 1).getId() : null;
+
+        return CursorBasedOrdersResponse.builder()
+                .content(content)
+                .nextCursorCreatedAt(nextCursorCreatedAt)
+                .nextCursorId(nextCursorId)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Override

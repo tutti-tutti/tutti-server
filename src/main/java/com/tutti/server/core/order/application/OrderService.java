@@ -5,21 +5,20 @@ import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
 import com.tutti.server.core.order.payload.request.OrderItemRequest;
 import com.tutti.server.core.order.payload.request.OrderPageRequest;
+import com.tutti.server.core.order.payload.response.CursorBasedOrdersResponse;
 import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderItemResponse;
-import com.tutti.server.core.order.payload.response.OrderPageResponse;
-import com.tutti.server.core.order.payload.response.OrderResponse;
+import com.tutti.server.core.order.payload.response.OrderSheetResponse;
 import com.tutti.server.core.payment.payload.request.PaymentRequest;
 import com.tutti.server.core.product.domain.ProductItem;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.BiFunction;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
 
-    OrderPageResponse getOrderPage(OrderPageRequest request);
+    OrderSheetResponse getOrderPage(OrderPageRequest request);
 
     void validateProductItems(List<OrderItemRequest> requests);
 
@@ -33,8 +32,7 @@ public interface OrderService {
             List<OrderItemRequest> requests,
             BiFunction<ProductItem, Integer, Integer> calculator);
 
-    List<OrderItemResponse> createOrderItemResponses(
-            List<OrderItemRequest> requests);
+    List<OrderItemResponse> createOrderItemResponses(List<OrderItemRequest> requests);
 
     LocalDate generateRandomDays();
 
@@ -44,12 +42,12 @@ public interface OrderService {
 
     String generateOrderName(OrderCreateRequest request);
 
-    void createOrderItems(Order order,
-            List<OrderItemRequest> requests);
+    void createOrderItems(Order order, List<OrderItemRequest> requests);
 
     void createOrderHistory(Order order, CreatedByType createdByType, Long createdById);
 
-    Page<OrderResponse> getOrders(Long memberId, Pageable pageable);
+    CursorBasedOrdersResponse getOrders(
+            Long memberId, LocalDateTime cursorCreatedAt, Long cursorId, int size);
 
     OrderDetailResponse getOrderDetail(Long orderId, Long memberId);
 
