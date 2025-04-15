@@ -33,11 +33,9 @@ public interface ProductApiSpec {
     public List<ProductResponse> getProductsByLikes(
             @Parameter(description = "받아올 상품 개수", required = false) int size);
 
-    @Operation(summary = "상품 검색")
+    @Operation(summary = "상품 검색", description = "검색어와 무한스크롤을 위한 정보를 요청하여 조회합니다.")
     public ProductSliceResponse getAllSearchedProducts(
-            @Parameter(description = "keyword- 검색어\ncursorId- 다음페이지 요청을 위한 productId\nsize- 한페이지당 요청 상품 수", schema = @Schema(implementation = SearchRequest.class,
-                    description = "검색어, 커서 ID, 페이지 크기를 포함하는 검색 요청 객체"))
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "검색어 요청",
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Example Value와 Schema를 통해 예시와 각 필드의 값을 설명합니다",
                     content = @Content(schema = @Schema(implementation = SearchRequest.class),
                             examples = {
                                     @ExampleObject(name = "검색어 \"케이스\"로 첫페이지를 요청하는 방식입니다.",
@@ -47,7 +45,7 @@ public interface ProductApiSpec {
                                             value = "{\"keyword\": \"케이스\", \"cursorId\": 6, \"size\": 10}",
                                             summary = "중간 페이지 검색"),
                                     @ExampleObject(name = "검색어 \"케이스\"로 마지막 페이지를 요청하는 방식입니다.",
-                                            value = "{\"keyword\": \"케이스\", \"cursorId\": 17, \"size\": 10}",
+                                            value = "{\"keyword\": \"케이스\", \"cursorId\": 10, \"size\": 10}",
                                             summary = "마지막 페이지 검색")
                             }
                     ))
