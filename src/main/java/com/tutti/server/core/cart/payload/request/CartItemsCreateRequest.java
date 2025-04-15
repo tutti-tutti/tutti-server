@@ -4,13 +4,13 @@ import com.tutti.server.core.cart.domain.CartItem;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.product.domain.ProductItem;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.Builder;
 
 @Builder
+@Schema(description = "장바구니 상품 추가 요청 DTO")
 public record CartItemsCreateRequest(
 
         @NotNull(message = "productItemId 값이 없습니다.")
@@ -38,7 +38,6 @@ public record CartItemsCreateRequest(
             Long productItemId,
 
             @Min(value = 1, message = "수량은 1 이상이어야 합니다.")
-            @Max(value = 10, message = "최대 10개까지 주문 가능합니다.")
             @Schema(description = "수량", example = "1")
             int quantity
     ) {

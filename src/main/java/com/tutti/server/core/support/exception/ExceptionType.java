@@ -71,6 +71,7 @@ public enum ExceptionType {
 
     // - 장바구니 -
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.C01, "존재하지 않는 상품입니다.", ERROR),
+    EXCEEDS_MAX_QUANTITY(HttpStatus.NOT_FOUND, ExceptionCode.C02, "최대 구매 수량을 초과하였습니다.", ERROR),
 
     // - 주문 -
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, ExceptionCode.D01, "해당 주문을 찾을 수 없습니다.", ERROR),

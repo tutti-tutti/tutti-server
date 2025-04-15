@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 @Builder
+@Schema(description = "장바구니 상품 조회 응답 DTO")
 public record CartItemResponse(
 
         @Schema(description = "장바구니 상품 ID", example = "3")
@@ -20,7 +21,7 @@ public record CartItemResponse(
         Long productId,
 
         @Schema(description = "상품명", example = "LG전자 MW23GD")
-        String productItemName,
+        String productName,
 
         @Schema(description = "상품 썸네일 이미지 URL", example = "https://shopping-phinf.pstatic.net/main_1060273/10602735096.20170320175334.jpg")
         String productImgUrl,
@@ -70,7 +71,7 @@ public record CartItemResponse(
                 .storeId(store.getId())
                 .storeName(store.getName())
                 .productId(product.getId())
-                .productItemName(cartItem.getProductName())
+                .productName(cartItem.getProductName())
                 .productImgUrl(cartItem.getProductImgUrl())
                 .productItemId(productItem.getId())
                 .firstOptionName(cartItem.getFirstOptionName())
