@@ -30,7 +30,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE " +
            "(:cursorId IS NULL OR (p.createdAt < (SELECT p2.createdAt FROM Product p2 WHERE p2.id = :cursorId) " +
            "OR (p.createdAt = (SELECT p2.createdAt FROM Product p2 WHERE p2.id = :cursorId) AND p.id < :cursorId))) " +
-           "AND (p.name LIKE %:searchWord% OR p.description LIKE %:searchWord%) " +
+           "AND (p.name LIKE CONCAT('%', :searchWord, '%') OR p.description LIKE CONCAT('%', :searchWord, '%')) " +
            "AND p.onSales = true " +
            "AND p.deleteStatus = false " +
            "ORDER BY p.createdAt DESC, p.id DESC LIMIT :size")
@@ -38,4 +38,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("cursorId") Long cursorId,
             @Param("size") int size,
             @Param("searchWord") String searchWord);
+
+    @Query("SELECT p FROM Product p WHERE p.name LIKE CONCAT('%', :searchWord, '%') OR p.description LIKE CONCAT('%', :searchWord, '%')")
+    List<Product> findProductsBySimpleSearch(@Param("searchWord") String searchWord);
 }

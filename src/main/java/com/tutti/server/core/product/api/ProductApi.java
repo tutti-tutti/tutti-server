@@ -1,5 +1,16 @@
 package com.tutti.server.core.product.api;
 
+import java.util.List;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.member.application.ViewedProductServiceSpec;
 import com.tutti.server.core.member.domain.Member;
@@ -7,20 +18,14 @@ import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.application.ProductService;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
+import com.tutti.server.core.product.payload.request.SearchRequest;
 import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
 import com.tutti.server.core.product.payload.response.ProductSliceResponse;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -68,9 +73,11 @@ public class ProductApi implements ProductApiSpec {
 
     // getAllSearchedProductsByCreatedWithPagination
     @Override
-    @PostMapping("/search-list/{searchWord}")
-    public ProductSliceResponse getAllSearchedProducts(Long cursorId,
-            int size, @PathVariable(name = "searchWord") String searchWord) {
-        return productService.getAllProductsBySearchWord(cursorId, size, searchWord);
+    @PostMapping("/search-list")
+    public ProductSliceResponse getAllSearchedProducts(@RequestBody SearchRequest searchRequest) {
+        return productService.getAllProductsBySearchWord(
+                searchRequest.cursorId(),
+                searchRequest.size(),
+                searchRequest.keyword());
     }
 }
