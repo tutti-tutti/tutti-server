@@ -5,8 +5,8 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-@Schema(description = "주문서 작성 페이지 응답 DTO")
-public record OrderPageResponse(
+@Schema(description = "주문서 작성 응답 DTO")
+public record OrderSheetResponse(
 
         @Schema(description = "총 할인 금액", example = "1000")
         int totalDiscountAmount,
