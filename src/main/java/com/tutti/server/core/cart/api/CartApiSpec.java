@@ -36,7 +36,8 @@ public interface CartApiSpec {
 
     @Operation(summary = "장바구니 상품 조회")
     List<CartItemResponse> getCartItems(
-            @Parameter(description = "인가를 위한 JWT DTO") CustomUserDetails user
+            @Parameter(description = "인가를 위한 JWT DTO")
+            CustomUserDetails user
     );
 
     @Operation(summary = "장바구니 상품 삭제")
