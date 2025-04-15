@@ -1,16 +1,5 @@
 package com.tutti.server.core.product.api;
 
-import java.util.List;
-
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.tutti.server.core.member.application.CustomUserDetails;
 import com.tutti.server.core.member.application.ViewedProductServiceSpec;
 import com.tutti.server.core.member.domain.Member;
@@ -24,8 +13,16 @@ import com.tutti.server.core.product.payload.response.ProductResponse;
 import com.tutti.server.core.product.payload.response.ProductSliceResponse;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
-
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -69,6 +66,13 @@ public class ProductApi implements ProductApiSpec {
             viewedProductService.saveViewedProduct(member, product);
         }
         return response;
+    }
+
+    @Override
+    @GetMapping("recommend")
+    public List<ProductResponse> getProductsByLikes(
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return productService.getProductsByLikes(size);
     }
 
     // getAllSearchedProductsByCreatedWithPagination

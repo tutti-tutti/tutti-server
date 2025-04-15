@@ -23,5 +23,7 @@ public interface ProductService {
     List<ProductItem> getProductItemWithOptions(Long productId);
 
     List<Sku> getSkuListByProductItems(List<ProductItem> productItems);
+
+    List<ProductResponse> getProductsByLikes(int size);
 }
 

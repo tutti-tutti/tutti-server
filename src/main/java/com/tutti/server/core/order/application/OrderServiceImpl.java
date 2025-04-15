@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -188,14 +190,14 @@ public class OrderServiceImpl implements OrderService {
         Member member = memberRepository.findOne(memberId);
 
         // 2. 주문번호 생성
-        String orderNumber = generateOrderNumber();
+        String orderSheetNo = generateOrderSheetNo();
 
         // 3. 주문명 생성
         String orderName = generateOrderName(request);
 
         // 4. 주문 생성
         Order order = orderRepository.save(
-                request.toEntity(member, PaymentStatus.READY.name(), orderNumber,
+                request.toEntity(member, PaymentStatus.READY.name(), orderSheetNo,
                         orderName, request.orderItems().size(), request.totalDiscountAmount(),
                         request.totalProductAmount(), request.deliveryFee(), request.totalAmount()
                 ));
@@ -210,14 +212,14 @@ public class OrderServiceImpl implements OrderService {
         deliveryRepository.save(request.toEntity(order));
 
         return PaymentRequest.builder()
-                .orderNumber(order.getOrderNumber())
+                .orderSheetNo(order.getOrderSheetNo())
                 .amount(order.getTotalAmount())
                 .orderName(order.getOrderName())
                 .build();
     }
 
     @Override
-    public String generateOrderNumber() {
+    public String generateOrderSheetNo() {
         LocalDateTime now = LocalDateTime.now();
         String datePart = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String randomPart = UUID.randomUUID().toString().substring(0, 8);
@@ -262,7 +264,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void createOrderHistory(Order order, CreatedByType createdByType,
-            long createdById) {
+            Long createdById) {
         // 1. 이전 버전들의 latestVersion을 모두 false로 변경
         orderHistoryRepository.updatePreviousVersions(order.getId());
 
@@ -279,14 +281,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponse> getOrders(Long memberId) {
-        return orderRepository.findAllByMemberIdAndDeleteStatusFalse(memberId)
-                .stream()
-                .map(order -> OrderResponse.fromEntity(order,
-                                orderItemRepository.findAllByOrderId(order.getId())
-                        )
-                )
-                .toList();
+    public Page<OrderResponse> getOrders(Long memberId, Pageable pageable) {
+        Page<Order> orderPage = orderRepository.findAllByMemberIdAndDeleteStatusFalse(memberId,
+                pageable);
+
+        return orderPage.map(order ->
+                OrderResponse.fromEntity(order, orderItemRepository.findAllByOrderId(order.getId()))
+        );
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.tutti.server.core.store.domain.Store;
 import com.tutti.server.core.store.infrastructure.StoreRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
+
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -97,6 +98,7 @@ public class ProductServiceImpl implements ProductService {
         // 페이지 크기 + 1만큼 상품 조회하여 다음 페이지 존재 여부 확인
         List<Product> products = productRepository.findProductsBySearchWord(cursorId, size + 1,
                 searchWord);
+
 
         // 다음 페이지 존재 여부 확인
         boolean hasNext = products.size() > size;
@@ -207,6 +209,29 @@ public class ProductServiceImpl implements ProductService {
 
         // ProductItemIds에 대한 Sku 목록 조회
         return skuRepository.findByProductItemIds(productItemIds);
+    }
+
+    @Override
+    public List<ProductResponse> getProductsByLikes(int size) {
+        // 좋아요 수 기준 내림차순으로 상위 size개 상품 조회
+        List<Product> products = productRepository.findTopByOrderByLikeCountDesc(size);
+
+        // ProductResponse 리스트로 변환
+        return products.stream()
+                .map(product -> {
+                    // 해당 상품의 ProductItem 중 가장 낮은 판매가격을 가진 항목 찾기
+                    ProductItem lowestPriceItem = productItemRepository
+                            .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
+                            .orElseThrow(() -> new DomainException(
+                                    ExceptionType.PRODUCT_ITEM_NOT_FOUND));
+
+                    return ProductResponse.fromEntity(
+                            product,
+                            lowestPriceItem,
+                            product.getStoreId()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
     public Sku findSkuWithMinimumStock(List<Sku> skus) {

@@ -3,8 +3,9 @@ package com.tutti.server.core.order.infrastructure;
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
-import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -16,10 +17,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     boolean existsByIdAndDeleteStatusFalse(Long orderId);
 
-    List<Order> findAllByMemberIdAndDeleteStatusFalse(Long memberId);
+    Page<Order> findAllByMemberIdAndDeleteStatusFalse(Long memberId, Pageable pageable);
 
     Optional<Order> findByIdAndMemberIdAndDeleteStatusFalse(Long orderId, Long memberId);
 
-    Optional<Order> findByOrderNumberAndMemberId(String orderNumber,
-            Long memberId); //  orderNumber로 추가
+    Optional<Order> findByOrderSheetNoAndMemberId(String orderSheetNo,
+            Long memberId); //  orderSheetNo로 추가
 }

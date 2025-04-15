@@ -40,7 +40,7 @@ public class OrderHistory {
     @Column(length = 20)
     private CreatedByType createdByType;
 
-    private long createdById;
+    private Long createdById;
     private boolean latestVersion;
 
     @Column
@@ -49,7 +49,7 @@ public class OrderHistory {
 
     @Builder
     public OrderHistory(Order order, String orderStatus, CreatedByType createdByType,
-            long createdById, boolean latestVersion) {
+            Long createdById, boolean latestVersion) {
         this.order = order;
         this.orderStatus = orderStatus;
         this.createdByType = createdByType;

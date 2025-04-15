@@ -12,6 +12,7 @@ import com.tutti.server.core.payment.infrastructure.PaymentRepository;
 import com.tutti.server.core.payment.payload.request.PaymentConfirmRequest;
 import com.tutti.server.core.payment.payload.request.PaymentRequest;
 import com.tutti.server.core.payment.payload.response.ParsedTossApiResponse;
+import com.tutti.server.core.payment.payload.response.PaymentConfirmResponse;
 import com.tutti.server.core.payment.payload.response.PaymentResponse;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
@@ -38,7 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public PaymentResponse requestPayment(PaymentRequest request, Long authMemberId) {
-        Order order = getValidOrder(request.orderNumber(), authMemberId);
+        Order order = getValidOrder(request.orderSheetNo(), authMemberId);
         validateOrderAmountAndName(order, request);
         Payment payment = validateOrReusePayment(order, request);
 
@@ -48,7 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
     //2. 결제 승인
     @Override
     @Transactional
-    public Map<String, Object> confirmPayment(PaymentConfirmRequest request, Long authMemberId) {
+    public PaymentConfirmResponse confirmPayment(PaymentConfirmRequest request, Long authMemberId) {
         Payment payment = getValidPayment(request.orderId(), authMemberId);
         Map<String, Object> response = tossPaymentService.confirmPayment(request);
         ParsedTossApiResponse parsedResponse = ParsedTossApiResponse.fromResponse(response);
@@ -65,7 +66,7 @@ public class PaymentServiceImpl implements PaymentService {
         // 주문 이력 업데이트
         orderService.createOrderHistory(order, CreatedByType.MEMBER, authMemberId);
 
-        return response;
+        return PaymentConfirmResponse.fromEntity(order.getId());
     }
 
     private void validateOrderAmountAndName(Order order, PaymentRequest request) {
@@ -104,7 +105,7 @@ public class PaymentServiceImpl implements PaymentService {
                 order.getMember(),
                 request.amount(),
                 request.orderName(),
-                order.getOrderNumber());
+                order.getOrderSheetNo());
 
         return paymentRepository.save(payment);
     }
@@ -127,13 +128,13 @@ public class PaymentServiceImpl implements PaymentService {
         );
     }
 
-    private Payment getValidPayment(String orderNumber, Long memberId) {
-        return paymentRepository.findByOrderNumberAndMemberId(orderNumber, memberId)
+    private Payment getValidPayment(String orderSheetNo, Long memberId) {
+        return paymentRepository.findByOrderSheetNoAndMemberId(orderSheetNo, memberId)
                 .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
     }
 
-    private Order getValidOrder(String orderNumber, Long memberId) {
-        return orderRepository.findByOrderNumberAndMemberId(orderNumber, memberId)
+    private Order getValidOrder(String orderSheetNo, Long memberId) {
+        return orderRepository.findByOrderSheetNoAndMemberId(orderSheetNo, memberId)
                 .orElseThrow(() -> new DomainException(ExceptionType.UNAUTHORIZED_ERROR));
     }
 }
