@@ -64,6 +64,7 @@ public class CartItem extends BaseEntity {
     }
 
     public void updateQuantity(int quantity) {
+        // 재고에 따라 달라질 수 있는 데이터 일관성 문제로 필드 추가보다는 직접 꺼내 쓰는 방식으로 진행
         final int MAX_QUANTITY = this.productItem.getProduct().getMaxQuantity();
 
         int newQuantity = this.quantity + quantity;
