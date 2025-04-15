@@ -7,6 +7,9 @@ import com.tutti.server.core.product.payload.response.ProductResponse;
 import com.tutti.server.core.product.payload.response.ProductSliceResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
@@ -31,5 +34,22 @@ public interface ProductApiSpec {
             @Parameter(description = "받아올 상품 개수", required = false) int size);
 
     @Operation(summary = "상품 검색")
-    public ProductSliceResponse getAllSearchedProducts(SearchRequest searchRequest);
+    public ProductSliceResponse getAllSearchedProducts(
+            @Parameter(description = "keyword- 검색어\ncursorId- 다음페이지 요청을 위한 productId\nsize- 한페이지당 요청 상품 수", schema = @Schema(implementation = SearchRequest.class,
+                    description = "검색어, 커서 ID, 페이지 크기를 포함하는 검색 요청 객체"))
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "검색어 요청",
+                    content = @Content(schema = @Schema(implementation = SearchRequest.class),
+                            examples = {
+                                    @ExampleObject(name = "검색어 \"케이스\"로 첫페이지를 요청하는 방식입니다.",
+                                            value = "{\"keyword\": \"케이스\", \"cursorId\": null, \"size\": 10}",
+                                            summary = "첫 페이지 검색"),
+                                    @ExampleObject(name = "cursorId 값이 존재하는 중간페이지를 요청하는 방식입니다.\n응답 마지막 productId가 다음요청을 위한 cursorId 입니다!",
+                                            value = "{\"keyword\": \"케이스\", \"cursorId\": 6, \"size\": 10}",
+                                            summary = "중간 페이지 검색"),
+                                    @ExampleObject(name = "검색어 \"케이스\"로 마지막 페이지를 요청하는 방식입니다.",
+                                            value = "{\"keyword\": \"케이스\", \"cursorId\": 17, \"size\": 10}",
+                                            summary = "마지막 페이지 검색")
+                            }
+                    ))
+            SearchRequest searchRequest);
 }
