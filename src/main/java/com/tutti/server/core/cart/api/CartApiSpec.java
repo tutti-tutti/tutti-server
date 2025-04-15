@@ -14,12 +14,37 @@ import java.util.List;
 public interface CartApiSpec {
 
     @Operation(summary = "장바구니 상품 추가")
-    void addCartItems(CartItemsCreateRequest request, CustomUserDetails user);
+    void addCartItems(
+            @Parameter(description = "장바구니 상품 추가 요청 DTO",
+                    example = """
+                            [
+                                {
+                                    "productItemId": 155,
+                                    "quantity": 1,
+                                },
+                                {
+                                    "productItemId": 196,
+                                    "quantity": 1,
+                                }
+                            ]
+                            """
+            )
+            CartItemsCreateRequest request,
+            @Parameter(description = "인가를 위한 JWT DTO")
+            CustomUserDetails user
+    );
 
     @Operation(summary = "장바구니 상품 조회")
-    List<CartItemResponse> getCartItems(CustomUserDetails user);
+    List<CartItemResponse> getCartItems(
+            @Parameter(description = "인가를 위한 JWT DTO")
+            CustomUserDetails user
+    );
 
     @Operation(summary = "장바구니 상품 삭제")
-    void removeCartItem(@Parameter(description = "삭제할 장바구니 상품 id", example = "1") Long cartItemId,
-            CustomUserDetails user);
+    void removeCartItem(
+            @Parameter(description = "삭제할 장바구니 상품 id", example = "1")
+            Long cartItemId,
+            @Parameter(description = "인가를 위한 JWT DTO")
+            CustomUserDetails user
+    );
 }

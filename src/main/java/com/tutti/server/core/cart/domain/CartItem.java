@@ -3,6 +3,8 @@ package com.tutti.server.core.cart.domain;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.support.entity.BaseEntity;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -62,6 +64,16 @@ public class CartItem extends BaseEntity {
     }
 
     public void updateQuantity(int quantity) {
-        this.quantity += quantity;
+        // 재고에 따라 달라질 수 있는 데이터 일관성 문제로 필드 추가보다는 직접 꺼내 쓰는 방식으로 진행
+        final int MAX_QUANTITY = this.productItem.getProduct().getMaxQuantity();
+
+        int newQuantity = this.quantity + quantity;
+
+        // 현재 수량에 새로운 수량을 더한 값이 최대 수량을 초과하면 예외를 던짐
+        if (MAX_QUANTITY < newQuantity) {
+            throw new DomainException(ExceptionType.EXCEEDS_MAX_QUANTITY);
+        }
+
+        this.quantity = newQuantity;
     }
 }
