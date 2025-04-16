@@ -54,6 +54,13 @@ public class ReviewCreateServiceImpl implements ReviewCreateService {
                 .build();
         reviewRepository.save(review);
 
+        // 리뷰 작성된 OrderItem 찾아서 reviewed = true 로 설정
+        var orderItem = orderItemRepository
+                .findByOrderIdAndProductItemId(req.orderId(), req.productItemId())
+                .orElseThrow(() -> new DomainException(ExceptionType.ORDER_ITEM_NOT_FOUND));
+
+        orderItem.markReviewed();
+
         return ReviewCreateResponse.from(review);
     }
 }

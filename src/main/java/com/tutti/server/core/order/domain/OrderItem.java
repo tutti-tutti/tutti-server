@@ -66,6 +66,9 @@ public class OrderItem extends BaseEntity {
     @Comment("예상 도착일")
     private LocalDate expectedArrivalAt;
 
+    @Comment("리뷰 작성 여부")
+    private boolean reviewed;
+
     @Builder
     public OrderItem(Order order, Store store, String storeName, ProductItem productItem,
             String productName, String productImgUrl, String firstOptionName,
@@ -84,5 +87,9 @@ public class OrderItem extends BaseEntity {
         this.quantity = quantity;
         this.price = price;
         this.expectedArrivalAt = expectedArrivalAt;
+    }
+
+    public void markReviewed() {
+        this.reviewed = true;
     }
 }
