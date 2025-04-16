@@ -6,13 +6,13 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-@Schema(description = "복합 커서 기반 주문 목록 응답 DTO")
+@Schema(description = "무한스크롤을 위한 복합 커서 기반의 주문 목록 응답 DTO")
 public record CursorBasedOrdersResponse(
 
         @Schema(description = "주문 목록")
         List<OrderResponse> content,
 
-        @Schema(description = "다음 요청에 사용할 커서(기준) 1: createdAt", example = "2025-03-29T15:45:37")
+        @Schema(description = "다음 요청에 사용할 커서(기준) 1: createdAt", example = "2025-04-15T13:35:48.230", type = "string")
         LocalDateTime nextCursorCreatedAt,
 
         @Schema(description = "다음 요청에 사용할 커서(기준) 2: id", example = "4")

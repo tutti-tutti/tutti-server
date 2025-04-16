@@ -20,7 +20,7 @@ public record OrderResponse(
         @Schema(description = "주문 상태", example = "READY")
         String orderStatus,
 
-        @Schema(description = "주문명", example = "코코넛 쉬림프 외 2건", pattern = "{First OrderItem's Name} + 외 + {OrderCount - 1} + 건")
+        @Schema(description = "주문명", example = "아이폰 16 128GB [자급제] 외 1건", pattern = "{First OrderItem's Name} + 외 + {OrderCount - 1} + 건")
         String orderName,
 
         @Schema(description = "주문 생성 일자(주문서 작성 후, 결제 요청을 보낸 시점)", example = "2025-04-10T07:10:17.823Z", pattern = "yyyy-MM-ddTHH:mm:ss")

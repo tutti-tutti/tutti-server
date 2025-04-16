@@ -10,6 +10,7 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
+@Schema(description = "주문 생성 요청 DTO")
 public record OrderCreateRequest(
 
         // 결제 정보
@@ -35,11 +36,11 @@ public record OrderCreateRequest(
                         [
                             {
                                 "productItemId": 72,
-                                "quantity": 1,
+                                "quantity": 1
                             },
                             {
                                 "productItemId": 196,
-                                "quantity": 1,
+                                "quantity": 1
                             }
                         ]
                         """

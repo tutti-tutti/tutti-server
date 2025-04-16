@@ -4,7 +4,7 @@ import com.tutti.server.core.order.domain.CreatedByType;
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
 import com.tutti.server.core.order.payload.request.OrderItemRequest;
-import com.tutti.server.core.order.payload.request.OrderPageRequest;
+import com.tutti.server.core.order.payload.request.OrderSheetRequest;
 import com.tutti.server.core.order.payload.response.CursorBasedOrdersResponse;
 import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderItemResponse;
@@ -18,7 +18,7 @@ import java.util.function.BiFunction;
 
 public interface OrderService {
 
-    OrderSheetResponse getOrderPage(OrderPageRequest request);
+    OrderSheetResponse getOrderPage(OrderSheetRequest request);
 
     void validateProductItems(List<OrderItemRequest> requests);
 

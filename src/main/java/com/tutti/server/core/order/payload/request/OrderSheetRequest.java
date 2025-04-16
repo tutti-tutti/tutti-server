@@ -4,7 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
-public record OrderPageRequest(
+@Schema(description = "주문서 작성 페이지 요청 DTO")
+public record OrderSheetRequest(
 
         @NotNull
         @Schema(description = "주문할 상품 목록",
@@ -12,11 +13,11 @@ public record OrderPageRequest(
                         [
                             {
                                 "productItemId": 72,
-                                "quantity": 1,
+                                "quantity": 1
                             },
                             {
                                 "productItemId": 196,
-                                "quantity": 1,
+                                "quantity": 1
                             }
                         ]
                         """

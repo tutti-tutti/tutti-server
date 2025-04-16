@@ -12,7 +12,7 @@ import com.tutti.server.core.order.infrastructure.OrderItemRepository;
 import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
 import com.tutti.server.core.order.payload.request.OrderItemRequest;
-import com.tutti.server.core.order.payload.request.OrderPageRequest;
+import com.tutti.server.core.order.payload.request.OrderSheetRequest;
 import com.tutti.server.core.order.payload.response.CursorBasedOrdersResponse;
 import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderItemResponse;
@@ -52,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderSheetResponse getOrderPage(OrderPageRequest request) {
+    public OrderSheetResponse getOrderPage(OrderSheetRequest request) {
 
         // 1. 주문 상품 정보 조회 및 검증
         validateProductItems(request.orderItems());
