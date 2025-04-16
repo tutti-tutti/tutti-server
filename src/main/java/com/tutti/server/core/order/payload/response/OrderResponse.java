@@ -46,6 +46,7 @@ public record OrderResponse(
                                 "quantity": 1,
                                 "price": "1400820",
                                 "expectedArrivalAt": "2025-04-10T07:10:17.823Z"
+                                "reviewed": false
                             },
                             {
                                 "storeId": 1,
@@ -61,6 +62,7 @@ public record OrderResponse(
                                 "quantity": 1,
                                 "price": "281960",
                                 "expectedArrivalAt": "2025-04-10T07:10:17.823Z"
+                                "reviewed": true
                             }
                         ]
                         """
