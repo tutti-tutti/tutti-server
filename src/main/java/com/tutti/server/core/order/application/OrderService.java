@@ -18,7 +18,7 @@ import java.util.function.BiFunction;
 
 public interface OrderService {
 
-    OrderSheetResponse getOrderPage(OrderSheetRequest request);
+    OrderSheetResponse getOrderSheet(OrderSheetRequest request);
 
     void validateProductItems(List<OrderItemRequest> requests);
 

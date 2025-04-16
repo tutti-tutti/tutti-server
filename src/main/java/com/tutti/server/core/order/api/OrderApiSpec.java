@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public interface OrderApiSpec {
 
     @Operation(summary = "주문서 작성 페이지")
-    OrderSheetResponse getOrderPage(
+    OrderSheetResponse getOrderSheet(
             @Parameter(description = "주문할 상품 목록")
             OrderSheetRequest request
     );

@@ -52,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderSheetResponse getOrderPage(OrderSheetRequest request) {
+    public OrderSheetResponse getOrderSheet(OrderSheetRequest request) {
 
         // 1. 주문 상품 정보 조회 및 검증
         validateProductItems(request.orderItems());
