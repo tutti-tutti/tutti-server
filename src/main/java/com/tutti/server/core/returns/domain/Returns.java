@@ -1,6 +1,5 @@
 package com.tutti.server.core.returns.domain;
 
-import com.tutti.server.core.delivery.domain.Carrier;
 import com.tutti.server.core.order.domain.Order;
 import com.tutti.server.core.refund.domain.Refund;
 import com.tutti.server.core.support.entity.BaseEntity;
@@ -33,10 +32,6 @@ public class Returns extends BaseEntity {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order; // 주문 엔티티 참조
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "carrier_id")
-    private Carrier carrier; // 택배사 엔티티 참조
-
     @Column(nullable = false)
     private int quantity; // 반품 수량
 
@@ -51,12 +46,11 @@ public class Returns extends BaseEntity {
     private LocalDateTime completedAt; // 반품 완료 일시
 
     @Builder
-    public Returns(Refund refund, Order order, Carrier carrier, int quantity, String reason,
-            ReturnStatus returnStatus,
-            LocalDate expectedReturnDate, LocalDateTime completedAt) {
+    public Returns(Refund refund, Order order, int quantity, String reason,
+            ReturnStatus returnStatus, LocalDate expectedReturnDate, LocalDateTime completedAt
+    ) {
         this.refund = refund;
         this.order = order;
-        this.carrier = carrier;
         this.quantity = quantity;
         this.reason = reason;
         this.returnStatus = returnStatus;

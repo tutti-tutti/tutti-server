@@ -105,7 +105,7 @@ public record OrderDetailResponse(
         String recipientAddress,
 
         @Schema(description = "상세 주소", example = "10층 1004호")
-        String detailAddress,
+        String recipientAddressDetail,
 
         @Schema(description = "배송 요청 사항", example = "빠른 배송 부탁드려요~!")
         String note
@@ -134,6 +134,7 @@ public record OrderDetailResponse(
                 .recipientName(delivery.getRecipientName())
                 .recipientPhone(delivery.getRecipientPhone())
                 .recipientAddress(delivery.getRecipientAddress())
+                .recipientAddressDetail(delivery.getRecipientAddressDetail())
                 .zipCode(delivery.getZipcode())
                 .note(delivery.getNote())
                 .build();
