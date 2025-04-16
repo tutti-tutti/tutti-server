@@ -15,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 @Getter
 @Entity
@@ -24,24 +25,43 @@ public class CartItem extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
+    @Comment("장바구니 주인 ID")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_item_id", nullable = false)
+    @Comment("장바구니에 추가된 상품 ID")
     private ProductItem productItem;
 
+    @Comment("상품명")
     private String productName;
+
+    @Comment("상품 이미지 URL")
     private String productImgUrl;
+
+    @Comment("상품 옵션명 1")
     private String firstOptionName;
+
+    @Comment("상품 옵션값 1")
     private String firstOptionValue;
+
+    @Comment("상품 옵션명 2")
     private String secondOptionName;
+
+    @Comment("상품 옵션값 2")
     private String secondOptionValue;
 
     @Column(columnDefinition = "integer default 1")
+    @Comment("담긴 상품 수량")
     private int quantity;
 
+    @Comment("원가 = 부모 상품 원가 + 옵션 추가금")
     private int originalPrice;
+
+    @Comment("실제 구매하는 가격 = 원가 - 할인 금액")
     private int sellingPrice;
+
+    @Comment("품절 여부")
     private boolean soldOut;
 
     @Builder

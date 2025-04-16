@@ -30,8 +30,8 @@ public class OrderApi implements OrderApiSpec {
 
     @Override
     @PostMapping("/ordersheet")
-    public OrderSheetResponse getOrderPage(@Valid @RequestBody OrderSheetRequest request) {
-        return orderService.getOrderPage(request);
+    public OrderSheetResponse getOrderSheet(@Valid @RequestBody OrderSheetRequest request) {
+        return orderService.getOrderSheet(request);
     }
 
     @Override
