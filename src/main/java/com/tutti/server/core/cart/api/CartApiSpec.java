@@ -20,11 +20,11 @@ public interface CartApiSpec {
                             [
                                 {
                                     "productItemId": 155,
-                                    "quantity": 1,
+                                    "quantity": 1
                                 },
                                 {
                                     "productItemId": 196,
-                                    "quantity": 1,
+                                    "quantity": 1
                                 }
                             ]
                             """
