@@ -71,8 +71,7 @@ public class OrderServiceImpl implements OrderService {
         int totalAmount = totalProductAmount - totalDiscountAmount + deliveryFee;
 
         // 6. 주문 아이템 응답 목록 생성
-        List<OrderItemResponse> orderItems = createOrderItemResponses(
-                request.orderItems());
+        List<OrderItemResponse> orderItems = createOrderItemResponses(request.orderItems());
 
         return OrderSheetResponse.builder()
                 .totalDiscountAmount(totalDiscountAmount)
@@ -149,8 +148,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderItemResponse> createOrderItemResponses(
-            List<OrderItemRequest> requests) {
+    public List<OrderItemResponse> createOrderItemResponses(List<OrderItemRequest> requests) {
 
         // 여기는 OrderItem 이 생성되기 전이라는 것을 명심하자
         return requests.stream()

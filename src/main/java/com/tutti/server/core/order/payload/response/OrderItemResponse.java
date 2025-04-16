@@ -46,7 +46,10 @@ public record OrderItemResponse(
         int price,
 
         @Schema(description = "예상 도착 일자", example = "2025-04-10T07:10:17.823Z")
-        LocalDate expectedArrivalAt
+        LocalDate expectedArrivalAt,
+
+        @Schema(description = "리뷰 작성 여부(true/false)", example = "false", defaultValue = "false")
+        boolean reviewed
 ) {
 
     public static OrderItemResponse fromEntity(OrderItem orderItem) {
@@ -67,6 +70,7 @@ public record OrderItemResponse(
                 .quantity(orderItem.getQuantity())
                 .price(orderItem.getPrice())
                 .expectedArrivalAt(orderItem.getExpectedArrivalAt())
+                .reviewed(orderItem.isReviewed())
                 .build();
     }
 }
