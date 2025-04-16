@@ -45,7 +45,7 @@ public record OrderResponse(
                                 "secondOptionValue": "단일 제품",
                                 "quantity": 1,
                                 "price": "1400820",
-                                "expectedArrivalAt": "2025-04-10T07:10:17.823Z"
+                                "expectedArrivalAt": "2025-04-10T07:10:17.823Z",
                                 "reviewed": false
                             },
                             {
@@ -61,7 +61,7 @@ public record OrderResponse(
                                 "secondOptionValue": "512GB",
                                 "quantity": 1,
                                 "price": "281960",
-                                "expectedArrivalAt": "2025-04-10T07:10:17.823Z"
+                                "expectedArrivalAt": "2025-04-10T07:10:17.823Z",
                                 "reviewed": true
                             }
                         ]
