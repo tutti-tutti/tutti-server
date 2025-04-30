@@ -1,13 +1,11 @@
 package com.tutti.server.core.product.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
+import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.domain.ProductItem;
+import com.tutti.server.core.product.domain.ProductLike;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
+import com.tutti.server.core.product.infrastructure.ProductLikeRepository;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
 import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductOptionResponse;
@@ -18,9 +16,11 @@ import com.tutti.server.core.store.domain.Store;
 import com.tutti.server.core.store.infrastructure.StoreRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
-
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
@@ -31,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductItemRepository productItemRepository;
     private final SkuRepository skuRepository;
     private final StoreRepository storeRepository;
+    private final ProductLikeRepository productLikeRepository;
 
     @Override
     public List<ProductResponse> getAllProductsByCreated() {
@@ -137,10 +138,36 @@ public class ProductServiceImpl implements ProductService {
         if (skus.isEmpty()) {
             throw new DomainException(ExceptionType.SKU_NOT_FOUND);
         }
-        
+
         return skus.stream()
-                .min((sku1, sku2) -> 
-                    Integer.compare(sku1.getStockQuantity(), sku2.getStockQuantity()))
+                .min((sku1, sku2) ->
+                        Integer.compare(sku1.getStockQuantity(), sku2.getStockQuantity()))
                 .get();
+    }
+
+    //상품 좋아요
+    @Override
+    public void likeProduct(Long productId, Member member) {
+        Product product = productRepository.findOne(productId);
+        if (!productLikeRepository.existsByProductAndMember(product, member)) {
+            productLikeRepository.save(ProductLike.builder()
+                    .product(product)
+                    .member(member)
+                    .build());
+            product.increaseLikeCount();
+        }
+    }
+
+    @Override
+    public void unlikeProduct(Long productId, Member member) {
+        Product product = productRepository.findOne(productId);
+        productLikeRepository.deleteByProductAndMember(product, member);
+        product.decreaseLikeCount();
+    }
+
+    @Override
+    public boolean isProductLiked(Long productId, Member member) {
+        Product product = productRepository.findOne(productId);
+        return productLikeRepository.existsByProductAndMember(product, member);
     }
 }

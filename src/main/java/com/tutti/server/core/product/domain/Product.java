@@ -99,4 +99,14 @@ public class Product extends BaseEntity {
         this.maxQuantity = maxQuantity;
         this.likeCount = likeCount;
     }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        if (this.likeCount > 0) {
+            this.likeCount--;
+        }
+    }
 }

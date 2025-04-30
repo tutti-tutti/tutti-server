@@ -14,8 +14,10 @@ import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,4 +55,26 @@ public class ProductApi implements ProductApiSpec {
         }
         return response;
     }
+
+    @PostMapping("/{productId}/like")
+    public void likeProduct(@PathVariable long productId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member member = memberRepository.findOne(userDetails.getMemberId());
+        productService.likeProduct(productId, member);
+    }
+
+    @DeleteMapping("/{productId}/like")
+    public void unlikeProduct(@PathVariable long productId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member member = memberRepository.findOne(userDetails.getMemberId());
+        productService.unlikeProduct(productId, member);
+    }
+
+    @GetMapping("/{productId}/like")
+    public boolean isLiked(@PathVariable long productId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member member = memberRepository.findOne(userDetails.getMemberId());
+        return productService.isProductLiked(productId, member);
+    }
+
 }
