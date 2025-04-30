@@ -7,8 +7,10 @@ import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.application.ProductService;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
+import com.tutti.server.core.product.payload.request.SearchRequest;
 import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
+import com.tutti.server.core.product.payload.response.ProductSliceResponse;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -35,6 +39,15 @@ public class ProductApi implements ProductApiSpec {
     @GetMapping("latest-list")
     public List<ProductResponse> getAllProductsByCreated() {
         return productService.getAllProductsByCreated();
+    }
+
+    @Override
+    @GetMapping("latest-list/page")
+    public ProductSliceResponse getAllProductsByCreatedWithPagination(
+            @RequestParam(name = "cursorId", required = false) Long cursorId,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
+
+        return productService.getAllProductsByCreated(cursorId, size);
     }
 
     @Override
@@ -55,7 +68,7 @@ public class ProductApi implements ProductApiSpec {
         }
         return response;
     }
-
+  
     @PostMapping("/{productId}/like")
     public void likeProduct(@PathVariable long productId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -77,4 +90,20 @@ public class ProductApi implements ProductApiSpec {
         return productService.isProductLiked(productId, member);
     }
 
+    @Override
+    @GetMapping("recommend")
+    public List<ProductResponse> getProductsByLikes(
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return productService.getProductsByLikes(size);
+    }
+
+    // getAllSearchedProductsByCreatedWithPagination
+    @Override
+    @PostMapping("/search-list")
+    public ProductSliceResponse getAllSearchedProducts(@RequestBody SearchRequest searchRequest) {
+        return productService.getAllProductsBySearchWord(
+                searchRequest.cursorId(),
+                searchRequest.size(),
+                searchRequest.keyword());
+    }
 }

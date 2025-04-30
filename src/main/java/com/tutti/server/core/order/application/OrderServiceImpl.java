@@ -12,11 +12,12 @@ import com.tutti.server.core.order.infrastructure.OrderItemRepository;
 import com.tutti.server.core.order.infrastructure.OrderRepository;
 import com.tutti.server.core.order.payload.request.OrderCreateRequest;
 import com.tutti.server.core.order.payload.request.OrderItemRequest;
-import com.tutti.server.core.order.payload.request.OrderPageRequest;
+import com.tutti.server.core.order.payload.request.OrderSheetRequest;
+import com.tutti.server.core.order.payload.response.CursorBasedOrdersResponse;
 import com.tutti.server.core.order.payload.response.OrderDetailResponse;
 import com.tutti.server.core.order.payload.response.OrderItemResponse;
-import com.tutti.server.core.order.payload.response.OrderPageResponse;
 import com.tutti.server.core.order.payload.response.OrderResponse;
+import com.tutti.server.core.order.payload.response.OrderSheetResponse;
 import com.tutti.server.core.payment.domain.PaymentStatus;
 import com.tutti.server.core.payment.payload.request.PaymentRequest;
 import com.tutti.server.core.product.domain.Product;
@@ -24,6 +25,7 @@ import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -32,6 +34,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderPageResponse getOrderPage(OrderPageRequest request) {
+    public OrderSheetResponse getOrderSheet(OrderSheetRequest request) {
 
         // 1. 주문 상품 정보 조회 및 검증
         validateProductItems(request.orderItems());
@@ -67,10 +71,9 @@ public class OrderServiceImpl implements OrderService {
         int totalAmount = totalProductAmount - totalDiscountAmount + deliveryFee;
 
         // 6. 주문 아이템 응답 목록 생성
-        List<OrderItemResponse> orderItems = createOrderItemResponses(
-                request.orderItems());
+        List<OrderItemResponse> orderItems = createOrderItemResponses(request.orderItems());
 
-        return OrderPageResponse.builder()
+        return OrderSheetResponse.builder()
                 .totalDiscountAmount(totalDiscountAmount)
                 .totalProductAmount(totalProductAmount)
                 .deliveryFee(deliveryFee)
@@ -145,8 +148,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderItemResponse> createOrderItemResponses(
-            List<OrderItemRequest> requests) {
+    public List<OrderItemResponse> createOrderItemResponses(List<OrderItemRequest> requests) {
 
         // 여기는 OrderItem 이 생성되기 전이라는 것을 명심하자
         return requests.stream()
@@ -167,9 +169,17 @@ public class OrderServiceImpl implements OrderService {
                             .secondOptionValue(productItem.getSecondOptionValue())
                             .quantity(request.quantity())
                             .price(productItem.getSellingPrice())
+                            .expectedArrivalAt(generateRandomDays())
                             .build();
                 })
                 .toList();
+    }
+
+    @Override
+    public LocalDate generateRandomDays() {
+        int randomInt = (int) ((Math.random()) * 7) + 1;
+
+        return LocalDate.now().plusDays(randomInt);
     }
 
     @Override
@@ -179,17 +189,25 @@ public class OrderServiceImpl implements OrderService {
         Member member = memberRepository.findOne(memberId);
 
         // 2. 주문번호 생성
-        String orderNumber = generateOrderNumber();
+        String orderSheetNo = generateOrderSheetNo();
 
         // 3. 주문명 생성
         String orderName = generateOrderName(request);
 
         // 4. 주문 생성
         Order order = orderRepository.save(
-                request.toEntity(member, PaymentStatus.READY.name(), orderNumber,
-                        orderName, request.orderItems().size(), request.totalDiscountAmount(),
-                        request.totalProductAmount(), request.deliveryFee(), request.totalAmount()
-                ));
+                request.toEntity(
+                        member,
+                        PaymentStatus.READY.name(),
+                        orderSheetNo,
+                        orderName,
+                        request.orderItems().size(),
+                        request.totalDiscountAmount(),
+                        request.totalProductAmount(),
+                        request.deliveryFee(),
+                        request.totalAmount()
+                )
+        );
 
         // 5. 주문 아이템 생성
         createOrderItems(order, request.orderItems());
@@ -201,14 +219,14 @@ public class OrderServiceImpl implements OrderService {
         deliveryRepository.save(request.toEntity(order));
 
         return PaymentRequest.builder()
-                .orderNumber(order.getOrderNumber())
+                .orderSheetNo(order.getOrderSheetNo())
                 .amount(order.getTotalAmount())
                 .orderName(order.getOrderName())
                 .build();
     }
 
     @Override
-    public String generateOrderNumber() {
+    public String generateOrderSheetNo() {
         LocalDateTime now = LocalDateTime.now();
         String datePart = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String randomPart = UUID.randomUUID().toString().substring(0, 8);
@@ -252,8 +270,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void createOrderHistory(Order order, CreatedByType createdByType,
-            long createdById) {
+    public void createOrderHistory(Order order, CreatedByType createdByType, Long createdById) {
         // 1. 이전 버전들의 latestVersion을 모두 false로 변경
         orderHistoryRepository.updatePreviousVersions(order.getId());
 
@@ -270,14 +287,38 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponse> getOrders(Long memberId) {
-        return orderRepository.findAllByMemberIdAndDeleteStatusFalse(memberId)
-                .stream()
+    public CursorBasedOrdersResponse getOrders(
+            Long memberId, LocalDateTime cursorCreatedAt, Long cursorId, int size
+    ) {
+
+        int fetchSize = size + 1;
+        Pageable pageable = PageRequest.of(0, fetchSize);
+        List<Order> orders = orderRepository.findByMemberIdWithCursor(
+                memberId, cursorCreatedAt, cursorId, pageable
+        );
+
+        boolean hasNext = orders.size() > size;
+        if (hasNext) {
+            orders = orders.subList(0, size);
+        }
+
+        List<OrderResponse> content = orders.stream()
                 .map(order -> OrderResponse.fromEntity(order,
                                 orderItemRepository.findAllByOrderId(order.getId())
                         )
                 )
                 .toList();
+
+        LocalDateTime nextCursorCreatedAt =
+                hasNext ? orders.get(orders.size() - 1).getCreatedAt() : null;
+        Long nextCursorId = hasNext ? orders.get(orders.size() - 1).getId() : null;
+
+        return CursorBasedOrdersResponse.builder()
+                .content(content)
+                .nextCursorCreatedAt(nextCursorCreatedAt)
+                .nextCursorId(nextCursorId)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Override

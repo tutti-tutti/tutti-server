@@ -35,7 +35,7 @@ public class RefundApi implements RefundApiSpec {
     }
 
 
-    @GetMapping("/order/{orderId}")
+    @GetMapping("/orders/{orderId}")
     public RefundViewResponse getRefundViewByOrderId(@PathVariable Long orderId,
             @AuthenticationPrincipal
             CustomUserDetails userDetails) {

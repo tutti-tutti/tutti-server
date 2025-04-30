@@ -81,12 +81,12 @@ public class Product extends BaseEntity {
 
     // 필수로 설정하는 빌더
     @Builder
-    public Product(int original_price, String botId, Store storeId, String name, String titleUrl,
+    public Product(int originalPrice, String botId, Store storeId, String name, String titleUrl,
             String productCode,
             String detailUrl, String description, boolean onSales, boolean adultOnly,
             int maxQuantity,
             int likeCount) {
-        this.originalPrice = original_price;
+        this.originalPrice = originalPrice;
         this.botId = botId;
         this.storeId = storeId;
         this.name = name;

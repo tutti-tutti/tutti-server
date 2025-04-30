@@ -26,17 +26,22 @@ public class Order extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
+    @Comment("주문한 사용자")
     private Member member;
 
-    @Column(length = 50)
     @Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    @Comment("결제 수단")
     private PaymentMethodType paymentType;
 
     @Column(nullable = false, length = 50)
+    @Comment("주문 상태")
     private String orderStatus;
 
     @Comment("고객 확인용 주문 번호")
-    private String orderNumber;
+    private String orderSheetNo;
+
+    @Comment("주문명")
     private String orderName;
 
     @Comment("orderItem 별 건수 (수량 아님)")
@@ -54,34 +59,34 @@ public class Order extends BaseEntity {
     @Comment("총 결제 금액")
     private int totalAmount;
 
-    @Comment("주문 완료 일시")
-    private LocalDateTime completedAt;
-
     @Comment("결제 완료 일시")
     private LocalDateTime paidAt;
 
     @Comment("배송 완료 일시")
     private LocalDateTime deliveredAt;
 
+    @Comment("주문 완료 일시")
+    private LocalDateTime completedAt;
+
 
     @Builder
     public Order(Member member, PaymentMethodType paymentType, String orderStatus,
-            String orderNumber, String orderName, int orderCount, int totalDiscountAmount,
-            int totalProductAmount, int deliveryFee, int totalAmount, LocalDateTime completedAt,
-            LocalDateTime deliveredAt, LocalDateTime paidAt) {
+            String orderSheetNo, String orderName, int orderCount, int totalDiscountAmount,
+            int totalProductAmount, int deliveryFee, int totalAmount, LocalDateTime deliveredAt,
+            LocalDateTime paidAt, LocalDateTime completedAt) {
         this.member = member;
         this.paymentType = paymentType;
         this.orderStatus = orderStatus;
-        this.orderNumber = orderNumber;
+        this.orderSheetNo = orderSheetNo;
         this.orderName = orderName;
         this.orderCount = orderCount;
         this.totalDiscountAmount = totalDiscountAmount;
         this.totalProductAmount = totalProductAmount;
         this.deliveryFee = deliveryFee;
         this.totalAmount = totalAmount;
-        this.completedAt = completedAt;
         this.paidAt = paidAt;
         this.deliveredAt = deliveredAt;
+        this.completedAt = completedAt;
     }
 
     public void updateOrderStatus(String orderStatus) {

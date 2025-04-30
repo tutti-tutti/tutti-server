@@ -10,6 +10,7 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TossPaymentService {
@@ -52,6 +54,8 @@ public class TossPaymentService {
         HttpHeaders headers = createTossApiHeaders();
         Map<String, Object> requestBody = buildRequestBody(request);
 
+        log.info(">>>>Confirm payment request:{}", requestBody);
+
         try {
             return restClient.method(HttpMethod.POST)
                     .uri(tossPaymentsConfirmUrl)
@@ -70,7 +74,7 @@ public class TossPaymentService {
     private Map<String, Object> buildRequestBody(PaymentConfirmRequest request) {
         return Map.of(
                 "paymentKey", request.paymentKey(),
-                "orderNumber", request.orderId(),
+                "orderId", request.orderId(),
                 "amount", request.amount()
         );
     }

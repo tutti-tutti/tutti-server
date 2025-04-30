@@ -6,7 +6,7 @@ import com.tutti.server.core.refund.payload.RefundViewResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "환불 API", description = "환불 요청을 처리하는 API")
+@Tag(name = "Refunds", description = "환불 요청을 처리하는 API")
 public interface RefundApiSpec {
 
     @Operation(summary = "환불 요청", description = "사용자가 환불을 요청하는 API(환불 요청시 결제취소 프로세스도 실행)")

@@ -4,6 +4,7 @@ import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
+import com.tutti.server.core.product.payload.response.ProductSliceResponse;
 import com.tutti.server.core.sku.domain.Sku;
 import java.util.List;
 
@@ -12,6 +13,11 @@ public interface ProductService {
     List<ProductResponse> getAllProductsByCategory(Long categoryId);
 
     List<ProductResponse> getAllProductsByCreated();
+
+    ProductSliceResponse getAllProductsByCreated(Long cursorId, int size);
+
+    ProductSliceResponse getAllProductsBySearchWord(Long cursorId, int size,
+            String searchWord);
 
     ProductItemResponse getProductItemsWithOptions(Long productId);
 
@@ -24,4 +30,7 @@ public interface ProductService {
     void unlikeProduct(Long productId, Member member);
 
     boolean isProductLiked(Long productId, Member member);
+
+    List<ProductResponse> getProductsByLikes(int size);
 }
+

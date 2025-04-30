@@ -38,18 +38,18 @@ public class ReviewService {
     }
 
     public LatestReviewListResponse getLatestReviews(Long productId, LatestReviewCursor cursor,
-            Integer size) {
-        return reviewLatestListService.getLatestReviews(productId, cursor, size);
+            Integer size, Long memberId) {
+        return reviewLatestListService.getLatestReviews(productId, cursor, size, memberId);
     }
 
     public RatingReviewListResponse getRatingReviews(Long productId, RatingReviewCursor cursor,
-            int size) {
-        return reviewRatingListService.getRatingReviews(productId, cursor, size);
+            int size, Long memberId) {
+        return reviewRatingListService.getRatingReviews(productId, cursor, size, memberId);
     }
 
     public LikeReviewListResponse getLikeReviews(Long productId, LikeReviewCursor cursor,
-            int size) {
-        return reviewLikeListService.getLikeReviews(productId, cursor, size);
+            int size, Long memberId) {
+        return reviewLikeListService.getLikeReviews(productId, cursor, size, memberId);
     }
 
     public ReviewDetailResponse getReviewDetail(long reviewId, Long memberId) {

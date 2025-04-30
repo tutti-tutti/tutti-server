@@ -90,7 +90,7 @@ public class ReturnsServiceImpl implements ReturnsService {
     private void autoRefund(Returns returns, Order order, Long authMemberId) {
         if (returns.getReturnStatus() == ReturnStatus.RETURN_COMPLETED) {
             PaymentCancelRequest cancelRequest = PaymentCancelRequest.builder()
-                    .orderNumber(order.getOrderNumber())
+                    .orderSheetNo(order.getOrderSheetNo())
                     .cancelReason("반품 완료 자동 환불")
                     .build();
 

@@ -52,7 +52,7 @@ public class Payment extends BaseEntity {
     private PaymentMethod paymentMethod; // 결제 수단 id
 
     @Column
-    private String orderNumber;
+    private String orderSheetNo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -61,7 +61,7 @@ public class Payment extends BaseEntity {
     @Builder
     public Payment(String orderName, int amount, String paymentStatus,
             String tossPaymentKey, Member member,
-            Order order, PaymentMethod paymentMethod, String orderNumber,
+            Order order, PaymentMethod paymentMethod, String orderSheetNo,
             PaymentMethodType paymentMethodType) {
 
         this.orderName = orderName;
@@ -71,7 +71,7 @@ public class Payment extends BaseEntity {
         this.member = member;
         this.order = order;
         this.paymentMethod = paymentMethod;
-        this.orderNumber = orderNumber;
+        this.orderSheetNo = orderSheetNo;
         this.paymentMethodType = paymentMethodType;
     }
 

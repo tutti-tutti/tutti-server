@@ -79,9 +79,12 @@ public class ReviewApi implements ReviewApiSpec {
     public ResponseEntity<LatestReviewListResponse> getLatestReviewList(
             @PathVariable Long productId,
             @ParameterObject @ModelAttribute LatestReviewCursor cursor,
-            @RequestParam(defaultValue = "20") int size
+            @RequestParam(defaultValue = "20") int size,
+            @AuthenticationPrincipal CustomUserDetails user
     ) {
-        LatestReviewListResponse response = reviewService.getLatestReviews(productId, cursor, size);
+        Long memberId = (user != null) ? user.getMemberId() : null;
+        LatestReviewListResponse response = reviewService.getLatestReviews(productId, cursor, size,
+                memberId);
         return ResponseEntity.ok(response);
     }
 
@@ -90,9 +93,12 @@ public class ReviewApi implements ReviewApiSpec {
     public ResponseEntity<RatingReviewListResponse> getRatingReviewList(
             @PathVariable Long productId,
             @ParameterObject @ModelAttribute RatingReviewCursor cursor,
-            @RequestParam(defaultValue = "20") int size
+            @RequestParam(defaultValue = "20") int size,
+            @AuthenticationPrincipal CustomUserDetails user
     ) {
-        RatingReviewListResponse response = reviewService.getRatingReviews(productId, cursor, size);
+        Long memberId = (user != null) ? user.getMemberId() : null;
+        RatingReviewListResponse response = reviewService.getRatingReviews(productId, cursor, size,
+                memberId);
         return ResponseEntity.ok(response);
     }
 
@@ -101,9 +107,12 @@ public class ReviewApi implements ReviewApiSpec {
     public ResponseEntity<LikeReviewListResponse> getLikeReviewList(
             @PathVariable Long productId,
             @ParameterObject @ModelAttribute LikeReviewCursor cursor,
-            @RequestParam(defaultValue = "20") int size
+            @RequestParam(defaultValue = "20") int size,
+            @AuthenticationPrincipal CustomUserDetails user
     ) {
-        LikeReviewListResponse response = reviewService.getLikeReviews(productId, cursor, size);
+        Long memberId = (user != null) ? user.getMemberId() : null;
+        LikeReviewListResponse response = reviewService.getLikeReviews(productId, cursor, size,
+                memberId);
         return ResponseEntity.ok(response);
     }
 

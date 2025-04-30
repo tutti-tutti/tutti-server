@@ -25,8 +25,10 @@ public class CartApi implements CartApiSpec {
 
     @Override
     @PostMapping
-    public void addCartItems(@RequestBody @Valid CartItemsCreateRequest request,
-            @AuthenticationPrincipal CustomUserDetails user) {
+    public void addCartItems(
+            @RequestBody @Valid CartItemsCreateRequest request,
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
         cartService.addCartItems(request, user.getMemberId());
     }
 
@@ -38,8 +40,10 @@ public class CartApi implements CartApiSpec {
 
     @Override
     @PatchMapping("/{cartItemId}")
-    public void removeCartItem(@PathVariable("cartItemId") Long cartItemId,
-            @AuthenticationPrincipal CustomUserDetails user) {
+    public void removeCartItem(
+            @PathVariable("cartItemId") Long cartItemId,
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
         cartService.removeCartItem(cartItemId, user.getMemberId());
     }
 }

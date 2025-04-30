@@ -50,13 +50,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // Reviews -> Product_items -> Products 순으로 조인
     // 최신순 초기 페이지 (복합 커서)
     @Query(value = """
-                SELECT r.* 
-                FROM reviews r
-                JOIN product_items pi ON r.product_item_id = pi.id
-                JOIN products p ON pi.product_id = p.id
-                WHERE p.id = :productId
-                ORDER BY r.created_at DESC
-                LIMIT :limit
+            SELECT r.* 
+            FROM reviews r
+            JOIN product_items pi ON r.product_item_id = pi.id
+            JOIN products p ON pi.product_id = p.id
+            WHERE p.id = :productId
+            ORDER BY r.id DESC
+            LIMIT :limit
             """, nativeQuery = true)
     List<Review> findFirstReviewsByProductNative(
             @Param("productId") Long productId,
@@ -65,13 +65,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     // 최신순 다음 페이지 (복합 커서)
     @Query(value = """
-                SELECT r.* 
-                FROM reviews r
-                JOIN product_items pi ON r.product_item_id = pi.id
-                JOIN products p ON pi.product_id = p.id
-                WHERE p.id = :productId
-                  AND r.id < :cursor
-                ORDER BY r.created_at DESC
+            SELECT r.* 
+            FROM reviews r
+            JOIN product_items pi ON r.product_item_id = pi.id
+            JOIN products p ON pi.product_id = p.id
+            WHERE p.id = :productId
+              AND r.id < :cursor
+            ORDER BY r.id DESC
                 LIMIT :limit
             """, nativeQuery = true)
     List<Review> findNextReviewsByProductNative(
@@ -82,9 +82,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     // 별점 초기 페이지 (복합 커서)
     @Query(value = """
-            SELECT r.* FROM reviews r
-                                JOIN product_items pi ON r.product_item_id = pi.id
-                                JOIN products p ON pi.product_id = p.id
+            SELECT r.*
+            FROM reviews r
+            JOIN product_items pi ON r.product_item_id = pi.id
+            JOIN products p ON pi.product_id = p.id
             WHERE p.id = ?
             ORDER BY r.rating DESC, r.id DESC
             LIMIT ?;
@@ -96,31 +97,33 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     // 별점 다음 페이지 (복합 커서)
     @Query(value = """
-               SELECT r.* FROM reviews r
-                                           JOIN product_items pi ON r.product_item_id = pi.id
-                                           JOIN products p ON pi.product_id = p.id
-                       WHERE p.id = ?
-                         AND (
-                           r.rating < ? OR
-                           (r.rating = ? AND r.id < ?)
-                           )
-            
-                       ORDER BY r.rating DESC, r.id DESC
-                       LIMIT ?;
+            SELECT r.*
+            FROM reviews r
+            JOIN product_items pi ON r.product_item_id = pi.id
+            JOIN products p ON pi.product_id = p.id
+            WHERE p.id = ?
+            AND (round(r.rating, 1) < round(?, 1) OR (cast(round(r.rating, 1) as char) = cast(round(?, 1) as char) AND r.id < ?))
+            ORDER BY r.rating DESC, r.id DESC
+            LIMIT ?;
             """, nativeQuery = true)
     List<Review> findNextReviewsByProductOrderByRatingDescNative(
+            // 조회할 상품 ID
             @Param("productId") Long productId,
+            // 커서 기준 평점 (rating DESC 정렬용)
             @Param("cursorRating") Float cursorRating,
-            @Param("cursorRatingEq") Float cursorRatingEq, // rating = ?
+            // 평점이 동일한 경우 ID로 추가 비교 ( rating 하나 더 필요 )
+            @Param("cursorRatingEq") Float cursorRatingEq,
+            // 커서 기준 리뷰 ID (ID DESC 정렬용)
             @Param("cursorId") Long cursorId,
+            // 조회할 리뷰 개수 (페이지 크기)
             @Param("limit") int limit
     );
 
     // 도움이 되었어요 초기 페이지 (복합 커서)
     @Query(value = """
             SELECT r.* FROM reviews r
-                                JOIN product_items pi ON r.product_item_id = pi.id
-                                JOIN products p ON pi.product_id = p.id
+            JOIN product_items pi ON r.product_item_id = pi.id
+            JOIN products p ON pi.product_id = p.id
             WHERE p.id = ?
             ORDER BY r.like_count DESC, r.id DESC
             LIMIT ?;
@@ -133,14 +136,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 도움이 되었어요 다음 페이지 (복합 커서)
     @Query(value = """
             SELECT r.* FROM reviews r
-                                JOIN product_items pi ON r.product_item_id = pi.id
-                                JOIN products p ON pi.product_id = p.id
+            JOIN product_items pi ON r.product_item_id = pi.id
+            JOIN products p ON pi.product_id = p.id
             WHERE p.id = ?
-              AND (
-                r.like_count < ? OR
-                (r.like_count = ? AND r.id < ?)
-                )
-            
+              AND (r.like_count < ? OR(r.like_count = ? AND r.id < ?))
             ORDER BY r.like_count DESC, r.id DESC
             LIMIT ?;
             """, nativeQuery = true)
@@ -154,39 +153,36 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     // 평균 평점
     @Query("""
-                SELECT AVG(r.rating) 
-                FROM Review r 
-                WHERE r.productItem.product.id = :productId
+            SELECT AVG(r.rating) 
+            FROM Review r 
+            WHERE r.productItem.product.id = :productId
             """)
     Double findAverageRatingByProductId(Long productId);
 
     // 별점별 개수
     @Query(value = """
-                SELECT FLOOR(r.rating) AS star, COUNT(*) AS count
-                FROM reviews r
-                JOIN product_items pi ON r.product_item_id = pi.id
-                JOIN products p ON pi.product_id = p.id
-                WHERE p.id = :productId
-                GROUP BY FLOOR(r.rating)
-                ORDER BY star DESC
+            SELECT FLOOR(r.rating) AS star, COUNT(*) AS count
+            FROM reviews r
+            JOIN product_items pi ON r.product_item_id = pi.id
+            JOIN products p ON pi.product_id = p.id
+            WHERE p.id = :productId
+            GROUP BY FLOOR(r.rating)
+            ORDER BY star DESC
             """, nativeQuery = true)
     List<Object[]> countStarGroupBy(@Param("productId") Long productId);
 
     // 긍정 리뷰 비율 (소수점 1자리 반올림)
     @Query(value = """
-                SELECT 
-                    ROUND(
-                        (SELECT COUNT(*) 
-                         FROM reviews r 
-                         JOIN product_items pi ON r.product_item_id = pi.id
-                         WHERE pi.product_id = :productId AND r.sentiment = 'positive') * 100.0
-                        / NULLIF((
-                            SELECT COUNT(*) 
-                            FROM reviews r 
-                            JOIN product_items pi ON r.product_item_id = pi.id
-                            WHERE pi.product_id = :productId
-                        ), 0), 1
-                    )
+            SELECT ROUND((SELECT COUNT(*) 
+            FROM reviews r 
+            JOIN product_items pi ON r.product_item_id = pi.id
+            WHERE pi.product_id = :productId 
+            AND r.sentiment = 'positive') * 100.0/ NULLIF(
+            (SELECT COUNT(*) 
+            FROM reviews r 
+            JOIN product_items pi ON r.product_item_id = pi.id
+            WHERE pi.product_id = :productId
+            ), 0), 1)
             """, nativeQuery = true)
     Double getPositiveSentimentRate(@Param("productId") Long productId);
 }

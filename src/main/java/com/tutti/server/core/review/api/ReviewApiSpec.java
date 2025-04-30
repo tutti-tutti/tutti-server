@@ -53,6 +53,7 @@ public interface ReviewApiSpec {
             ReviewCreateRequest reviewCreateRequest, CustomUserDetails user);
 
     @Operation(summary = "리뷰 최신순 목록 조회 API (createdAt DESC)")
+    @SecurityRequirement(name = "Bearer Authentication")
     ResponseEntity<LatestReviewListResponse> getLatestReviewList(
             @Parameter(description = "상품 ID", example = "49")
             Long productId,
@@ -64,9 +65,12 @@ public interface ReviewApiSpec {
             LatestReviewCursor cursor,
 
             @Parameter(description = "가져올 리뷰 수 (기본값: 20)", example = "20")
-            int size
+            int size,
+
+            CustomUserDetails user
     );
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "리뷰 평점순 목록 조회 API (rating DESC, id DESC)")
     ResponseEntity<RatingReviewListResponse> getRatingReviewList(
             @Parameter(description = "상품 ID", example = "101")
@@ -79,9 +83,12 @@ public interface ReviewApiSpec {
             RatingReviewCursor ratingCursor,
 
             @Parameter(description = "가져올 리뷰 수 (기본값: 20)", example = "20")
-            int size
+            int size,
+
+            CustomUserDetails user
     );
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "리뷰 '도움이 되었어요' 순 목록 조회 API (likeCount DESC, id DESC)")
     ResponseEntity<LikeReviewListResponse> getLikeReviewList(
             @Parameter(description = "상품 ID", example = "101")
@@ -94,7 +101,9 @@ public interface ReviewApiSpec {
             LikeReviewCursor likeCursor,
 
             @Parameter(description = "가져올 리뷰 수 (기본값: 20)", example = "20")
-            int size
+            int size,
+
+            CustomUserDetails user
     );
 
     @SecurityRequirement(name = "Bearer Authentication")

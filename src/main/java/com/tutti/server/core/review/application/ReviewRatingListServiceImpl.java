@@ -1,10 +1,12 @@
 package com.tutti.server.core.review.application;
 
 import com.tutti.server.core.review.domain.Review;
+import com.tutti.server.core.review.infrastructure.ReviewLikeRepository;
 import com.tutti.server.core.review.infrastructure.ReviewRepository;
 import com.tutti.server.core.review.payload.request.RatingReviewCursor;
 import com.tutti.server.core.review.payload.response.RatingReviewListResponse;
 import com.tutti.server.core.review.payload.response.ReviewResponse;
+import com.tutti.server.core.review.utils.ReviewLike;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,10 +16,11 @@ import org.springframework.stereotype.Service;
 public class ReviewRatingListServiceImpl implements ReviewRatingListService {
 
     private final ReviewRepository reviewRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
 
     @Override
     public RatingReviewListResponse getRatingReviews(Long productId, RatingReviewCursor cursor,
-            int size) {
+            int size, Long memberId) {
         int limit = size + 1;
 
         boolean isEmptyCursor = (cursor == null || cursor.reviewId() == null
@@ -44,9 +47,9 @@ public class ReviewRatingListServiceImpl implements ReviewRatingListService {
                 .map(r -> new RatingReviewCursor(r.getId(), r.getRating()))
                 .orElse(null);
 
-        List<ReviewResponse> responses = reviews.stream()
-                .map(ReviewResponse::from)
-                .toList();
+        List<ReviewResponse> responses = ReviewLike.toResponseListWithLikes(
+                reviews, memberId, reviewLikeRepository
+        );
 
         return new RatingReviewListResponse(responses, nextCursor, hasNext);
     }
