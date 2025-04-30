@@ -137,7 +137,10 @@ public enum ExceptionType {
     DELIVERY_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.H01, "존재하지 않는 배송입니다.", ERROR),
 
     // - 스토어 -
-    STORE_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.I01, "존재하지 않는 스토어입니다.", ERROR);
+    STORE_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.I01, "존재하지 않는 스토어입니다.", ERROR),
+
+    // - 태그 -
+    PRODUCT_TAG_NOT_FOUND(HttpStatus.BAD_REQUEST, ExceptionCode.J01, "존재하지 않는 상품 태그입니다.", ERROR);
 
     private final HttpStatus status;
 

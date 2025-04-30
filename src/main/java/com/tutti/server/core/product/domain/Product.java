@@ -2,14 +2,18 @@ package com.tutti.server.core.product.domain;
 
 import com.tutti.server.core.store.domain.Store;
 import com.tutti.server.core.support.entity.BaseEntity;
+import com.tutti.server.core.tag.domain.ProductTag;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -79,13 +83,15 @@ public class Product extends BaseEntity {
     @NotNull
     private int likeCount;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProductTag> productTags;
+
     // 필수로 설정하는 빌더
     @Builder
     public Product(int originalPrice, String botId, Store storeId, String name, String titleUrl,
-            String productCode,
-            String detailUrl, String description, boolean onSales, boolean adultOnly,
-            int maxQuantity,
-            int likeCount) {
+            String productCode, String detailUrl, String description, boolean onSales,
+            boolean adultOnly, int maxQuantity, int likeCount
+    ) {
         this.originalPrice = originalPrice;
         this.botId = botId;
         this.storeId = storeId;
@@ -98,5 +104,9 @@ public class Product extends BaseEntity {
         this.adultOnly = adultOnly;
         this.maxQuantity = maxQuantity;
         this.likeCount = likeCount;
+    }
+
+    public void addProductTag(ProductTag productTag) {
+        productTags.add(productTag);
     }
 }
