@@ -14,17 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class MemberBehaviorLogServiceImpl implements MemberBehaviorLogServiceSpec {
+public class MemberBehaviorLogServiceImpl implements MemberBehaviorLogService {
 
     private final MemberBehaviorLogRepository behaviorLogRepository;
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
 
     @Override
-    public void log(Long memberId, Long productId, BehaviorType behaviorType) {
-        Member member = memberRepository.findOne(memberId);
-        Product product = productRepository.findOne(productId);
-
+    public void log(Member member, Product product, BehaviorType behaviorType) {
         MemberBehaviorLog log = MemberBehaviorLog.builder()
                 .member(member)
                 .product(product)

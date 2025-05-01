@@ -5,7 +5,7 @@ import com.tutti.server.core.cart.infrastructure.CartItemRepository;
 import com.tutti.server.core.cart.payload.request.CartItemsCreateRequest;
 import com.tutti.server.core.cart.payload.request.CartItemsCreateRequest.CartItemRequest;
 import com.tutti.server.core.cart.payload.response.CartItemResponse;
-import com.tutti.server.core.member.application.MemberBehaviorLogServiceSpec;
+import com.tutti.server.core.member.application.MemberBehaviorLogService;
 import com.tutti.server.core.member.domain.BehaviorType;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.domain.ProductItem;
@@ -27,8 +27,7 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepository cartItemRepository;
     private final MemberRepository memberRepository;
     private final ProductItemRepository productItemRepository;
-    private final MemberBehaviorLogServiceSpec memberBehaviorLogService;
-
+    private final MemberBehaviorLogService memberBehaviorLogService;
 
     @Override
     @Transactional
@@ -86,8 +85,7 @@ public class CartServiceImpl implements CartService {
 
         // 장바구니 상품 엔티티를 만들 때, 수량도 받아야 하기 때문에 파라미터로 request 가 필요하다
         cartItemRepository.save(request.toEntity(member, productItem));
-        memberBehaviorLogService.log(memberId, productItem.getProduct().getId(),
-                BehaviorType.CART_ADD);
+        memberBehaviorLogService.log(member, productItem.getProduct(), BehaviorType.CART_ADD);
     }
 
     @Override

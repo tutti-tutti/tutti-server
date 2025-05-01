@@ -27,7 +27,7 @@ public class ViewedProductServiceImpl implements ViewedProductServiceSpec {
 
     private final ViewedProductRepository viewedProductRepository;
     private final ProductItemRepository productItemRepository;
-    private final MemberBehaviorLogServiceSpec memberBehaviorLogService;
+    private final MemberBehaviorLogService memberBehaviorLogService;
 
     @Override
     public void saveViewedProduct(Member member, Product product) {
@@ -42,7 +42,7 @@ public class ViewedProductServiceImpl implements ViewedProductServiceSpec {
                     .product(product)
                     .build();
             viewedProductRepository.save(newView);
-            memberBehaviorLogService.log(member.getId(), product.getId(), BehaviorType.VIEW);
+            memberBehaviorLogService.log(member, product, BehaviorType.VIEW);
         }
 
         Pageable pageable = PageRequest.of(0, 51);
