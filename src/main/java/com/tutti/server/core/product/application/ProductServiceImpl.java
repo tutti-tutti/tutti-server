@@ -102,7 +102,6 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findProductsBySearchWord(cursorId, size + 1,
                 searchWord);
 
-
         // 다음 페이지 존재 여부 확인
         boolean hasNext = products.size() > size;
 
@@ -251,8 +250,8 @@ public class ProductServiceImpl implements ProductService {
     //상품 좋아요
     @Override
     public void likeProduct(Long productId, Member member) {
-        Product product = productRepository.findOne(productId);
-        if (!productLikeRepository.existsByProductAndMember(product, member)) {
+        if (!productLikeRepository.existsByProductIdAndMemberId(productId, member.getId())) {
+            Product product = productRepository.findOne(productId); // 여전히 사용됨 (likeCount 증가용)
             productLikeRepository.save(ProductLike.builder()
                     .product(product)
                     .member(member)
@@ -263,14 +262,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void unlikeProduct(Long productId, Member member) {
-        Product product = productRepository.findOne(productId);
-        productLikeRepository.deleteByProductAndMember(product, member);
+        productLikeRepository.deleteByProductIdAndMemberId(productId, member.getId());
+        Product product = productRepository.findOne(productId); // likeCount 감소용
         product.decreaseLikeCount();
     }
 
     @Override
     public boolean isProductLiked(Long productId, Member member) {
-        Product product = productRepository.findOne(productId);
-        return productLikeRepository.existsByProductAndMember(product, member);
+        return productLikeRepository.existsByProductIdAndMemberId(productId, member.getId());
     }
 }
