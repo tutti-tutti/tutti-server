@@ -1,0 +1,87 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy JAR app to Azure VM - tutti-web-db-server
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read #This is required for actions/checkout
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Java version
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'microsoft'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
+
+      # gradlew 파일에 실행 권한을 추가합니다
+      - name: Grant execute permissions for gradlew
+        run: chmod +x ./gradlew
+
+      # 코드 포맷
+      - name: Run Gradle format
+        run: ./gradlew format
+
+      # 의존성 다시 다운로드
+      - name: Refresh Dependencies
+        run: ./gradlew clean --refresh-dependencies
+
+      # Build with Gradle Wrapper
+      - name: Build with Gradle Wrapper
+        run: ./gradlew clean build
+        if: success()
+
+      # Run tests with Gradle
+      - name: Run tests with Gradle
+        run: ./gradlew test
+
+      # UTC가 기준이기 때문에 한국시간으로 맞추려면 +9시간 해야 한다
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYY-MM-DDTHH-mm-ss
+          utcOffset: "+09:00"
+
+      - name: Show Current Time
+        run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}"
+
+      - name: Copy JAR to Azure VM
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "build/libs/*.jar"
+          target: "~/app"
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Run app on Azure VM using systemd
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo systemctl stop tutti-web.service || true
+            sudo systemctl daemon-reload
+            sudo systemctl start tutti-web.service
+            sudo systemctl status tutti-web.service --no-pager
