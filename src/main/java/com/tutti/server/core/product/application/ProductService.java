@@ -1,6 +1,5 @@
 package com.tutti.server.core.product.application;
 
-import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductResponse;
@@ -25,11 +24,11 @@ public interface ProductService {
 
     List<Sku> getSkuListByProductItems(List<ProductItem> productItems);
 
-    void likeProduct(Long productId, Member member);
+    void likeProduct(Long productId, Long memeberId);
 
-    void unlikeProduct(Long productId, Member member);
+    void unlikeProduct(Long productId, Long memeberId);
 
-    boolean isProductLiked(Long productId, Member member);
+    boolean isProductLiked(Long productId, Long memeberId);
 
     List<ProductResponse> getProductsByLikes(int size);
 }

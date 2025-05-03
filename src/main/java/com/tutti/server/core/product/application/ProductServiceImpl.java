@@ -1,6 +1,7 @@
 package com.tutti.server.core.product.application;
 
 import com.tutti.server.core.member.domain.Member;
+import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.domain.ProductLike;
@@ -33,6 +34,7 @@ public class ProductServiceImpl implements ProductService {
     private final SkuRepository skuRepository;
     private final StoreRepository storeRepository;
     private final ProductLikeRepository productLikeRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public List<ProductResponse> getAllProductsByCreated() {
@@ -249,9 +251,10 @@ public class ProductServiceImpl implements ProductService {
 
     //상품 좋아요
     @Override
-    public void likeProduct(Long productId, Member member) {
-        if (!productLikeRepository.existsByProductIdAndMemberId(productId, member.getId())) {
-            Product product = productRepository.findOne(productId); // 여전히 사용됨 (likeCount 증가용)
+    public void likeProduct(Long productId, Long memberId) {
+        if (!productLikeRepository.existsByProductIdAndMemberId(productId, memberId)) {
+            Product product = productRepository.findOne(productId);
+            Member member = memberRepository.findOne(memberId);
             productLikeRepository.save(ProductLike.builder()
                     .product(product)
                     .member(member)
@@ -261,14 +264,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void unlikeProduct(Long productId, Member member) {
-        productLikeRepository.deleteByProductIdAndMemberId(productId, member.getId());
+    public void unlikeProduct(Long productId, Long memberId) {
+        productLikeRepository.deleteByProductIdAndMemberId(productId, memberId);
         Product product = productRepository.findOne(productId); // likeCount 감소용
         product.decreaseLikeCount();
     }
 
     @Override
-    public boolean isProductLiked(Long productId, Member member) {
-        return productLikeRepository.existsByProductIdAndMemberId(productId, member.getId());
+    public boolean isProductLiked(Long productId, Long memberId) {
+        return productLikeRepository.existsByProductIdAndMemberId(productId, memberId);
     }
 }

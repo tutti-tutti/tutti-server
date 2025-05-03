@@ -68,26 +68,26 @@ public class ProductApi implements ProductApiSpec {
         }
         return response;
     }
-  
+
     @PostMapping("/{productId}/like")
     public void likeProduct(@PathVariable long productId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Member member = memberRepository.findOne(userDetails.getMemberId());
-        productService.likeProduct(productId, member);
+        Long memberId = userDetails.getMemberId();
+        productService.likeProduct(productId, memberId);
     }
 
     @DeleteMapping("/{productId}/like")
     public void unlikeProduct(@PathVariable long productId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Member member = memberRepository.findOne(userDetails.getMemberId());
-        productService.unlikeProduct(productId, member);
+        Long memberId = userDetails.getMemberId();
+        productService.unlikeProduct(productId, memberId);
     }
 
     @GetMapping("/{productId}/like")
     public boolean isLiked(@PathVariable long productId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Member member = memberRepository.findOne(userDetails.getMemberId());
-        return productService.isProductLiked(productId, member);
+        Long memberId = userDetails.getMemberId();
+        return productService.isProductLiked(productId, memberId);
     }
 
     @Override
