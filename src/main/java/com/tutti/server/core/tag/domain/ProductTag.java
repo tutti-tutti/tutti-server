@@ -1,5 +1,6 @@
 package com.tutti.server.core.tag.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.support.entity.BaseEntity;
 import jakarta.persistence.Entity;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductTag extends BaseEntity {
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

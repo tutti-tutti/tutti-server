@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.sku.domain.Sku;
 import com.tutti.server.core.store.domain.Store;
-import com.tutti.server.core.tag.domain.ProductTag;
+import com.tutti.server.core.tag.payload.response.ProductTagResponse;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 
@@ -23,7 +22,7 @@ public record ProductItemResponse(
         boolean adultOnly,
         int likes,
         boolean almostOutOfStock,
-        List<ProductTag> productTags,
+        List<ProductTagResponse> productTags,
 
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime createdAt,
@@ -35,7 +34,12 @@ public record ProductItemResponse(
     public static ProductItemResponse fromEntity(Product product,
             List<ProductOptionResponse> productOptionItems, Store store, Sku sku
     ) {
-        List<ProductTag> productTags = new ArrayList<>(product.getProductTags());
+        List<ProductTagResponse> tagResponses = product.getProductTags().stream()
+                .map(tag -> ProductTagResponse.builder()
+                        .tagId(tag.getId())
+                        .tagName(tag.getTag().getTagName())
+                        .build())
+                .toList();
 
         return ProductItemResponse.builder()
                 .productId(product.getId())
@@ -49,7 +53,7 @@ public record ProductItemResponse(
                 .adultOnly(product.isAdultOnly())
                 .likes(product.getLikeCount())
                 .almostOutOfStock(sku != null && sku.getStockQuantity() <= 10)
-                .productTags(productTags)
+                .productTags(tagResponses)
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();
