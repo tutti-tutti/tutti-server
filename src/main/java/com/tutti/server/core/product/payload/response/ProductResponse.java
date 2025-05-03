@@ -36,7 +36,7 @@ public record ProductResponse(
     ) {
         List<ProductTagResponse> tagResponses = product.getProductTags().stream()
                 .map(tag -> ProductTagResponse.builder()
-                        .tagId(tag.getId())
+                        .tagId(tag.getTag().getId())
                         .tagName(tag.getTag().getTagName())
                         .build())
                 .toList();
