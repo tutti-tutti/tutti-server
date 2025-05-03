@@ -1,5 +1,6 @@
 package com.tutti.server.core.member.application;
 
+import com.tutti.server.core.member.domain.BehaviorType;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.domain.ViewedProduct;
 import com.tutti.server.core.member.infrastructure.ViewedProductRepository;
@@ -26,6 +27,7 @@ public class ViewedProductServiceImpl implements ViewedProductServiceSpec {
 
     private final ViewedProductRepository viewedProductRepository;
     private final ProductItemRepository productItemRepository;
+    private final MemberBehaviorLogService memberBehaviorLogService;
 
     @Override
     public void saveViewedProduct(Member member, Product product) {
@@ -40,6 +42,7 @@ public class ViewedProductServiceImpl implements ViewedProductServiceSpec {
                     .product(product)
                     .build();
             viewedProductRepository.save(newView);
+            memberBehaviorLogService.log(member, product, BehaviorType.VIEW);
         }
 
         Pageable pageable = PageRequest.of(0, 51);
