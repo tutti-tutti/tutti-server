@@ -60,6 +60,15 @@ jobs:
       - name: Show Current Time
         run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}"
 
+      - name: Remove old JAR file
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            rm -f ~/app/tutti-0.0.1.jar
+
       - name: Copy JAR to Azure VM
         uses: appleboy/scp-action@v0.1.4
         with:
