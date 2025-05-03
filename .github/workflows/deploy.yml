@@ -80,6 +80,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "build/libs/*.jar"
           target: "~/app"
+          strip_components: 2
+          overwrite: true
 
   deploy:
     runs-on: ubuntu-latest
