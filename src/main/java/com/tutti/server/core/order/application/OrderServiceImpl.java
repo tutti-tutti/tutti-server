@@ -1,6 +1,8 @@
 package com.tutti.server.core.order.application;
 
 import com.tutti.server.core.delivery.infrastructure.DeliveryRepository;
+import com.tutti.server.core.member.application.MemberBehaviorLogService;
+import com.tutti.server.core.member.domain.BehaviorType;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.order.domain.CreatedByType;
@@ -49,6 +51,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductItemRepository productItemRepository;
     private final OrderHistoryRepository orderHistoryRepository;
     private final DeliveryRepository deliveryRepository;
+    private final MemberBehaviorLogService memberBehaviorLogService;
 
     @Override
     @Transactional
@@ -211,6 +214,14 @@ public class OrderServiceImpl implements OrderService {
 
         // 5. 주문 아이템 생성
         createOrderItems(order, request.orderItems());
+
+        // 로그 추가
+        for (OrderItemRequest orderItemRequest : request.orderItems()) {
+            ProductItem productItem = productItemRepository.findOne(
+                    orderItemRequest.productItemId());
+            Product product = productItem.getProduct();
+            memberBehaviorLogService.log(member, product, BehaviorType.PURCHASE);
+        }
 
         // 6. 주문 이력 생성
         createOrderHistory(order, CreatedByType.MEMBER, member.getId());
