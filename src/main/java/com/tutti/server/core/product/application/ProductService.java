@@ -24,6 +24,12 @@ public interface ProductService {
 
     List<Sku> getSkuListByProductItems(List<ProductItem> productItems);
 
+    void likeProduct(Long productId, Long memeberId);
+
+    void unlikeProduct(Long productId, Long memeberId);
+
+    boolean isProductLiked(Long productId, Long memeberId);
+
     List<ProductResponse> getProductsByLikes(int size);
 }
 

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = "Products", description = "상품 API")
 public interface ProductApiSpec {
@@ -29,6 +30,17 @@ public interface ProductApiSpec {
             @Parameter(description = "조회할 상품 상세 id", example = "3") long productId,
             @Parameter(hidden = true) CustomUserDetails userDetails);
 
+    @Operation(summary = "상품 좋아요")
+    void likeProduct(@PathVariable long productId,
+            @Parameter(hidden = true) CustomUserDetails userDetails);
+
+    @Operation(summary = "상품 좋아요 취소")
+    void unlikeProduct(@PathVariable long productId,
+            @Parameter(hidden = true) CustomUserDetails userDetails);
+
+    @Operation(summary = "상품 좋아요 여부 확인")
+    boolean isLiked(@PathVariable long productId,
+            @Parameter(hidden = true) CustomUserDetails userDetails);
     @Operation(summary = "상품 추천 조회 (좋아요순)")
     public List<ProductResponse> getProductsByLikes(
             @Parameter(description = "받아올 상품 개수", required = false) int size);

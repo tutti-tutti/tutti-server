@@ -1,8 +1,12 @@
 package com.tutti.server.core.product.application;
 
+import com.tutti.server.core.member.domain.Member;
+import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.domain.ProductItem;
+import com.tutti.server.core.product.domain.ProductLike;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
+import com.tutti.server.core.product.infrastructure.ProductLikeRepository;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
 import com.tutti.server.core.product.payload.response.ProductItemResponse;
 import com.tutti.server.core.product.payload.response.ProductOptionResponse;
@@ -14,7 +18,6 @@ import com.tutti.server.core.store.domain.Store;
 import com.tutti.server.core.store.infrastructure.StoreRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
-
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +33,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductItemRepository productItemRepository;
     private final SkuRepository skuRepository;
     private final StoreRepository storeRepository;
+    private final ProductLikeRepository productLikeRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public List<ProductResponse> getAllProductsByCreated() {
@@ -98,7 +103,6 @@ public class ProductServiceImpl implements ProductService {
         // 페이지 크기 + 1만큼 상품 조회하여 다음 페이지 존재 여부 확인
         List<Product> products = productRepository.findProductsBySearchWord(cursorId, size + 1,
                 searchWord);
-
 
         // 다음 페이지 존재 여부 확인
         boolean hasNext = products.size() > size;
@@ -243,5 +247,31 @@ public class ProductServiceImpl implements ProductService {
                 .min((sku1, sku2) ->
                         Integer.compare(sku1.getStockQuantity(), sku2.getStockQuantity()))
                 .get();
+    }
+
+    //상품 좋아요
+    @Override
+    public void likeProduct(Long productId, Long memberId) {
+        if (!productLikeRepository.existsByProductIdAndMemberId(productId, memberId)) {
+            Product product = productRepository.findOne(productId);
+            Member member = memberRepository.findOne(memberId);
+            productLikeRepository.save(ProductLike.builder()
+                    .product(product)
+                    .member(member)
+                    .build());
+            product.increaseLikeCount();
+        }
+    }
+
+    @Override
+    public void unlikeProduct(Long productId, Long memberId) {
+        productLikeRepository.deleteByProductIdAndMemberId(productId, memberId);
+        Product product = productRepository.findOne(productId); // likeCount 감소용
+        product.decreaseLikeCount();
+    }
+
+    @Override
+    public boolean isProductLiked(Long productId, Long memberId) {
+        return productLikeRepository.existsByProductIdAndMemberId(productId, memberId);
     }
 }
