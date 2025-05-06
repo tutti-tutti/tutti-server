@@ -2,14 +2,17 @@ package com.tutti.server.core.member.application;
 
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.domain.MemberAgreementMapping;
+import com.tutti.server.core.member.domain.MemberCategoryScore;
 import com.tutti.server.core.member.domain.TermsConditions;
 import com.tutti.server.core.member.domain.VerificationCode;
 import com.tutti.server.core.member.infrastructure.MemberAgreementMappingRepository;
+import com.tutti.server.core.member.infrastructure.MemberCategoryScoreRepository;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.member.infrastructure.TermsConditionsRepository;
 import com.tutti.server.core.member.infrastructure.VerificationCodeRepository;
 import com.tutti.server.core.member.payload.SignupRequest;
 import com.tutti.server.core.member.payload.TermsAgreementRequest;
+import com.tutti.server.core.product.infrastructure.ProductCategoryRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
@@ -29,6 +32,8 @@ public class MemberServiceImpl implements MemberServiceSpec {
     private final PasswordEncoder passwordEncoder;
     private final TermsConditionsRepository termsConditionsRepository;
     private final MemberAgreementMappingRepository memberAgreementMappingRepository;
+    private final MemberCategoryScoreRepository memberCategoryScoreRepository;
+    private final ProductCategoryRepository productCategoryRepository;
 
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$");
@@ -105,6 +110,19 @@ public class MemberServiceImpl implements MemberServiceSpec {
                     .build();
 
             memberAgreementMappingRepository.save(agreementMapping);
+        }
+
+        for (Long categoryId : request.preferredCategoryIds()) {
+            var category = productCategoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new DomainException(ExceptionType.CATEGORY_NOT_FOUND));
+
+            memberCategoryScoreRepository.save(
+                    MemberCategoryScore.builder()
+                            .member(member)
+                            .category(category)
+                            .score(10)
+                            .build()
+            );
         }
     }
 }

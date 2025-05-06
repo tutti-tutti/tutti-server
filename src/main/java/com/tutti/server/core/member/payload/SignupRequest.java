@@ -25,7 +25,8 @@ public record SignupRequest(
         @NotBlank(message = "비밀번호 확인은 필수 입력 항목입니다.")
         String passwordConfirm,
 
-        List<TermsAgreementRequest> termsAgreement
+        List<TermsAgreementRequest> termsAgreement,
+        List<Long> preferredCategoryIds
 ) {
 
 }

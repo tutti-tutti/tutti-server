@@ -114,7 +114,8 @@ public class Product extends BaseEntity {
         if (this.likeCount > 0) {
             this.likeCount--;
         }
-      
+    }
+
     public void addProductTag(ProductTag productTag) {
         productTags.add(productTag);
     }

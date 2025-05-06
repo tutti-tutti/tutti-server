@@ -5,5 +5,6 @@ public enum BehaviorType {
     VIEW,
     WISHLIST,
     CART_ADD,
-    PURCHASE
+    PURCHASE,
+    WISHLIST_CANCEL
 }
