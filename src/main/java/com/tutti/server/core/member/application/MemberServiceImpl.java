@@ -100,8 +100,7 @@ public class MemberServiceImpl implements MemberServiceSpec {
 
         // 약관 동의 정보 저장
         for (TermsAgreementRequest termsAgreement : request.termsAgreement()) {
-            TermsConditions terms = termsConditionsRepository.findById(termsAgreement.termId())
-                    .orElseThrow(() -> new DomainException(ExceptionType.TERMS_NOT_FOUND));
+            TermsConditions terms = termsConditionsRepository.findOne(termsAgreement.termId());
 
             MemberAgreementMapping agreementMapping = MemberAgreementMapping.builder()
                     .member(member)
@@ -113,8 +112,7 @@ public class MemberServiceImpl implements MemberServiceSpec {
         }
 
         for (Long categoryId : request.preferredCategoryIds()) {
-            var category = productCategoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new DomainException(ExceptionType.CATEGORY_NOT_FOUND));
+            var category = productCategoryRepository.findOne(categoryId);
 
             memberCategoryScoreRepository.save(
                     MemberCategoryScore.builder()

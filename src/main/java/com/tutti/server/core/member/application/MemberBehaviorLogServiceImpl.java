@@ -11,6 +11,8 @@ import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.domain.ProductCategory;
 import com.tutti.server.core.product.infrastructure.ProductCategoryMapRepository;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
+import com.tutti.server.core.support.exception.DomainException;
+import com.tutti.server.core.support.exception.ExceptionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +50,7 @@ public class MemberBehaviorLogServiceImpl implements MemberBehaviorLogService {
         // 3. 상품의 카테고리 가져오기
         ProductCategory category = productCategoryMapRepository
                 .findFirstByProductIdAndDeleteStatusFalse(product.getId())
-                .orElseThrow(() -> new IllegalStateException("카테고리 없음"))
+                .orElseThrow(() -> new DomainException(ExceptionType.CATEGORY_NOT_FOUND))
                 .getCategory();
 
         while (category.getParentCategory() != null) {
