@@ -1,5 +1,7 @@
 package com.tutti.server.core.product.application;
 
+import com.tutti.server.core.member.application.MemberBehaviorLogService;
+import com.tutti.server.core.member.domain.BehaviorType;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
 import com.tutti.server.core.product.domain.Product;
@@ -35,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
     private final StoreRepository storeRepository;
     private final ProductLikeRepository productLikeRepository;
     private final MemberRepository memberRepository;
+    private final MemberBehaviorLogService memberBehaviorLogService;
 
     @Override
     public List<ProductResponse> getAllProductsByCreated() {
@@ -260,6 +263,7 @@ public class ProductServiceImpl implements ProductService {
                     .member(member)
                     .build());
             product.increaseLikeCount();
+            memberBehaviorLogService.log(member, product, BehaviorType.WISHLIST);
         }
     }
 
@@ -268,6 +272,9 @@ public class ProductServiceImpl implements ProductService {
         productLikeRepository.deleteByProductIdAndMemberId(productId, memberId);
         Product product = productRepository.findOne(productId); // likeCount 감소용
         product.decreaseLikeCount();
+
+        Member member = memberRepository.findOne(memberId);
+        memberBehaviorLogService.log(member, product, BehaviorType.WISHLIST_CANCEL);
     }
 
     @Override
