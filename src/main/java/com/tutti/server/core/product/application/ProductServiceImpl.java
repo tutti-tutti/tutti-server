@@ -3,10 +3,13 @@ package com.tutti.server.core.product.application;
 import com.tutti.server.core.member.application.MemberBehaviorLogService;
 import com.tutti.server.core.member.domain.BehaviorType;
 import com.tutti.server.core.member.domain.Member;
+import com.tutti.server.core.member.infrastructure.MemberCategoryScoreRepository;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
+import com.tutti.server.core.member.infrastructure.MemberTagScoreRepository;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.domain.ProductItem;
 import com.tutti.server.core.product.domain.ProductLike;
+import com.tutti.server.core.product.infrastructure.ProductCategoryMapRepository;
 import com.tutti.server.core.product.infrastructure.ProductItemRepository;
 import com.tutti.server.core.product.infrastructure.ProductLikeRepository;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
@@ -22,6 +25,8 @@ import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,6 +43,9 @@ public class ProductServiceImpl implements ProductService {
     private final ProductLikeRepository productLikeRepository;
     private final MemberRepository memberRepository;
     private final MemberBehaviorLogService memberBehaviorLogService;
+    private final MemberTagScoreRepository memberTagScoreRepository;
+    private final MemberCategoryScoreRepository memberCategoryScoreRepository;
+    private final ProductCategoryMapRepository productCategoryMapRepository;
 
     @Override
     public List<ProductResponse> getAllProductsByCreated() {
@@ -281,4 +289,84 @@ public class ProductServiceImpl implements ProductService {
     public boolean isProductLiked(Long productId, Long memberId) {
         return productLikeRepository.existsByProductIdAndMemberId(productId, memberId);
     }
+
+    @Override
+    public int calculateMatchScore(Long memberId, Long productId) {
+        Member member = memberRepository.findOne(memberId);
+        Product product = productRepository.findWithTagsById(productId)
+                .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_NOT_FOUND));
+
+        // 1. 회원의 태그 점수 Map (tagId → score)
+        Map<Long, Integer> memberTagScoreMap = memberTagScoreRepository.findAllByMemberId(memberId)
+                .stream()
+                .collect(Collectors.toMap(
+                        mts -> mts.getTag().getId(),
+                        mts -> mts.getScore()
+                ));
+
+        // 2. 회원의 카테고리 점수 Map (categoryId → score)
+        Map<Long, Integer> memberCategoryScoreMap = memberCategoryScoreRepository.findAllByMemberId(
+                        memberId).stream()
+                .collect(Collectors.toMap(
+                        mcs -> mcs.getCategory().getId(),
+                        mcs -> mcs.getScore()
+                ));
+
+        // 3. 상품의 태그 ID 목록
+        Set<Long> productTagIds = product.getProductTags().stream()
+                .map(productTag -> productTag.getTag().getId())
+                .collect(Collectors.toSet());
+
+        // 4. 상품의 최상위 카테고리 ID
+        Long productCategoryId = productCategoryMapRepository
+                .findFirstByProductIdAndDeleteStatusFalse(productId)
+                .map(map -> {
+                    var category = map.getCategory();
+                    while (category.getParentCategory() != null) {
+                        category = category.getParentCategory();
+                    }
+                    return category.getId();
+                })
+                .orElse(null);
+
+        // 5. 태그 점수 계산: 일치하는 태그들의 회원 점수 합산
+        int tagScore = productTagIds.stream()
+                .filter(memberTagScoreMap::containsKey)
+                .mapToInt(memberTagScoreMap::get)
+                .sum();
+
+        // ✅ 6. 카테고리 점수 계산: 일치하면 해당 카테고리에 대한 회원 점수 사용
+        int categoryScore =
+                productCategoryId != null && memberCategoryScoreMap.containsKey(productCategoryId)
+                        ? memberCategoryScoreMap.get(productCategoryId)
+                        : 0;
+
+        return tagScore + categoryScore;
+    }
+
+    @Override
+    public List<ProductResponse> recommendProductsForMember(Long memberId, int size) {
+        // 1. 모든 상품 조회 (또는 최근 상품, 인기 상품 일부로 제한 가능)
+        List<Product> products = productRepository.findAll();
+
+        // 2. 각 상품에 대해 매칭 점수 계산
+        List<Product> sorted = products.stream()
+                .map(product -> Map.entry(product, calculateMatchScore(memberId, product.getId())))
+                .sorted((a, b) -> b.getValue() - a.getValue()) // 점수 높은 순
+                .limit(size)
+                .map(Map.Entry::getKey)
+                .toList();
+
+        // 3. Product → ProductResponse 변환
+        return sorted.stream()
+                .map(product -> {
+                    ProductItem lowestItem = productItemRepository
+                            .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
+                            .orElseThrow(() -> new DomainException(
+                                    ExceptionType.PRODUCT_ITEM_NOT_FOUND));
+                    return ProductResponse.fromEntity(product, lowestItem, product.getStoreId());
+                })
+                .toList();
+    }
 }
+

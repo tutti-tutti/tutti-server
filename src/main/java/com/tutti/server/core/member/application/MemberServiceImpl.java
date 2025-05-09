@@ -3,11 +3,13 @@ package com.tutti.server.core.member.application;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.domain.MemberAgreementMapping;
 import com.tutti.server.core.member.domain.MemberCategoryScore;
+import com.tutti.server.core.member.domain.MemberTagScore;
 import com.tutti.server.core.member.domain.TermsConditions;
 import com.tutti.server.core.member.domain.VerificationCode;
 import com.tutti.server.core.member.infrastructure.MemberAgreementMappingRepository;
 import com.tutti.server.core.member.infrastructure.MemberCategoryScoreRepository;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
+import com.tutti.server.core.member.infrastructure.MemberTagScoreRepository;
 import com.tutti.server.core.member.infrastructure.TermsConditionsRepository;
 import com.tutti.server.core.member.infrastructure.VerificationCodeRepository;
 import com.tutti.server.core.member.payload.SignupRequest;
@@ -15,6 +17,7 @@ import com.tutti.server.core.member.payload.TermsAgreementRequest;
 import com.tutti.server.core.product.infrastructure.ProductCategoryRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
+import com.tutti.server.core.tag.infrastructure.TagRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -27,6 +30,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberServiceSpec {
 
+    private static final List<Long> VALUE_TAG_IDS = List.of(6L, 10L, 11L, 5L, 9L); // 가성비
+    private static final List<Long> QUALITY_TAG_IDS = List.of(7L, 13L, 17L, 15L, 14L, 16L, 20L, 34L,
+            31L, 32L, 33L); // 품질
+    private static final List<Long> TREND_TAG_IDS = List.of(2L, 22L, 8L, 12L, 26L, 29L); // 트렌드
+
     private final MemberRepository memberRepository;
     private final VerificationCodeRepository verificationCodeRepository;
     private final PasswordEncoder passwordEncoder;
@@ -34,6 +42,8 @@ public class MemberServiceImpl implements MemberServiceSpec {
     private final MemberAgreementMappingRepository memberAgreementMappingRepository;
     private final MemberCategoryScoreRepository memberCategoryScoreRepository;
     private final ProductCategoryRepository productCategoryRepository;
+    private final MemberTagScoreRepository memberTagScoreRepository;
+    private final TagRepository tagRepository;
 
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$");
@@ -118,6 +128,22 @@ public class MemberServiceImpl implements MemberServiceSpec {
                     MemberCategoryScore.builder()
                             .member(member)
                             .category(category)
+                            .score(10)
+                            .build()
+            );
+        }
+
+        List<Long> tagIds = switch (request.shoppingValue()) {
+            case VALUE -> VALUE_TAG_IDS;
+            case QUALITY -> QUALITY_TAG_IDS;
+            case TREND -> TREND_TAG_IDS;
+        };
+
+        for (Long tagId : tagIds) {
+            memberTagScoreRepository.save(
+                    MemberTagScore.builder()
+                            .member(member)
+                            .tag(tagRepository.findOne(tagId))
                             .score(10)
                             .build()
             );

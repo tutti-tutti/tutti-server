@@ -41,6 +41,12 @@ public interface ProductApiSpec {
     @Operation(summary = "상품 좋아요 여부 확인")
     boolean isLiked(@PathVariable long productId,
             @Parameter(hidden = true) CustomUserDetails userDetails);
+
+    @Operation(summary = "회원 맞춤 추천 상품 조회")
+    List<ProductResponse> recommendProducts(
+            @Parameter(hidden = true) CustomUserDetails userDetails,
+            @Parameter(description = "추천 받을 상품 개수", example = "10") int size);
+
     @Operation(summary = "상품 추천 조회 (좋아요순)")
     public List<ProductResponse> getProductsByLikes(
             @Parameter(description = "받아올 상품 개수", required = false) int size);

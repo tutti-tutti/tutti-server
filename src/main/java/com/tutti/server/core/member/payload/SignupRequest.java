@@ -1,5 +1,6 @@
 package com.tutti.server.core.member.payload;
 
+import com.tutti.server.core.member.domain.ShoppingValueType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -26,7 +27,8 @@ public record SignupRequest(
         String passwordConfirm,
 
         List<TermsAgreementRequest> termsAgreement,
-        List<Long> preferredCategoryIds
+        List<Long> preferredCategoryIds,
+        ShoppingValueType shoppingValue
 ) {
 
 }

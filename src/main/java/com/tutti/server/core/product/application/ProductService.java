@@ -31,5 +31,9 @@ public interface ProductService {
     boolean isProductLiked(Long productId, Long memeberId);
 
     List<ProductResponse> getProductsByLikes(int size);
+
+    int calculateMatchScore(Long memberId, Long productId);
+
+    List<ProductResponse> recommendProductsForMember(Long memberId, int size);
 }
 
