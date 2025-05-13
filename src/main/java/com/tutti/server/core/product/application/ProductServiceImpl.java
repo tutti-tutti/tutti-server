@@ -292,33 +292,81 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public int calculateMatchScore(Long memberId, Long productId) {
-        Member member = memberRepository.findOne(memberId);
-        Product product = productRepository.findWithTagsById(productId)
-                .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_NOT_FOUND));
+        Product product = getProductWithTagsById(productId);
 
-        // 1. 회원의 태그 점수 Map (tagId → score)
-        Map<Long, Integer> memberTagScoreMap = memberTagScoreRepository.findAllByMemberId(memberId)
+        // 1. 회원의 태그 점수 Map 조회
+        Map<Long, Integer> memberTagScoreMap = getMemberTagScoreMap(memberId);
+
+        // 2. 회원의 카테고리 점수 Map 조회
+        Map<Long, Integer> memberCategoryScoreMap = getMemberCategoryScoreMap(memberId);
+
+        // 3. 상품의 태그 ID 목록 추출
+        Set<Long> productTagIds = extractProductTagIds(product);
+
+        // 4. 상품의 최상위 카테고리 ID 조회
+        Long productCategoryId = findTopLevelCategoryId(productId);
+
+        // 5 & 6. 태그 점수와 카테고리 점수 계산 후 합산
+        int tagScore = calculateTagScore(productTagIds, memberTagScoreMap);
+        int categoryScore = calculateCategoryScore(productCategoryId, memberCategoryScoreMap);
+
+        return tagScore + categoryScore;
+    }
+
+    // 상품 ID로 태그 정보를 포함한 상품 엔티티 조회
+    private Product getProductWithTagsById(Long productId) {
+        return productRepository.findWithTagsById(productId)
+                .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_NOT_FOUND));
+    }
+
+
+    // 회원의 태그별 점수 Map 조회
+    private Map<Long, Integer> getMemberTagScoreMap(Long memberId) {
+        return memberTagScoreRepository.findAllByMemberId(memberId)
                 .stream()
                 .collect(Collectors.toMap(
                         mts -> mts.getTag().getId(),
                         mts -> mts.getScore()
                 ));
+    }
 
-        // 2. 회원의 카테고리 점수 Map (categoryId → score)
-        Map<Long, Integer> memberCategoryScoreMap = memberCategoryScoreRepository.findAllByMemberId(
-                        memberId).stream()
+
+    // 회원의 카테고리별 점수 Map 조회
+    private Map<Long, Integer> getMemberCategoryScoreMap(Long memberId) {
+        return memberCategoryScoreRepository.findAllByMemberId(memberId)
+                .stream()
                 .collect(Collectors.toMap(
                         mcs -> mcs.getCategory().getId(),
                         mcs -> mcs.getScore()
                 ));
+    }
 
-        // 3. 상품의 태그 ID 목록
-        Set<Long> productTagIds = product.getProductTags().stream()
+    // 상품에서 태그 ID 집합 추출
+    private Set<Long> extractProductTagIds(Product product) {
+        return product.getProductTags().stream()
                 .map(productTag -> productTag.getTag().getId())
                 .collect(Collectors.toSet());
+    }
 
-        // 4. 상품의 최상위 카테고리 ID
-        Long productCategoryId = productCategoryMapRepository
+    // 태그 기반 매칭 점수 계산
+    private int calculateTagScore(Set<Long> productTagIds, Map<Long, Integer> memberTagScoreMap) {
+        return productTagIds.stream()
+                .filter(memberTagScoreMap::containsKey)
+                .mapToInt(memberTagScoreMap::get)
+                .sum();
+    }
+
+    // 카테고리 기반 매칭 점수 계산
+    private int calculateCategoryScore(Long productCategoryId,
+            Map<Long, Integer> memberCategoryScoreMap) {
+        return (productCategoryId != null && memberCategoryScoreMap.containsKey(productCategoryId))
+                ? memberCategoryScoreMap.get(productCategoryId)
+                : 0;
+    }
+
+    // 상품의 최상위 카테고리 ID 조회
+    private Long findTopLevelCategoryId(Long productId) {
+        return productCategoryMapRepository
                 .findFirstByProductIdAndDeleteStatusFalse(productId)
                 .map(map -> {
                     var category = map.getCategory();
@@ -328,45 +376,29 @@ public class ProductServiceImpl implements ProductService {
                     return category.getId();
                 })
                 .orElse(null);
-
-        // 5. 태그 점수 계산: 일치하는 태그들의 회원 점수 합산
-        int tagScore = productTagIds.stream()
-                .filter(memberTagScoreMap::containsKey)
-                .mapToInt(memberTagScoreMap::get)
-                .sum();
-
-        // ✅ 6. 카테고리 점수 계산: 일치하면 해당 카테고리에 대한 회원 점수 사용
-        int categoryScore =
-                productCategoryId != null && memberCategoryScoreMap.containsKey(productCategoryId)
-                        ? memberCategoryScoreMap.get(productCategoryId)
-                        : 0;
-
-        return tagScore + categoryScore;
     }
 
     @Override
     public List<ProductResponse> recommendProductsForMember(Long memberId, int size) {
-        // 1. 모든 상품 조회 (또는 최근 상품, 인기 상품 일부로 제한 가능)
-        List<Product> products = productRepository.findAll();
+        // 최근 등록된 100개의 상품  조회
+        List<Product> products = productRepository.findTop100ByOrderByCreatedAtDesc();
 
-        // 2. 각 상품에 대해 매칭 점수 계산
-        List<Product> sorted = products.stream()
+        // 각 상품에 대한 매칭 점수 계산 및 정렬
+        return products.stream()
                 .map(product -> Map.entry(product, calculateMatchScore(memberId, product.getId())))
                 .sorted((a, b) -> b.getValue() - a.getValue()) // 점수 높은 순
                 .limit(size)
                 .map(Map.Entry::getKey)
+                .map(this::convertToProductResponse)
                 .toList();
+    }
 
-        // 3. Product → ProductResponse 변환
-        return sorted.stream()
-                .map(product -> {
-                    ProductItem lowestItem = productItemRepository
-                            .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
-                            .orElseThrow(() -> new DomainException(
-                                    ExceptionType.PRODUCT_ITEM_NOT_FOUND));
-                    return ProductResponse.fromEntity(product, lowestItem, product.getStoreId());
-                })
-                .toList();
+    private ProductResponse convertToProductResponse(Product product) {
+        ProductItem lowestPriceItem = productItemRepository
+                .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
+                .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_ITEM_NOT_FOUND));
+
+        return ProductResponse.fromEntity(product, lowestPriceItem, product.getStoreId());
     }
 }
 

@@ -54,4 +54,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 WHERE p.id = :productId
             """)
     Optional<Product> findWithTagsById(@Param("productId") Long productId);
+
+    List<Product> findTop100ByOrderByCreatedAtDesc();
 }
