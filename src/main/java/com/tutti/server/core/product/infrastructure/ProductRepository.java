@@ -5,6 +5,7 @@ import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -56,4 +57,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findWithTagsById(@Param("productId") Long productId);
 
     List<Product> findTop100ByOrderByCreatedAtDesc();
+
+    @Query("""
+                SELECT pcm.product
+                FROM ProductCategoryMap pcm
+                WHERE pcm.category.id = :categoryId
+                  AND pcm.deleteStatus = false
+                ORDER BY pcm.product.createdAt DESC
+            """)
+    List<Product> findTop100ByCategoryIdOrderByCreatedAtDesc(@Param("categoryId") Long categoryId,
+            Pageable pageable);
 }

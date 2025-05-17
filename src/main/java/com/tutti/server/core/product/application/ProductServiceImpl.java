@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -302,26 +304,27 @@ public class ProductServiceImpl implements ProductService {
 
         // 3. 상품의 태그 ID 목록 추출
         Set<Long> productTagIds = extractProductTagIds(product);
+        Map<Long, Long> productTagFrequencies = extractProductTagFrequencies(product);
 
         // 4. 상품의 최상위 카테고리 ID 조회
         Long productCategoryId = findTopLevelCategoryId(productId);
 
         // 5 & 6. 태그 점수와 카테고리 점수 계산 후 합산
-        int tagScore = calculateTagScore(productTagIds, memberTagScoreMap);
+        int tagScore = calculateTagScore(productTagIds, memberTagScoreMap, productTagFrequencies);
         int categoryScore = calculateCategoryScore(productCategoryId, memberCategoryScoreMap);
 
         return tagScore + categoryScore;
     }
 
     // 상품 ID로 태그 정보를 포함한 상품 엔티티 조회
-    private Product getProductWithTagsById(Long productId) {
+    public Product getProductWithTagsById(Long productId) {
         return productRepository.findWithTagsById(productId)
                 .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_NOT_FOUND));
     }
 
 
     // 회원의 태그별 점수 Map 조회
-    private Map<Long, Integer> getMemberTagScoreMap(Long memberId) {
+    public Map<Long, Integer> getMemberTagScoreMap(Long memberId) {
         return memberTagScoreRepository.findAllByMemberId(memberId)
                 .stream()
                 .collect(Collectors.toMap(
@@ -332,7 +335,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     // 회원의 카테고리별 점수 Map 조회
-    private Map<Long, Integer> getMemberCategoryScoreMap(Long memberId) {
+    public Map<Long, Integer> getMemberCategoryScoreMap(Long memberId) {
         return memberCategoryScoreRepository.findAllByMemberId(memberId)
                 .stream()
                 .collect(Collectors.toMap(
@@ -342,22 +345,39 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 상품에서 태그 ID 집합 추출
-    private Set<Long> extractProductTagIds(Product product) {
+    public Set<Long> extractProductTagIds(Product product) {
         return product.getProductTags().stream()
                 .map(productTag -> productTag.getTag().getId())
                 .collect(Collectors.toSet());
     }
 
+    public Map<Long, Long> extractProductTagFrequencies(Product product) {
+        return product.getProductTags().stream()
+                .collect(Collectors.groupingBy(
+                        productTag -> productTag.getTag().getId(),
+                        Collectors.counting()
+                ));
+    }
+
     // 태그 기반 매칭 점수 계산
-    private int calculateTagScore(Set<Long> productTagIds, Map<Long, Integer> memberTagScoreMap) {
-        return productTagIds.stream()
-                .filter(memberTagScoreMap::containsKey)
-                .mapToInt(memberTagScoreMap::get)
-                .sum();
+    public int calculateTagScore(Set<Long> productTagIds, Map<Long, Integer> memberTagScoreMap,
+            Map<Long, Long> productTagFrequencies) {
+
+        int score = 0;
+        for (Long tagId : productTagIds) {
+            if (memberTagScoreMap.containsKey(tagId)) {
+                int memberTagScore = memberTagScoreMap.get(tagId);
+                long frequency = productTagFrequencies.getOrDefault(tagId, 1L);
+
+                // 빈도수 * 회원의 태그 선호 점수
+                score += memberTagScore * frequency;
+            }
+        }
+        return score;
     }
 
     // 카테고리 기반 매칭 점수 계산
-    private int calculateCategoryScore(Long productCategoryId,
+    public int calculateCategoryScore(Long productCategoryId,
             Map<Long, Integer> memberCategoryScoreMap) {
         return (productCategoryId != null && memberCategoryScoreMap.containsKey(productCategoryId))
                 ? memberCategoryScoreMap.get(productCategoryId)
@@ -365,7 +385,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 상품의 최상위 카테고리 ID 조회
-    private Long findTopLevelCategoryId(Long productId) {
+    public Long findTopLevelCategoryId(Long productId) {
         return productCategoryMapRepository
                 .findFirstByProductIdAndDeleteStatusFalse(productId)
                 .map(map -> {
@@ -379,9 +399,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> recommendProductsForMember(Long memberId, int size) {
-        // 최근 등록된 100개의 상품  조회
-        List<Product> products = productRepository.findTop100ByOrderByCreatedAtDesc();
+    public List<ProductResponse> recommendProductsForMember(Long memberId,
+            int size) {
+
+        // 1. 회원의 선호 카테고리 점수 Map 조회
+        Map<Long, Integer> categoryScoreMap = getMemberCategoryScoreMap(memberId);
+
+        // 2. 가장 점수 높은 카테고리 하나 선택
+        Long bestCategoryId = categoryScoreMap.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+
+        if (bestCategoryId == null) {
+            return List.of(); // 또는 예외 처리
+        }
+        // 선호 카테고리 기준 최근 100개 상품 조회
+        Pageable top100 = PageRequest.of(0, 100);
+        List<Product> products = productRepository.findTop100ByCategoryIdOrderByCreatedAtDesc(
+                bestCategoryId, top100);
 
         // 각 상품에 대한 매칭 점수 계산 및 정렬
         return products.stream()
@@ -393,7 +429,7 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
-    private ProductResponse convertToProductResponse(Product product) {
+    public ProductResponse convertToProductResponse(Product product) {
         ProductItem lowestPriceItem = productItemRepository
                 .findFirstByProductIdOrderBySellingPriceAsc(product.getId())
                 .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_ITEM_NOT_FOUND));
@@ -401,4 +437,3 @@ public class ProductServiceImpl implements ProductService {
         return ProductResponse.fromEntity(product, lowestPriceItem, product.getStoreId());
     }
 }
-
