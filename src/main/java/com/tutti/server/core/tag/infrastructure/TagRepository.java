@@ -9,6 +9,6 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     default Tag findOne(Long id) {
         return findById(id)
-                .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_TAG_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ExceptionType.TAG_NOT_FOUND));
     }
 }

@@ -21,5 +21,5 @@ public enum ExceptionCode {
     R01, R02, R03, R04, R05, R06, R07, R08,
     T1, T2, T3,
     I01,
-    J01
+    J01, J02
 }
