@@ -4,15 +4,20 @@ import com.tutti.server.core.member.domain.BehaviorType;
 import com.tutti.server.core.member.domain.Member;
 import com.tutti.server.core.member.domain.MemberBehaviorLog;
 import com.tutti.server.core.member.domain.MemberCategoryScore;
+import com.tutti.server.core.member.domain.MemberTagScore;
 import com.tutti.server.core.member.infrastructure.MemberBehaviorLogRepository;
 import com.tutti.server.core.member.infrastructure.MemberCategoryScoreRepository;
 import com.tutti.server.core.member.infrastructure.MemberRepository;
+import com.tutti.server.core.member.infrastructure.MemberTagScoreRepository;
 import com.tutti.server.core.product.domain.Product;
 import com.tutti.server.core.product.domain.ProductCategory;
 import com.tutti.server.core.product.infrastructure.ProductCategoryMapRepository;
 import com.tutti.server.core.product.infrastructure.ProductRepository;
 import com.tutti.server.core.support.exception.DomainException;
 import com.tutti.server.core.support.exception.ExceptionType;
+import com.tutti.server.core.tag.domain.ProductTag;
+import com.tutti.server.core.tag.domain.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +32,14 @@ public class MemberBehaviorLogServiceImpl implements MemberBehaviorLogService {
     private final ProductRepository productRepository;
     private final MemberCategoryScoreRepository categoryScoreRepository;
     private final ProductCategoryMapRepository productCategoryMapRepository;
+    private final MemberTagScoreRepository memberTagScoreRepository;
 
     @Override
-    public void log(Member member, Product product, BehaviorType behaviorType) {
+    public void log(Member member, Product inputProduct, BehaviorType behaviorType) {
+
+        Product product = productRepository.findWithTagsById(inputProduct.getId())
+                .orElseThrow(() -> new DomainException(ExceptionType.PRODUCT_NOT_FOUND));
+
         // 1. 행동 로그 저장
         MemberBehaviorLog log = MemberBehaviorLog.builder()
                 .member(member)
@@ -74,5 +84,28 @@ public class MemberBehaviorLogServiceImpl implements MemberBehaviorLogService {
 
         // 5. 저장
         categoryScoreRepository.save(score);
+
+        //태그 점수 반영
+        List<Tag> tags = product.getProductTags().stream()
+                .map(ProductTag::getTag)
+                .toList();
+
+        for (Tag tag : tags) {
+            MemberTagScore tagScore = memberTagScoreRepository
+                    .findByMemberIdAndTagId(member.getId(), tag.getId())
+                    .orElse(null);
+
+            if (tagScore == null) {
+                tagScore = MemberTagScore.builder()
+                        .member(member)
+                        .tag(tag)
+                        .score(point)
+                        .build();
+            } else {
+                tagScore.addScore(point);
+            }
+
+            memberTagScoreRepository.save(tagScore);
+        }
     }
 }

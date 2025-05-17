@@ -90,6 +90,16 @@ public class ProductApi implements ProductApiSpec {
         return productService.isProductLiked(productId, memberId);
     }
 
+    @GetMapping("/recommend/custom")
+    public List<ProductResponse> recommendProducts(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Long memberId = userDetails.getMemberId();
+        return productService.recommendProductsForMember(memberId, size);
+    }
+
+
     @Override
     @GetMapping("recommend")
     public List<ProductResponse> getProductsByLikes(
