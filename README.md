@@ -62,7 +62,7 @@ come together to create a vibrant market experience.
 
 ## 데이터베이스 설계도 ERD
 
-![ERD](https://github.com/user-attachments/assets/5a444a75-9605-4cec-a8ac-e04cce8d81e9)
+<img width="5780" height="3372" alt="Tutti ERD image(Final_Project)" src="https://github.com/user-attachments/assets/a0e2d3fb-f911-4b85-acc9-de197e796ca8" width="60%" />
 
 이 프로젝트의 기업 요구사항을 분석하여 총 44개의 테이블을 설계하여 구현하였습니다.<br>
 Based on the analysis of business requirements, a total of 44 tables were designed and implemented in this project.
@@ -76,14 +76,15 @@ Based on the analysis of business requirements, a total of 44 tables were design
 
 ## 서비스 아키텍처 	System Architecture
 
-![image](https://github.com/user-attachments/assets/fd036acd-4707-4ed2-a404-72078c0ae16a)
+<img width="1023" height="571" alt="System Architecture image (Final_Project)" src="https://github.com/user-attachments/assets/1fdb5c8e-287e-4fe6-a833-cf73440ccbf2" width="60%"/>
 
 ## 팀 소개 Contributors
 
 팀 노션 바로가기: *
 *[바로가기](https://www.notion.so/heymeworld/_-19244a7e7ac580b88878cf602be4ff14?p=1ca44a7e7ac58007bc08ea5e083ab45e&pm=s)**
 
-![image](https://github.com/user-attachments/assets/f25abe4b-fdcd-4e1c-9027-68c7368b0f0d)
+<img width="1608" height="881" alt="notion page image" src="https://github.com/user-attachments/assets/1de7683f-ac4b-4e90-9437-d9f1e9146514" width="60%"/>
+
 
 ## 연락 Contact
 
